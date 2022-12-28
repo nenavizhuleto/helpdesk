@@ -24,10 +24,13 @@ class Router
 
 	public function get_remote_information(Device $device)
 	{
-		$ssh_connection = $this->create_ssh_connection($this->address, $this->port, $this->login, $this->password);
-		$device->set_local_address($this->find_local_address($ssh_connection, $device));
-		$device->set_MAC_address($this->find_MAC_address($ssh_connection, $device));
-		ssh2_disconnect($ssh_connection);
+		if ($ssh_connection = $this->create_ssh_connection($this->address, $this->port, $this->login, $this->password)) {
+			$device->set_local_address($this->find_local_address($ssh_connection, $device));
+			$device->set_MAC_address($this->find_MAC_address($ssh_connection, $device));
+			ssh2_disconnect($ssh_connection);
+		} else {
+			throw new \ErrorException("Connection failed");
+		}
 
 	}
 

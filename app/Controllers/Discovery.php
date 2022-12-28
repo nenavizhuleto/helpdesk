@@ -18,6 +18,9 @@ class Discovery extends BaseController
         try {
             $device = new Device($address, $port);
 
+            // var_dump($address);
+            // var_dump($port);
+
             $data = $device->gather_network_information();
 
             return $this->respond($data, 200);

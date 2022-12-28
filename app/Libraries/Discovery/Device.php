@@ -44,7 +44,7 @@ class Device
         $this->MAC_address = $MAC_address;
     }
 
-    public function find_network($searching_netmask = 32, $searching_step = 8)
+    public function find_network($searching_netmask = 32, $searching_step = 1)
     {
 
         while ($searching_netmask > 0) {
