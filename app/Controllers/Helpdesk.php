@@ -2,26 +2,35 @@
 
 namespace App\Controllers;
 
+use CodeIgniter\API\ResponseTrait;
+
+
 class Helpdesk extends BaseController
 {
-    public function index()
+    use ResponseTrait;
+    public function getInfo()
     {
+
         $address = $_SERVER['REMOTE_ADDR'];
         $port = $_SERVER['REMOTE_PORT'];
         $host = gethostbyaddr($address);
-        $MAC = "undefined";
+        $db = \Config\Database::connect();
+        $IPInvestigator = new \App\Helpers\IPInvestigator($db, $address, $port);
 
+        $local_address = $IPInvestigator->local_address;
+        $MAC = $IPInvestigator->MAC;
 
-        $network = new \App\Models\NetworkModel();
 
         $data = [
-            "networks" => $network->findAll(),
             "hostname" => $host ? $host : "undefined",
             "address" => $address,
+            "local_address" => $local_address ? $local_address : "undefined",
             "port" => $port,
-            "mac" => $MAC
+            "MAC" => $MAC ? $MAC : "undefined"
         ];
 
-        return view('helpdesk', $data);
+        return $this->respond($data);
     }
+
+
 }
