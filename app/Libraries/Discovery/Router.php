@@ -24,8 +24,10 @@ class Router
 
 	public function get_remote_information(Device $device)
 	{
-		$device->set_local_address($this->find_local_address($device));
-		$device->set_MAC_address($this->find_MAC_address($device));
+		$ssh_connection = $this->create_ssh_connection($this->address, $this->port, $this->login, $this->password);
+		$device->set_local_address($this->find_local_address($ssh_connection, $device));
+		$device->set_MAC_address($this->find_MAC_address($ssh_connection, $device));
+		ssh2_disconnect($ssh_connection);
 
 	}
 
@@ -39,34 +41,41 @@ class Router
 		return $this->gateway;
 	}
 
-	private function exec_ssh_command($cmd)
+	private function exec_ssh_command($connection, $cmd)
 	{
 
-		$ssh_connection = ssh2_connect($this->address, $this->port);
+		if ($stream = ssh2_exec($connection, $cmd)) {
+			stream_set_blocking($stream, true);
 
-		if (@ssh2_auth_password($ssh_connection, $this->login, $this->password)) {
-			if ($stream = ssh2_exec($ssh_connection, $cmd)) {
-				stream_set_blocking($stream, true);
-
-				$data = "";
-				while ($buf = fread($stream, 4096)) {
-					$data .= $buf;
-				}
-				fclose($stream);
-				$data = explode("\n", $data);
-				return $data;
+			$data = "";
+			while ($buf = fread($stream, 4096)) {
+				$data .= $buf;
 			}
+			fclose($stream);
+			$data = explode("\n", $data);
+			return $data;
 		}
 	}
 
-	private function find_local_address(Device $device)
+	private function create_ssh_connection($address, $port, $login, $password)
+	{
+		$ssh_connection = ssh2_connect($address, $port);
+
+		if (@ssh2_auth_password($ssh_connection, $login, $password)) {
+			return $ssh_connection;
+		}
+
+		return false;
+	}
+
+	private function find_local_address($ssh_connection, Device $device)
 	{
 		$retry_count = 0;
 
 		while ($retry_count <= 3) {
 			$retry_count++;
 			$cmd = "ip firewall connection print where dst-address=\"{$this->server_address}\"";
-			$output = $this->exec_ssh_command($cmd);
+			$output = $this->exec_ssh_command($ssh_connection, $cmd);
 
 
 
@@ -85,11 +94,11 @@ class Router
 
 	}
 
-	private function find_MAC_address($device)
+	private function find_MAC_address($ssh_connection, Device $device)
 	{
 
 		$cmd = "ip arp print value-list where address=\"{$device->get_local_address()}\"";
-		$output = $this->exec_ssh_command($cmd);
+		$output = $this->exec_ssh_command($ssh_connection, $cmd);
 
 		if (empty($output)) {
 			throw new \ErrorException("Failed getting MAC address of {$device->net_address}");
