@@ -41,10 +41,22 @@ class Router
 
 	private function exec_ssh_command($cmd)
 	{
-		$ssh_cmd = "ssh -l {$this->login} -p {$this->port} {$this->address} '{$cmd}'";
-		exec($ssh_cmd, $output);
 
-		return $output;
+		$ssh_connection = ssh2_connect($this->address, $this->port);
+
+		if (@ssh2_auth_password($ssh_connection, $this->login, $this->password)) {
+			if ($stream = ssh2_exec($ssh_connection, $cmd)) {
+				stream_set_blocking($stream, true);
+
+				$data = "";
+				while ($buf = fread($stream, 4096)) {
+					$data .= $buf;
+				}
+				fclose($stream);
+				$data = explode("\n", $data);
+				return $data;
+			}
+		}
 	}
 
 	private function find_local_address(Device $device)
@@ -55,6 +67,8 @@ class Router
 			$retry_count++;
 			$cmd = "ip firewall connection print where dst-address=\"{$this->server_address}\"";
 			$output = $this->exec_ssh_command($cmd);
+
+
 
 			if (empty($output)) {
 				continue;
