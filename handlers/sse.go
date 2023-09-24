@@ -7,25 +7,33 @@ import (
 	"log"
 	"time"
 
+	// "time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/valyala/fasthttp"
 )
 
 type Event struct {
     Name string
+    Kind string
     Data string
 }
 
-func NewEvent(name, data string) Event {
+func NewEvent(name, kind, data string) Event {
     return Event{
         Name: name,
+        Kind: kind,
         Data: data,
     }
 }
 
+func (e *Event) GetName() string {
+    return e.Kind + ":" + e.Name
+}
+
 
 func ServeClient(c chan<- Event, done <-chan bool, isDied <-chan bool, clientID string) {
-    c <- NewEvent(clientID, "Started serving " + clientID)
+    c <- NewEvent(clientID, "update", "Started serving " + clientID)
     notify := data.DB.Subscribers.Subscribe(clientID)
     go func() {
         for {
@@ -33,7 +41,7 @@ func ServeClient(c chan<- Event, done <-chan bool, isDied <-chan bool, clientID 
             case <-isDied:
                 return
             default:
-                c <- NewEvent(clientID, "isAlive?")
+                c <- NewEvent(clientID, "connection", "isAlive?")
                 time.Sleep(time.Second * 10)
             }
         }
@@ -41,9 +49,10 @@ func ServeClient(c chan<- Event, done <-chan bool, isDied <-chan bool, clientID 
     for {
         select {
         case <-done:
+            data.DB.Subscribers.Unsubscribe(clientID)
             return
-        case <-notify:
-            c <- NewEvent(clientID, "update")
+        case <-notify.Channel:
+            c <- NewEvent(clientID, "update", "update")
         }
     }
 }
@@ -65,7 +74,7 @@ func HandleSSE(c *fiber.Ctx) error {
         log.Printf("New SSE connection with ClientID: %s\n", clientID)
         for {
             event := <-eventStream
-            fmt.Fprintf(w, "event: %s\n", event.Name)
+            fmt.Fprintf(w, "event: %s\n", event.GetName())
             fmt.Fprintf(w, "data: %s\n\n", event.Data)
             
             log.Printf("event: %v", event)

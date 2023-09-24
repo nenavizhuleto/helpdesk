@@ -1,336 +1,346 @@
 ::root {
-	--text-black: #1c1c1c;
-	--text-grey: #868686;
-	--text-warning: #a87e29;
-	--surface-light: #ffff;
-	--evelation-1: 0px 4px 14px 0px rgba(0, 0, 0, 0.06);
-	--primary-color: #6d27e7;
+  --text-black: #1c1c1c;
+  --text-grey: #868686;
+  --text-warning: #a87e29;
+  --surface-light: #ffff;
+  --evelation-1: 0px 4px 14px 0px rgba(0, 0, 0, 0.06);
+  --primary-color: #6d27e7;
 }
 h1 {
-	font-size: 2.25rem;
-	font-style: normal;
-	font-weight: 700;
-	line-height: normal;
+  font-size: 2.25rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }
 
 h2 {
-	font-size: 1.5rem;
-	font-style: normal;
-	font-weight: 700;
-	line-height: normal;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }
 
 h4 {
-	font-size: 1rem;
-	font-style: normal;
-	font-weight: 700;
-	line-height: normal;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }
 body {
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-	padding: 40px;
-	font-size: 0.875rem;
-	font-style: normal;
-	font-weight: 400;
-	line-height: normal;
-	background-color: #ececee;
-	overflow: visible;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  padding: 40px;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  background-color: #ececee;
+  overflow: visible;
 }
 .wrapper {
-	max-width: 1248px;
-	min-width: 768px;
-	margin: 0 auto;
+  max-width: 1248px;
+  min-width: 768px;
+  margin: 0 auto;
 
-	display: flex;
-	gap: 4rem;
+  display: flex;
+  gap: 4rem;
 }
 .info {
-	max-width: 40rem;
-	min-width: 340px;
-	flex: 1 2 auto;
-	display: flex;
-	flex-direction: column;
-	gap: 4rem;
+  max-width: 40rem;
+  min-width: 340px;
+  flex: 1 2 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
 }
 .logo div {
-	color: var(--text-grey);
-	font-size: 1.25rem;
-	font-style: normal;
-	font-weight: 700;
-	line-height: normal;
-	color: #868686;
+  color: var(--text-grey);
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  color: #868686;
 }
 .how-to h2 {
-	margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 .how-to__list {
-	display: flex;
-	flex-direction: column;
-	gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 .item {
-	align-self: stretch;
+  align-self: stretch;
 
-	display: flex;
-	align-items: center;
-	gap: 2rem;
-	padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.25rem 2rem;
 
-	border-radius: 1.25rem;
-	background-color: #ffff;
+  border-radius: 1.25rem;
+  background-color: #ffff;
 }
 .item__num {
-	font-variant-numeric: lining-nums tabular-nums;
-	font-size: 2.25rem;
-	font-style: normal;
-	font-weight: 600;
-	line-height: normal;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-size: 2.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
 .item__desc h4 {
-	margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .input-contain {
-	position: relative;
+  position: relative;
 }
 .form {
-	flex: 1 1 auto;
-	display: flex;
-	padding: 2rem 1.5rem;
-	flex-direction: column;
-	gap: 2rem;
+  flex: 1 1 auto;
+  display: flex;
+  padding: 2rem 1.5rem;
+  flex-direction: column;
+  gap: 2rem;
 
-	background-color: #fff;
+  background-color: #fff;
 
-	border-radius: 1.25rem;
-	/* Evelation-1 */
-	box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.06);
+  border-radius: 1.25rem;
+  /* Evelation-1 */
+  box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.06);
 }
 .warning-message {
-	display: flex;
-	padding: 0.75rem 1rem;
-	align-items: center;
-	gap: 0.625rem;
-	align-self: stretch;
-	border-radius: 0.5rem;
+  display: flex;
+  padding: 0.75rem 1rem;
+  align-items: center;
+  gap: 0.625rem;
+  align-self: stretch;
+  border-radius: 0.5rem;
 
-	color: #a87e29;
+  color: #a87e29;
 
-	font-size: 0.75rem;
-	font-style: normal;
-	font-weight: 400;
-	line-height: normal;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 
-	background-color: #fef9ef;
+  background-color: #fef9ef;
 }
 .warning-message svg {
-	flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .text-field {
-	position: relative;
+  position: relative;
 }
 .text-field textarea {
-	resize: none;
-	height: 290px;
+  resize: none;
+  height: 290px;
 }
 .text-field textarea ::-webkit-scrollbar {
-	display: none;
+  display: none;
 }
 .text-field input,
 textarea {
-	width: 100%;
+  width: 100%;
 
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 
-	padding: 1.25rem 1rem;
+  padding: 1.25rem 1rem;
 
-	border-radius: 0.75rem;
-	border: 1px solid var(--input-stroke-default, #868686);
+  border-radius: 0.75rem;
+  border: 1px solid var(--input-stroke-default, #868686);
 
-	font-size: 0.875rem;
-	font-style: normal;
-	font-weight: 400;
-	line-height: normal;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 
-	transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .text-field .placeholder,
 .supporting-text {
-	position: absolute;
-	font-size: 0.75rem;
-	font-style: normal;
-	font-weight: 400;
-	line-height: 1rem; /* 133.333% */
+  position: absolute;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1rem; /* 133.333% */
 
-	color: var(--text-grey);
-	background-color: #fff;
+  color: var(--text-grey);
+  background-color: #fff;
 
-	transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .text-field .placeholder {
-	top: -0.5rem;
-	left: 0.75rem;
-	padding: 0rem 0.25rem;
+  top: -0.5rem;
+  left: 0.75rem;
+  padding: 0rem 0.25rem;
 }
 
 .text-field .supporting-text {
-	width: 100%;
-	padding: 0.25rem 1rem;
-	opacity: 0;
-	visibility: hidden;
+  width: 100%;
+  padding: 0.25rem 1rem;
+  opacity: 0;
+  visibility: hidden;
 }
 
 /* Focus */
 
 .text-field input:focus {
-	border-color: #6d27e7;
+  border-color: #6d27e7;
 }
 .text-field textarea:focus {
-	border-color: #6d27e7;
+  border-color: #6d27e7;
 }
 
 .text-field:focus-within .placeholder {
-	color: #6d27e7;
+  color: #6d27e7;
 }
 
 /* Error */
 
 .text-field.error input {
-	border-color: #e05a5a;
+  border-color: #e05a5a;
 }
 .text-field.error textarea {
-	border-color: #e05a5a;
+  border-color: #e05a5a;
 }
 .text-field.error .placeholder {
-	color: #e05a5a;
+  color: #e05a5a;
 }
 .text-field.error .supporting-text {
-	opacity: 1;
-	visibility: visible;
-	color: #e05a5a;
+  opacity: 1;
+  visibility: visible;
+  color: #e05a5a;
 }
 .supporting-text .error {
-	opacity: 1;
-	visibility: visible;
-	color: #e05a5a;
+  opacity: 1;
+  visibility: visible;
+  color: #e05a5a;
 }
 
 /* Disabled */
 
 .text-field.disabled input {
-	border-color: #7c80a6;
-	pointer-events: none;
+  border-color: #7c80a6;
+  pointer-events: none;
 }
 .text-field.disabled textarea {
-	border-color: #7c80a6;
-	pointer-events: none;
+  border-color: #7c80a6;
+  pointer-events: none;
 }
 .text-field.disabled .placeholder {
-	color: #7c80a6;
+  color: #7c80a6;
 }
 
 .divider {
-	height: 1px;
-	width: 100%;
-	background-color: #d0d0d0;
+  height: 1px;
+  width: 100%;
+  background-color: #d0d0d0;
 }
 
 .form__submit {
-	display: flex;
-	padding: 1rem 2rem;
-	justify-content: center;
-	align-items: center;
-	gap: 0.625rem;
+  display: flex;
+  padding: 1rem 2rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
 
-	color: var(--button-primary-text-default, #fcfcfc);
-	/* Body/Medium */
-	font-size: 0.875rem;
-	font-weight: 500;
+  color: var(--button-primary-text-default, #fcfcfc);
+  /* Body/Medium */
+  font-size: 0.875rem;
+  font-weight: 500;
 
-	border-radius: var(--Button-Radius, 12.5rem);
-	background: var(--button-bg-default, #6d27e7);
+  border-radius: var(--Button-Radius, 12.5rem);
+  background: var(--button-bg-default, #6d27e7);
 
-	transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .form__submit:hover {
-	background: var(--button-bg-hover, #4e1ca5);
+  background: var(--button-bg-hover, #4e1ca5);
 }
 
 .form__submit:active {
-	background: var(--button-bg-click, #613aa5);
+  background: var(--button-bg-click, #613aa5);
 }
 
 .form__submit.disabled {
-	pointer-events: none;
-	background: var(--button-bg-disabled, #a794c7);
+  pointer-events: none;
+  background: var(--button-bg-disabled, #a794c7);
 }
 body._scroll-lock {
-	overflow: hidden;
+  overflow: hidden;
 }
 
 .modal.open {
-	opacity: 1;
-	visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
-.modal{
-	position: fixed;
-	top: 0;
-	right: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-	background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 
-	opacity: 0;
-	visibility: hidden;
+  opacity: 0;
+  visibility: hidden;
 
-	transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 .modal__body {
-	max-width: 420px;
-	padding: 2rem;
+  max-width: 420px;
+  padding: 2rem;
 
-	display: flex;
-	flex-direction: column;
-	gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 
-	border-radius: 20px;
-	background-color: #fff;
+  border-radius: 20px;
+  background-color: #fff;
 }
 
 .modal > p {
-	font-size: 1.15rem;
+  font-size: 1.15rem;
 }
 
 .modal__close {
-	display: flex;
-	padding: 1rem 2rem;
-	justify-content: center;
-	align-items: center;
-	gap: 0.625rem;
+  display: flex;
+  padding: 1rem 2rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
 
-	color: var(--button-primary-text-default, #fcfcfc);
-	/* Body/Medium */
-	font-size: 0.875rem;
-	font-weight: 500;
+  color: var(--button-primary-text-default, #fcfcfc);
+  /* Body/Medium */
+  font-size: 0.875rem;
+  font-weight: 500;
 
-	border-radius: var(--Button-Radius, 12.5rem);
-	background: #35a553;
+  border-radius: var(--Button-Radius, 12.5rem);
+  background: #35a553;
 
-	transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .modal__close:hover {
-	background: #40c062;
+  background: #40c062;
 }

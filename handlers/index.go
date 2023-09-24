@@ -42,7 +42,9 @@ func HandleIndex(c *fiber.Ctx) error {
 
 func HandleIssues(c *fiber.Ctx) error {
     clientID := GetClientID(c)
+    clientID = c.Params("client_id")
     issues, _ := data.DB.ListClientIssues(clientID)
+    log.Printf("Issues: %v", issues)
     return c.Render("issue", fiber.Map{
         "Issues": issues,
     })
