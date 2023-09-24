@@ -18,7 +18,6 @@ var DB *App
 
 func NewDB() (*App, error) {
 	db, err := sql.Open("sqlite3", DBNAME)
-
 	if err != nil {
 		return nil, err
 	}
