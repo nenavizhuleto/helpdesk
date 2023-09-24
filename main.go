@@ -22,7 +22,13 @@ func main() {
 
   app.Static("/", "./public")
 
+  app.Use(handlers.IdentityMiddleware)
 
   app.Get("/", handlers.HandleIndex)
+  app.Get("/sse", handlers.HandleSSE)
+  app.Post("/issues/:uuid", handlers.HandleIssues)
+  app.Post("/issue/send", handlers.HandleIssueSend)
+  app.Get("/test", handlers.HandleTest)
+  app.Post("/issue/:uuid/:index", handlers.HandleTestChangeStatus)
   log.Fatal(app.Listen(":3000"))
 }

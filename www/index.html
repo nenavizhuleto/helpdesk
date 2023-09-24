@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title></title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+  <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
+</head>
+
+<body hx-ext="sse" sse-connect="/sse">
+<!-- <body> -->
+  <div class="wrapper">
+      <!-- <div hx-get="/event" hx-trigger="every 5s" hx-swap="innerHTML"> -->
+      <!--    -->
+      <!-- </div> -->
+    <div class="info">
+    <div hx-trigger="sse:{{ .Uuid }}" hx-post="/issues/{{ .Uuid }}" hx-swap="innerHTML"></div>
+      <div class="logo">
+        <h1>GENERAL TELECOM</h1>
+        <div>
+          техническая поддержка
+        </div>
+      </div>
+      <div class="how-to">
+        <h2>Как отправить обращение?</h2>
+        <ul class="how-to__list">
+          <li class="item">
+            <div class="item__num">
+              1
+            </div>
+            <div class="item__desc">
+              <h4>Заполните форму</h4>
+              <p>На данном сайте технической поддержки вы найдете специальную форму, которую нужно заполнить. Эта форма
+                содержит поля, в которые вы вводите информацию о вашей проблеме и контактные данные.</p>
+            </div>
+          </li>
+          <li class="item">
+            <div class="item__num">
+              2
+            </div>
+            <div class="item__desc">
+              <h4>Проверьте данные</h4>
+              <p>Убедитесь, что вы правильно ввели ваше имя, контактные данные и описание проблемы. Это поможет
+                технической поддержке понять, как вам помочь.</p>
+            </div>
+          </li>
+          <li class="item">
+            <div class="item__num">
+              3
+            </div>
+            <div class="item__desc">
+              <h4>Отправьте данные</h4>
+              <p>После тщательной проверки всех данных, нажмите кнопку «Отправить» После этого ваше обращение будет
+                отправлено в техническую поддержку.</p>
+            </div>
+          </li>
+          <li class="item">
+            <div class="item__num">
+              4
+            </div>
+            <div class="item__desc">
+              <h4>Ожидайте ответа</h4>
+              <p>Техническая поддержка изучит вашу проблему и свяжется с Вами в ближайшее время.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <form hx-post="/issue/send" hx-swap="none" class="form">
+      <h2>Обращение</h2>
+      <div class="warning-message">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+            stroke="#C89E49" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M12 8V13" stroke="#C89E49" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M11.9945 16H12.0035" stroke="#C89E49" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        Пожалуйста, заполняйте форму внимательно, техническая поддержка может отклонить запрос из-за некорректных данных
+      </div>
+
+      <div class="form__input-group">
+        <div class="text-field">
+          <label class="placeholder" for="company">Ваша компания</label>
+          <input type="text" id="fname" name="company" required>
+          <span class="supporting-text">Введите данные корректно</span>
+        </div>
+      </div>
+
+      <div class="form__input-group">
+        <div class="text-field">
+          <label class="placeholder" for="department">Отдел</label>
+          <input type="text" id="fname" name="department" required>
+          <span class="supporting-text">Введите данные корректно</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="form__input-group">
+        <div class="text-field">
+          <label class="placeholder" for="name">Ваше Имя</label>
+          <input type="text" name="name" required>
+          <span class="supporting-text">Введите данные корректно</span>
+        </div>
+      </div>
+
+      <div class="form__input-group">
+        <div class="text-field">
+          <label class="placeholder" for="phonenumber">Мобильный телефон</label>
+          <input type="text" id="fname" name="phonenumber" data-tel-number>
+          <span class="supporting-text">Введите данные корректно</span>
+        </div>
+      </div>
+
+      <div class="form__input-group">
+        <div class="text-field">
+          <label class="placeholder" for="innernumber">Внутренний телефон</label>
+          <input type="text" id="fname" name="innernumber" required>
+          <span class="supporting-text">Введите данные корректно</span>
+        </div>
+      </div>
+      
+      <div class="form__input-group">
+        <div class="text-field">
+          <label class="placeholder" for="description">Суть обращения</label>
+          <textarea name="description" required>
+          </textarea>
+          <span class="supporting-text">Введите данные корректно</span>
+        </div>
+      </div>
+
+      <button class="form__submit disabled" type="submit">Отправить</button>
+    </form>
+  </div>
+  <div class="modal">
+    <div class="success-modal modal__body">
+      <h2>Спасибо</h2>
+      <p>
+        Ваше обращение отправлено в техническую поддержку,
+        пожалуйста, ожидайте связи со специалистом.
+      </p>
+      <a href="#" class="modal__close">
+        Хорошо
+      </a>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
