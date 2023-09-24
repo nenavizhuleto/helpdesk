@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/valyala/fasthttp"
@@ -23,17 +22,15 @@ func NewEvent(name, data string) Event {
     }
 }
 
-func ServeClient(c chan<- Event, done <-chan bool, id string) {
-    c <- NewEvent(id, "Started serving " + id)
-    notifyChan := data.Subs.Subscribe(id)
-    
+func ServeClient(c chan<- Event, done <-chan bool, clientID string) {
+    c <- NewEvent(clientID, "Started serving " + clientID)
+    notify := data.DB.Subscribers.Subscribe(clientID)
     for {
         select {
         case <-done:
             return
-        case <-notifyChan:
-            time.Sleep(time.Second)
-            c <- NewEvent(id, time.Now().String())
+        case <-notify:
+            c <- NewEvent(clientID, "update")
         }
     }
 }
@@ -44,14 +41,14 @@ func HandleSSE(c *fiber.Ctx) error {
     c.Set("Connection", "keep-alive")
     c.Set("Tranfer-Encoding", "chunked")
     
-    id := c.Cookies("uuid")
+    clientID := GetClientID(c)
 
     eventStream := make(chan Event)
     done := make(chan bool)
-    go ServeClient(eventStream, done, id)
+    go ServeClient(eventStream, done, clientID)
 
     c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
-        log.Printf("New SSE connection with ID: %s\n", id)
+        log.Printf("New SSE connection with ID: %s\n", clientID)
         for {
             event := <-eventStream
             fmt.Fprintf(w, "event: %s\n", event.Name)

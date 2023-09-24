@@ -9,11 +9,11 @@
         <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
     </head>
     <body>
-        {{ range $uuid, $issues := .Map }}
-        <p>{{ $uuid }}</p>
         <ul>
-            {{ range $i, $issue := $issues }}
+        {{ range .Issues }}
             <li>
+                <p>ClientID: {{ .ClientID }}</p>
+                <p>IssueID: {{ .ID }}</p>
                 <p>Имя: {{ .Name }}</p>
                 <p>Контактные данные:</p>
                 <ul>
@@ -24,10 +24,10 @@
                 </ul>
                 <p>Суть обращения: {{ .Description }}</p>
                 <p>Status: {{ .Status }}</p>
-                <button hx-post="/issue/{{ $uuid }}/{{ $i }}" hx-swap="none">Change Status</button>
+                <button hx-post="/issue/{{ .ClientID }}/{{ .ID }}?action=accept" hx-swap="none">Принять обращение</button>
+                <button hx-post="/issue/{{ .ClientID }}/{{ .ID }}?action=decline" hx-swap="none">Отклонить обращение</button>
             </li>
-            {{ end }}
-        </ul>
         {{ end }}
+        </ul>
     </body>
 </html>

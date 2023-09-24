@@ -1,9 +1,10 @@
 package data
 
-import "sync"
+import "github.com/google/uuid"
 
 type Issue struct {
     ID string
+    ClientID string
     Company string `form:"company"`
     Department string `form:"department"`
     Name string `form:"name"`
@@ -13,33 +14,15 @@ type Issue struct {
     Status string
 }
 
-type Subscribers struct {
-    mx sync.RWMutex
-    m map[string]chan string
-}
-
-var Subs = NewSubscribers()
-
-func NewSubscribers() *Subscribers {
-    return &Subscribers{
-        m: make(map[string]chan string),
+func NewIssue(clientID string) *Issue {
+    return &Issue{
+        ID: uuid.NewString(),
+        ClientID: clientID,
     }
 }
 
-func (s *Subscribers) Subscribe(key string) chan string {
-    s.mx.Lock()
-    defer s.mx.Unlock()
-    s.m[key] = make(chan string)
-    return s.m[key]
-}
+var Subs = NewSubscriber()
 
-func (s *Subscribers) Notify(key string) {
-    s.mx.Lock()
-    defer s.mx.Unlock()
-    if c, ok := s.m[key]; ok {
-        c <- "notify"
-    }
-}
 
 func StoreIssue(id string, i *Issue) error {
     D.Store(id, *i)
