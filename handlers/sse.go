@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/valyala/fasthttp"
@@ -22,9 +23,21 @@ func NewEvent(name, data string) Event {
     }
 }
 
-func ServeClient(c chan<- Event, done <-chan bool, clientID string) {
+
+func ServeClient(c chan<- Event, done <-chan bool, isDied <-chan bool, clientID string) {
     c <- NewEvent(clientID, "Started serving " + clientID)
     notify := data.DB.Subscribers.Subscribe(clientID)
+    go func() {
+        for {
+            select {
+            case <-isDied:
+                return
+            default:
+                c <- NewEvent(clientID, "isAlive?")
+                time.Sleep(time.Second * 10)
+            }
+        }
+    }()
     for {
         select {
         case <-done:
@@ -44,11 +57,12 @@ func HandleSSE(c *fiber.Ctx) error {
     clientID := GetClientID(c)
 
     eventStream := make(chan Event)
-    done := make(chan bool)
-    go ServeClient(eventStream, done, clientID)
+    done := make(chan bool, 1)
+    isDied := make(chan bool, 1)
+    go ServeClient(eventStream, done, isDied, clientID)
 
     c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
-        log.Printf("New SSE connection with ID: %s\n", clientID)
+        log.Printf("New SSE connection with ClientID: %s\n", clientID)
         for {
             event := <-eventStream
             fmt.Fprintf(w, "event: %s\n", event.Name)
@@ -57,12 +71,14 @@ func HandleSSE(c *fiber.Ctx) error {
             log.Printf("event: %v", event)
             err := w.Flush()
             if err != nil {
+                isDied <- true
                 log.Printf("Error while flushing: %v. Closing http connection.\n", err)
                 break
             }
         }
         done <- true
         close(eventStream)
+        close(isDied)
         close(done)
     }))
 
