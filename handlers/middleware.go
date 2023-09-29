@@ -30,12 +30,12 @@ func IdentityMiddlewareDevice(c *fiber.Ctx) error {
 		return err
 	}
 
-	log.Printf("Identity: %v", identity)
 	c.Locals("Identity", identity)
 
 	return c.Next()
 }
 
+// TODO: After first identity we need to cache it to improve performance
 func IdentityMiddlewareCoockie(c *fiber.Ctx) error {
 	id := c.Cookies(ClientCookieName, "")
 	if id == "" {

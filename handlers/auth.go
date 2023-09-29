@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
 
 	"application/models"
@@ -15,7 +13,6 @@ func HandleAuth(c *fiber.Ctx) error {
 func HandleSignup(c *fiber.Ctx) error {
 	name := c.FormValue("name")
 	phone := c.FormValue("phone")
-	log.Printf("Auth: %s %s", name, phone)
 	if err := models.NewUser(c.IP(), name, phone); err != nil {
 		return err
 	}
