@@ -4,12 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/valyala/fasthttp"
-
-	"application/data"
 )
 
 type Event struct {
@@ -30,30 +27,30 @@ func (e *Event) GetName() string {
 	return e.Kind + ":" + e.Name
 }
 
-func ServeClient(c chan<- Event, done <-chan bool, isDied <-chan bool, clientID string) {
-	c <- NewEvent(clientID, "update", "Started serving "+clientID)
-	notify := data.DB.Subscribers.Subscribe(clientID)
-	go func() {
-		for {
-			select {
-			case <-isDied:
-				return
-			default:
-				c <- NewEvent(clientID, "connection", "isAlive?")
-				time.Sleep(time.Second * 10)
-			}
-		}
-	}()
-	for {
-		select {
-		case <-done:
-			data.DB.Subscribers.Unsubscribe(clientID)
-			return
-		case <-notify.Channel:
-			c <- NewEvent(clientID, "update", "update")
-		}
-	}
-}
+// func ServeClient(c chan<- Event, done <-chan bool, isDied <-chan bool, clientID string) {
+// 	c <- NewEvent(clientID, "update", "Started serving "+clientID)
+// 	notify := data.DB.Subscribers.Subscribe(clientID)
+// 	go func() {
+// 		for {
+// 			select {
+// 			case <-isDied:
+// 				return
+// 			default:
+// 				c <- NewEvent(clientID, "connection", "isAlive?")
+// 				time.Sleep(time.Second * 10)
+// 			}
+// 		}
+// 	}()
+// 	for {
+// 		select {
+// 		case <-done:
+// 			data.DB.Subscribers.Unsubscribe(clientID)
+// 			return
+// 		case <-notify.Channel:
+// 			c <- NewEvent(clientID, "update", "update")
+// 		}
+// 	}
+// }
 
 func HandleSSE(c *fiber.Ctx) error {
 	c.Set("Content-Type", "text/event-stream")
@@ -61,12 +58,12 @@ func HandleSSE(c *fiber.Ctx) error {
 	c.Set("Connection", "keep-alive")
 	c.Set("Tranfer-Encoding", "chunked")
 
-	clientID := GetClientID(c)
+	clientID := GetUserID(c)
 
 	eventStream := make(chan Event)
 	done := make(chan bool, 1)
 	isDied := make(chan bool, 1)
-	go ServeClient(eventStream, done, isDied, clientID)
+	// go ServeClient(eventStream, done, isDied, clientID)
 
 	c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
 		log.Printf("New SSE connection with ClientID: %s\n", clientID)

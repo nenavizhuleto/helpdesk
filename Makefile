@@ -1,12 +1,14 @@
+build:
+	go build -o bin/helpform
 
-dev:
-	go run ./main.go
+run: build
+	./bin/helpform
 
 dbinit:
-	go run ./cmd/database.go init
+	go run ./cmd/database/database.go init
 
 dbdrop:
-	go run ./cmd/database.go drop
+	go run ./cmd/database/database.go drop
 
 dbdelete:
 	rm app.db

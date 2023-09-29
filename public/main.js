@@ -22,10 +22,10 @@ function handleFormSubmit(e) {
   openModal(modal);
 }
 
-for (let form of document.forms) {
-  form.addEventListener("submit", handleFormSubmit);
-  form.addEventListener("input", checkValidity);
-}
+// for (let form of document.forms) {
+//   form.addEventListener("submit", handleFormSubmit);
+//   form.addEventListener("input", checkValidity);
+// }
 
 function openModal(modalNode) {
   console.log(modalNode);
