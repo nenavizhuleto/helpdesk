@@ -35,6 +35,7 @@ func main() {
 	app.Post("/auth/signup", handlers.HandleSignup)
 	app.Use(handlers.IdentityMiddlewareDevice)
 	app.Get("/", handlers.HandleIndex)
+	app.Get("/identity/info", handlers.HandleIdentityInfo)
 	app.Get("/metrics", monitor.New())
 	app.Get("/chat", handlers.HandleChat)
 	app.Get("/task/new", handlers.HandleGetTaskNew)

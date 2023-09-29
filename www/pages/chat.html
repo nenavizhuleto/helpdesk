@@ -1,31 +1,9 @@
-        <div>
-            Information
-            {{ with .Identity }}
-            <h2>Device</h2>
-                <p>Device IP: {{ .Device.IP }}</p>
-                <p>Device Type: {{ .Device.Type }}</p>
-                <p>Subnet: {{ .Subnet.Network }}</p>
-            <h2>User</h2>
-                <p>User ID: {{ .User.ID }}</p>
-                <p>User Name: {{ .User.Name }}</p>
-                <p>User Phone: {{ .User.Phone }}</p>
-            <h2>Company</h2>
-                <p>Company ID: {{ .Company.ID }}</p>
-                <p>Company Name: {{ .Company.Name }}</p>
-                <p>Company Slug: {{ .Company.Slug }}</p>
-            <h2>Branch</h2>
-                <p>Branch Name: {{ .Branch.Name }}</p>
-                <p>Branch Address: {{ .Branch.Address }}</p>
-                <p>Branch Contacts: {{ .Branch.Contacts }}</p>
-                <p>Branch Description: {{ .Branch.Description }}</p>
-            {{ end }}
-        </div>
-        <div hx-ext="ws" ws-connect="/ws/{{ .Device.IP }}">
-            <form id="form" >
-                
-            </form>
-            <div id="notifications">
-                
-            </div>
-        </div>
+<div hx-ext="ws" ws-connect="/ws/{{ .Device.IP }}">
+    <form id="form" >
+        
+    </form>
+    <div id="notifications">
+        
+    </div>
+</div>
 
