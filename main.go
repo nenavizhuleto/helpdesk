@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 
-	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
@@ -41,8 +40,8 @@ func main() {
 	app.Get("/task/new", handlers.HandleGetTaskNew)
 	app.Post("/task/new", handlers.HandlePostTaskNew)
 
-	app.Use("/ws", handlers.HandleWebSocket)
-	app.Get("/ws/:id", websocket.New(handlers.HandleGetWebSocket))
+	// app.Use("/ws", handlers.HandleWebSocket)
+	// app.Get("/ws/:id", websocket.New(handlers.HandleGetWebSocket))
 
 	log.Fatal(app.Listen(":3000"))
 }

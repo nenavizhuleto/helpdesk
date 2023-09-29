@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
