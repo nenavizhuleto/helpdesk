@@ -4,6 +4,8 @@ import (
 	"errors"
 	"log"
 
+	"github.com/gofiber/fiber/v2"
+
 	"application/models"
 )
 
@@ -34,6 +36,11 @@ type Identity struct {
 }
 
 var ErrUserNotFound = errors.New("auth: user not found for device")
+
+func GetIdentity(c *fiber.Ctx) *Identity {
+	i := c.Locals("Identity").(*Identity)
+	return i
+}
 
 func MakeIdentity(ip string) (*Identity, error) {
 	i := &Identity{}

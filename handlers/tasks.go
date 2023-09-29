@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 
+	"application/auth"
 	"application/megaplan"
 	"application/models"
 )
@@ -15,18 +15,15 @@ func HandleGetTaskNew(c *fiber.Ctx) error {
 }
 
 func HandlePostTaskNew(c *fiber.Ctx) error {
-	user := c.Locals("User").(models.User)
+	i := auth.GetIdentity(c)
 	task := &models.Task{
-		ID:      uuid.NewString(),
-		User:    user,
 		Name:    c.FormValue("title"),
 		Subject: c.FormValue("description"),
-		Status:  "Новое обращение",
 	}
 
 	c.Set("HX-Trigger", "issue-created")
 
-	if err := megaplan.MP.HandleCreateTask(task); err != nil {
+	if err := megaplan.MP.HandleCreateTask(i, task); err != nil {
 		return err
 	}
 

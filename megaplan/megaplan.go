@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"application/auth"
 	"application/models"
 )
 
@@ -63,24 +64,54 @@ func NewAuthOpt(username, password string) *AuthOpt {
 	}
 }
 
-func (mp *MegaPlan) HandleCreateTask(i *models.Task) error {
+func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) error {
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
 
-	e := Employee{ID: "1000039"}
+	task_name := fmt.Sprintf("%s", t.Name)
+	task_subject := fmt.Sprintf(`
+    <h2>%s от %s:</h2>
+    <h3>Суть обращения:</h3>
+    <p>%s</p>
+    <hr/>
+    <h3>Дополнительная информания:</h3>
+    <ul>
+    <li>Контакты: %s</li>
+    <li>Устройство: %s (%s)</li>
+    <li>Отдел: <br/>Название: %s <br/>Описание: %s <br/>Адрес: %s <br/>Контакты: %s</li>
+    </ul>
+    `,
+		i.Company.Name,
+		i.User.Name,
+		t.Subject,
+		i.User.Phone,
+		i.Device.IP,
+		i.Subnet.Network,
+		i.Branch.Name,
+		i.Branch.Description,
+		i.Branch.Address,
+		i.Branch.Contacts,
+	)
 
-	subject := fmt.Sprintf("Username: %s, Phone %s\n\nSubject: %s", i.User.Name, i.User.Phone, i.Subject)
-
-	taskDTO := &TaskDTO{
-		Name:        i.Name,
-		Subject:     subject,
-		Responsible: e,
-		IsUrgent:    false,
-		IsTemplate:  false,
+	var responsible struct {
+		ID string `json:"id"`
+	}
+	var task struct {
+		Name        string      `json:"name"`
+		Subject     string      `json:"subject"`
+		Responsible interface{} `json:"responsible"`
+		IsUrgent    bool        `json:"isUrgent"`
+		IsTemplate  bool        `json:"isTemplate"`
 	}
 
-	jsonData, err := json.Marshal(*taskDTO)
+	task.Name = task_name
+	task.Subject = task_subject
+	task.Responsible = responsible
+	task.IsUrgent = false
+	task.IsTemplate = false
+
+	jsonData, err := json.Marshal(task)
 	log.Printf("JSON: %v", string(jsonData))
 	log.Printf("URL: %v", string(mp.Url+"/task"))
 	req, err := http.NewRequest("POST", mp.Url+"/task", bytes.NewBuffer(jsonData))
