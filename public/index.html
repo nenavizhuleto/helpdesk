@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Document</title>
+</head>
+
+<body class="h-screen bg-[#F8F8F8]">
+  <div class="container mx-auto px-4 h-full">
+    <!-- Header -->
+    <div class="flex justify-between items-center py-8">
+
+      <!-- Logo -->
+      <img src="./img/Logotype.svg" alt="">
+
+      <!-- User Profile -->
+      <div class="h-max flex items-center relative group">
+        <div class="font-medium">Гвидон Вишневский</div>
+        <svg class="inline ml-2 group-hover:-rotate-90 transition-all" xmlns="http://www.w3.org/2000/svg" width="16"
+          height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2.66656 5.63415L7.01323 9.98082C7.52656 10.4942 8.36656 10.4942 8.8799 9.98082L13.2266 5.63416"
+            stroke="#0D0D0D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+        <!-- Profile Details -->
+        <div
+          class="pt-3 absolute top-full invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-all">
+          <div
+            class="w-48 h-44 p-4 bg-white text-sm rounded-xl shadow-sm flex-col justify-start items-start gap-3 flex">
+            <div class="self-stretch h-10 flex-col justify-start items-start gap-1 flex">
+              <div class="text-zinc-500 leading-tight">Компания</div>
+              <div class="text-stone-950 leading-tight">Восток Лада</div>
+            </div>
+            <div class="self-stretch h-10 flex-col justify-start items-start gap-1 flex">
+              <div class="text-zinc-500 leading-tight">Отдел</div>
+              <div class="text-stone-950 leading-tight">Продажи</div>
+            </div>
+            <div class="self-stretch h-10 flex-col justify-start items-start gap-1 flex">
+              <div class="text-zinc-500 leading-tight">Номер телефона</div>
+              <div class="text-stone-950 leading-tight">+7 (922) 758 34-41</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="flex justify-between items-center mt-16 mb-10">
+      <h1 class="text-4xl font-bold">Обращения</h1>
+      <a href="#"
+        class="inline-flex  bg-[#3627E7] text-white py-4 px-8 rounded-xl items-center gap-4 font-semibold transition-all hover:bg-[#594DE7]">
+        Новое обращение
+      </a>
+    </div>
+
+    
+    <div class="flex flex-col ">
+
+      <!-- Table Header -->
+      <div
+        class="py-5 mb-5 border-b border-neutral-300 text-zinc-500 font-semibold justify-start items-start inline-flex transition-all">
+        <div class="w-16 self-stretch px-4 justify-start items-center gap-2.5 flex">
+          <!-- ID -->
+          <div class="leading-tight">№</div>
+        </div>
+        <div class="grow shrink basis-0 self-stretch px-4 justify-between items-center flex">
+          <!-- Theme -->
+          <div class="grow shrink basis-0 leading-tight">Тема</div>
+        </div>
+        <div class="w-40 self-stretch px-4 justify-end items-center gap-2.5 flex">
+          <!-- Status -->
+          <div class="text-base leading-tight">Статус</div>
+        </div>
+        <div class="w-48 self-stretch px-4 justify-between items-center flex">
+          <!-- Date -->
+          <div class="grow shrink basis-0 text-right leading-tight">Дата постановки</div>
+        </div>
+      </div>
+
+      <!-- Table Row -->
+      <div
+        class="py-5 rounded-xl justify-start items-start inline-flex transition-all hover:bg-white hover:cursor-pointer">
+
+        <div class="w-16 self-stretch px-4 justify-start items-center gap-2.5 flex">
+          <!-- ID -->
+          <div class="text-neutral-800 text-base font-normal leading-tight">
+            1312
+          </div>
+        </div>
+
+        <div class="grow shrink basis-0 self-stretch px-4 justify-between items-center flex">
+          <!-- Theme -->
+          <div class="grow shrink basis-0 text-neutral-800 text-base font-normal leading-tight">
+            Поломка принтера
+          </div>
+        </div>
+
+        <div class="self-stretch px-4 justify-end items-center gap-2.5 flex">
+          <!-- Status -->
+          <div class="px-3 py-1.5 bg-yellow-200 rounded-md items-center flex">
+            <div class="text-yellow-900 text-base font-medium leading-tight">В работе</div>
+          </div>
+        </div>
+
+        <div class="w-48 self-stretch px-4 justify-between items-center flex">
+          <!-- Date -->
+          <div class="grow shrink basis-0 text-right text-stone-950 text-base font-normal leading-tight">
+            17 сентября 2023
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Table Row -->
+      <div
+        class="py-5 rounded-xl justify-start items-start inline-flex transition-all hover:bg-white hover:cursor-pointer">
+
+        <div class="w-16 self-stretch px-4 justify-start items-center gap-2.5 flex">
+          <!-- ID -->
+          <div class="text-neutral-800 text-base font-normal leading-tight">
+            1232
+          </div>
+        </div>
+
+        <div class="grow shrink basis-0 self-stretch px-4 justify-between items-center flex">
+          <!-- Theme -->
+          <div class="grow shrink basis-0 text-neutral-800 text-base font-normal leading-tight">
+            Проблемы с подключением к Wi-Fi сети
+          </div>
+        </div>
+
+        <div class="self-stretch px-4 justify-end items-center gap-2.5 flex">
+          <!-- Status -->
+          <div class="px-3 py-1.5 bg-red-200 rounded-md items-center flex">
+            <div class="text-red-900 text-base font-medium leading-tight">Отклонено</div>
+          </div>
+        </div>
+
+        <div class="w-48 self-stretch px-4 justify-between items-center flex">
+          <!-- Date -->
+          <div class="grow shrink basis-0 text-right text-stone-950 text-base font-normal leading-tight">
+            8 августа 2023
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Table Row -->
+      <div
+        class="py-5 rounded-xl justify-start items-start inline-flex transition-all hover:bg-white hover:cursor-pointer">
+
+        <div class="w-16 self-stretch px-4 justify-start items-center gap-2.5 flex">
+          <!-- ID -->
+          <div class="text-neutral-800 text-base font-normal leading-tight">
+            7445
+          </div>
+        </div>
+
+        <div class="grow shrink basis-0 self-stretch px-4 justify-between items-center flex">
+          <!-- Theme -->
+          <div class="grow shrink basis-0 text-neutral-800 text-base font-normal leading-tight">
+            Зависание компьютера
+          </div>
+        </div>
+
+        <div class=" self-stretch px-4 justify-end items-center gap-2.5 flex">
+          <!-- Status -->
+          <div class="px-3 py-1.5 bg-lime-200 rounded-md items-center flex">
+            <div class="text-lime-900 text-base font-medium leading-tight">
+              Решено
+              <svg class="inline" xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17"
+                fill="none">
+                <path d="M13.3332 4.5L5.99984 11.8333L2.6665 8.5" stroke="#5C7345" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+          <!-- End Status -->
+        </div>
+
+        <div class="w-48 self-stretch px-4 justify-between items-center flex">
+          <!-- Date -->
+          <div class="grow shrink basis-0 text-right text-stone-950 text-base font-normal leading-tight">
+            12 июня 2023
+          </div>
+        </div>
+
+      </div>
+
+      <div class="self-center">
+        <div class="w-64 mb-10 mx-auto text-zinc-500 text-xl font-medium">У вас ещё нет обращений в техническую поддержку</div>
+        <img src="img/empty-tickets.svg">
+      </div>
+    </div>
+
+  </div>
+  <!-- New Taks Modal -->
+  <div class="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center invisible opacity-0">
+    <!-- Modal Body -->
+    <div class="w-[506px] bg-white px-12 py-10 flex flex-col rounded-3xl gap-10 ">
+      <div>
+        <h2 class="text-2xl font-bold mb-8">Новое обращение</h2>
+        <!-- Message -->
+        <div class="w-full px-4 py-3 bg-orange-50 rounded-lg justify-start items-center gap-4 inline-flex">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+              stroke="#A87E28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 8V13" stroke="#A87E28" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M11.9946 16H12.0036" stroke="#A87E28" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <div class="grow shrink basis-0 text-yellow-700 text-sm font-normal leading-tight">Пожалуйста,
+            постарайтесь сформулировать суть обращения как можно точнее, это значительно ускорит процесс решения
+            проблемы
+          </div>
+        </div>
+      </div>
+
+      <form class="">
+        <!-- Theme Field -->
+        <div class="relative w-full mb-8">
+          <input type="text"
+            class="w-full px-4 py-5 border border-[#535073] rounded-xl outline-none text-black peer focus:border-[#3627E7]"
+            required>
+          <label class=" bg-white px-1 absolute -top-2 left-3 leading-4 text-[#535073] peer-focus:text-[#3627E7]">
+            Тема обращения
+          </label>
+        </div>
+
+        <div class="relative w-full mb-8">
+          <textarea
+            class="w-full h-96 px-4 py-5 border border-[#535073] rounded-xl outline-none text-black peer focus:border-[#3627E7] resize-none"
+            required></textarea>
+          <label class=" bg-white px-1 absolute -top-2 left-3 leading-4 text-[#535073] peer-focus:text-[#3627E7]">
+            Суть обращения
+          </label>
+        </div>
+        <div class="flex justify-between">
+          <a href="#"
+            class="inline-flex border-[#3627E7] border text-[#3627E7] py-4 px-8 rounded-xl items-center gap-4 font-semibold transition-all hover:border-[#837AE7] hover:text-[#837AE7]">
+            Отмена
+          </a>
+
+          <button
+            class="inline-flex  bg-[#3627E7] text-white py-4 px-8 rounded-xl items-center gap-4 font-semibold transition-all hover:bg-[#594DE7]">
+            Отправить
+          </button>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>
