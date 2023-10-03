@@ -1,8 +1,6 @@
 package models
 
 import (
-	"database/sql"
-
 	"github.com/google/uuid"
 
 	"application/data"
@@ -23,7 +21,7 @@ func GetUserFromDevice(device *Device) (*User, error) {
 		}
 		return &user, nil
 	}
-	return nil, sql.ErrNoRows
+	return nil, ErrUserNotFound
 }
 
 func NewUser(ip, name, phone string) error {
