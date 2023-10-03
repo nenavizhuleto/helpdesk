@@ -38,10 +38,12 @@ CREATE TABLE IF NOT EXISTS subnets (
 
 CREATE TABLE IF NOT EXISTS tasks (
     id TEXT NOT NULL,
+    human_number INTEGER NOT NULL,
     user_id TEXT NOT NULL,
     name TEXT NOT NULL,
     subject TEXT NOT NULL,
     status TEXT NOT NULL,
+    time_created TEXT NOT NULL,
     PRIMARY KEY(id)
 );
 
