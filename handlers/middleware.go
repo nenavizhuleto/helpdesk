@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 
 	"application/auth"
+	"application/models"
 )
 
 const (
@@ -23,8 +24,11 @@ func IdentityMiddlewareDevice(c *fiber.Ctx) error {
 	ip := c.IP()
 	identity, err := auth.MakeIdentity(ip)
 	if err != nil {
-		if errors.Is(err, auth.ErrUserNotFound) {
-			return c.Render("auth", nil)
+		if errors.Is(err, models.ErrUnsupportedDevice) {
+			return c.Render("screens/unsupported-device-error", fiber.Map{}, "layout/main")
+		}
+		if errors.Is(err, models.ErrUserNotFound) {
+			return c.Render("screens/authorization", fiber.Map{}, "layout/main")
 		}
 		return err
 	}
