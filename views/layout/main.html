@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/htmx.min.js"></script>
+    <script src="assets/ws.js"></script>
+  <title>Document</title>
+</head>
+
+<body class="h-screen">
+    <div class="container max-w-5xl mx-auto px-4 h-full">
+        {% include "partials/header.html" %}
+        <div id="main" class="flex flex-col gap-6 items-center justify-between mt-60 sm:flex-row ">
+            {{ embed }}
+        </div>
+    </div>
+</body>
+
+</html>
