@@ -65,10 +65,6 @@ func NewAuthOpt(username, password string) *AuthOpt {
 }
 
 func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.Task, error) {
-	client := &http.Client{
-		Timeout: time.Second * 10,
-	}
-
 	task_name := fmt.Sprintf("%s", t.Name)
 	task_subject := fmt.Sprintf(`
     <h2>%s от %s:</h2>
@@ -111,12 +107,25 @@ func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.
 	task.IsUrgent = false
 	task.IsTemplate = false
 
-	jsonData, err := json.Marshal(task)
-	log.Printf("JSON: %v", string(jsonData))
-	log.Printf("URL: %v", string(mp.Url+"/task"))
-	req, err := http.NewRequest("POST", mp.Url+"/task", bytes.NewBuffer(jsonData))
-	if err != nil {
+	var response struct {
+		Meta Meta        `json:"meta"`
+		Data models.Task `json:"data"`
+	}
+	if err := mp.doRequest("POST", "/task", task, &response); err != nil {
 		return nil, err
+	}
+
+	return &response.Data, nil
+}
+
+func (mp *MegaPlan) doRequest(method, url string, body interface{}, response interface{}) error {
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	jsonData, err := json.Marshal(body)
+	req, err := http.NewRequest(method, mp.Url+url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -127,15 +136,9 @@ func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.
 	}
 	defer res.Body.Close()
 
-	body, _ := io.ReadAll(res.Body)
-	log.Println(string(body))
-	var response struct {
-		Meta Meta        `json:"meta"`
-		Data models.Task `json:"data"`
-	}
-	json.Unmarshal(body, &response)
-
-	return &response.Data, nil
+	bytes, _ := io.ReadAll(res.Body)
+	json.Unmarshal(bytes, &response)
+	return nil
 }
 
 func setField(w *multipart.Writer, fieldName string, value string) error {
@@ -211,29 +214,4 @@ type Response struct {
 
 func (mp *MegaPlan) getToken() string {
 	return "Bearer " + mp.Token.AccessToken
-}
-
-func (mp *MegaPlan) doRequest(method, url string, body io.Reader) (Response, error) {
-	req, _ := http.NewRequest(method, mp.Url+url, body)
-	req.Header["AUTHORIZATION"] = []string{mp.getToken()}
-
-	client := &http.Client{
-		Timeout: time.Second * 10,
-	}
-	res, err := client.Do(req)
-	if res.StatusCode != http.StatusOK {
-		log.Printf("Request failed with response code: %d", res.StatusCode)
-		return Response{}, err
-	}
-	rsp := Response{}
-	json.NewDecoder(res.Body).Decode(&rsp)
-	return rsp, nil
-}
-
-func (mp *MegaPlan) Get(url string) (Response, error) {
-	return mp.doRequest("GET", url, nil)
-}
-
-func (mp *MegaPlan) Post(url string, data interface{}) (Response, error) {
-	return mp.doRequest("GET", url, nil)
 }

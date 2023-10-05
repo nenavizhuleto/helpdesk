@@ -36,8 +36,10 @@ func main() {
 
 	app.Use("/system", handlers.IdentityMiddlewareDevice)
 	app.Get("/system", handlers.HandleMain)
+	app.Get("/system/tasks", handlers.HandleGetTasks)
 	app.Get("/system/task/new", handlers.HandleGetTaskNew)
 	app.Post("/system/task/new", handlers.HandlePostTaskNew)
+	app.Get("/dev/null", handlers.HandleDevNull)
 
 	app.Get("/identity/info", handlers.HandleIdentityInfo)
 	app.Get("/metrics", monitor.New())

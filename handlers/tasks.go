@@ -9,7 +9,22 @@ import (
 )
 
 func HandleGetTaskNew(c *fiber.Ctx) error {
-	return c.Render("partials/task-modal-new", fiber.Map{})
+	return c.Render("components/task-modal/new", nil)
+}
+
+func HandleShowTaskNewModal(c *fiber.Ctx) error {
+	return c.Render("components/task-modal/new", nil)
+}
+
+func HandleGetTasks(c *fiber.Ctx) error {
+	identity := auth.GetIdentity(c)
+	tasks, err := models.GetTasksForUser(identity.User.ID)
+	if err != nil {
+		return err
+	}
+	return c.Render("components/task-table/content", fiber.Map{
+		"Tasks": tasks,
+	})
 }
 
 func HandlePostTaskNew(c *fiber.Ctx) error {

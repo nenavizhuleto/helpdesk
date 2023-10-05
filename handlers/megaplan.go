@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
 
 	"application/megaplan"
@@ -23,16 +21,4 @@ type MegaPlanEventData struct {
 
 func HandleMegaPlanInfo(c *fiber.Ctx) error {
 	return c.JSON(megaplan.MP)
-}
-
-func HandleMegaPlanGetEntity(c *fiber.Ctx) error {
-	entity := c.Params("entity")
-	entities, err := megaplan.MP.Get("/" + entity)
-	if err != nil {
-		return err
-	}
-
-	log.Printf("Entities: %v", entities)
-
-	return c.JSON(entities)
 }

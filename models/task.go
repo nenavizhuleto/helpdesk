@@ -2,7 +2,7 @@ package models
 
 import (
 	"errors"
-	"log"
+	"strings"
 	"time"
 
 	"application/data"
@@ -13,18 +13,14 @@ type TaskTimeCreated struct {
 }
 
 func (tc *TaskTimeCreated) Scan(src interface{}) error {
-	var source []byte
-	switch src := src.(type) {
-	case string:
-		source = []byte(src)
-	case []byte:
-		source = src
-	default:
-		return errors.New("Incompatible type for TaskTimeCreated")
+	source, ok := src.(string)
+	if !ok {
+		return errors.New("Incompitable datetime type")
 	}
-	log.Println("datetime: ", string(source))
+	// HACK
+	dt := strings.Replace(string(source), "T", " ", 1)
 	format := "2006-01-02 15:04:05Z07:00"
-	date, err := time.Parse(format, string(source))
+	date, err := time.Parse(format, dt)
 	if err != nil {
 		return errors.New("Couldn't parse datetime")
 	}

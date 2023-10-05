@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
 
 	"application/models"
@@ -42,60 +40,48 @@ func GetIdentity(c *fiber.Ctx) *Identity {
 func MakeIdentity(ip string) (*Identity, error) {
 	i := &Identity{}
 
-	log.Println("ID: device")
 	d, err := models.NewDevice(ip)
 	if err != nil {
 		return nil, err
 	}
-	log.Println(d)
 
 	i.Device.IP = d.IP
 	i.Device.Type = d.Type
 
-	log.Println("ID: subnet")
 	s, err := models.GetSubnetFromDevice(d)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Println(s)
 	i.Subnet.Network = s.Netmask
 
-	log.Println("ID: user")
 	u, err := models.GetUserFromDevice(d)
 	if err != nil {
 		return nil, err
 	}
-	log.Println(u)
 
 	i.User.ID = u.ID
 	i.User.Name = u.Name
 	i.User.Phone = u.Phone
 
-	log.Println("ID: branch")
 	b, err := models.GetBranchFromSubnet(s)
 	if err != nil {
 		return nil, err
 	}
-	log.Println(b)
 
 	i.Branch.Name = b.Name
 	i.Branch.Address = b.Address
 	i.Branch.Contacts = b.Contacts
 	i.Branch.Description = b.Description
 
-	log.Println("ID: company")
 	c, err := models.GetCompanyFromBranch(b)
 	if err != nil {
 		return nil, err
 	}
-	log.Println(c)
 
 	i.Company.ID = c.ID
 	i.Company.Name = c.Name
 	i.Company.Slug = c.Slug
-
-	log.Println(i)
 
 	return i, nil
 }
