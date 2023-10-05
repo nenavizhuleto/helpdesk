@@ -1,7 +1,13 @@
 build:
 	go build -o bin/helpform
 
-run: build
+tailwind:
+	npx tailwindcss -i public/css/main.css -o public/css/style.css
+
+tailwind-watch:
+	npx tailwindcss -i public/css/main.css -o public/css/style.css --watch
+
+run: build tailwind
 	./bin/helpform
 
 dbinit:

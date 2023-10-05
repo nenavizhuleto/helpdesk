@@ -1,0 +1,8 @@
+  {% if Tasks %} 
+      {% for Task in Tasks %}
+      <!-- Table Row -->
+      {% include "components/task-table/row.html" %} 
+      {% endfor %} 
+  {% else %} 
+      {% include "components/task-table/empty.html" %} 
+  {% endif %}
