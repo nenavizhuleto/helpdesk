@@ -1,0 +1,39 @@
+<div
+  class="py-5 rounded-xl justify-start items-start inline-flex transition-all hover:bg-white hover:cursor-pointer"
+>
+  <div class="w-16 self-stretch px-4 justify-start items-center gap-2.5 flex">
+    <!-- ID -->
+    <div class="text-neutral-800 text-base font-normal leading-tight">
+      {{ Task.HumanNumber }}
+    </div>
+  </div>
+
+  <div
+    class="grow shrink basis-0 self-stretch px-4 justify-between items-center flex"
+  >
+    <!-- Theme -->
+    <div
+      class="grow shrink basis-0 text-neutral-800 text-base font-normal leading-tight"
+    >
+      {{ Task.Name }}
+    </div>
+  </div>
+
+  <div class="self-stretch px-4 justify-end items-center gap-2.5 flex">
+    <!-- Status -->
+    <div class="px-3 py-1.5 bg-yellow-200 rounded-md items-center flex">
+      <div class="text-yellow-900 text-base font-medium leading-tight">
+        {{ Task.Status }}
+      </div>
+    </div>
+  </div>
+
+  <div class="w-48 self-stretch px-4 justify-between items-center flex">
+    <!-- Date -->
+    <div
+      class="grow shrink basis-0 text-right text-stone-950 text-base font-normal leading-tight"
+    >
+      {{ Task.TimeCreated.Value }}
+    </div>
+  </div>
+</div>
