@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
-	"github.com/gofiber/template/html/v2"
+	"github.com/gofiber/template/django/v2"
 	"github.com/joho/godotenv"
 
 	"application/data"
@@ -21,7 +21,7 @@ func main() {
 	initMegaplan()
 
 	// initializing fiber application
-	engine := html.New("./www", ".html")
+	engine := django.New("./views", ".html")
 	engine.Reload(true)
 	app := fiber.New(fiber.Config{
 		Views:             engine,
@@ -31,15 +31,17 @@ func main() {
 
 	app.Use(logger.New())
 
-	app.Get("/auth", handlers.HandleAuth)
-	app.Post("/auth/signup", handlers.HandleSignup)
-	app.Use(handlers.IdentityMiddlewareDevice)
 	app.Get("/", handlers.HandleIndex)
+	app.Post("/register", handlers.HandleRegister)
+
+	app.Use("/system", handlers.IdentityMiddlewareDevice)
+	app.Get("/system", handlers.HandleMain)
+	app.Get("/system/task/new", handlers.HandleGetTaskNew)
+	app.Post("/system/task/new", handlers.HandlePostTaskNew)
+
 	app.Get("/identity/info", handlers.HandleIdentityInfo)
 	app.Get("/metrics", monitor.New())
 	app.Get("/chat", handlers.HandleChat)
-	app.Get("/task/new", handlers.HandleGetTaskNew)
-	app.Post("/task/new", handlers.HandlePostTaskNew)
 
 	// app.Use("/ws", handlers.HandleWebSocket)
 	// app.Get("/ws/:id", websocket.New(handlers.HandleGetWebSocket))

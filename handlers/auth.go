@@ -10,7 +10,7 @@ func HandleAuth(c *fiber.Ctx) error {
 	return c.Render("auth", nil)
 }
 
-func HandleSignup(c *fiber.Ctx) error {
+func HandleRegister(c *fiber.Ctx) error {
 	name := c.FormValue("name")
 	phone := c.FormValue("phone")
 	if err := models.NewUser(c.IP(), name, phone); err != nil {

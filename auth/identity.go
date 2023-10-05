@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"errors"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -35,8 +34,6 @@ type Identity struct {
 	}
 }
 
-var ErrUserNotFound = errors.New("auth: user not found for device")
-
 func GetIdentity(c *fiber.Ctx) *Identity {
 	i := c.Locals("Identity").(*Identity)
 	return i
@@ -55,24 +52,25 @@ func MakeIdentity(ip string) (*Identity, error) {
 	i.Device.IP = d.IP
 	i.Device.Type = d.Type
 
-	log.Println("ID: user")
-	u, err := models.GetUserFromDevice(d)
-	if err != nil {
-		return nil, ErrUserNotFound
-	}
-	log.Println(u)
-
-	i.User.ID = u.ID
-	i.User.Name = u.Name
-	i.User.Phone = u.Phone
-
 	log.Println("ID: subnet")
 	s, err := models.GetSubnetFromDevice(d)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println(s)
 	i.Subnet.Network = s.Netmask
+
+	log.Println("ID: user")
+	u, err := models.GetUserFromDevice(d)
+	if err != nil {
+		return nil, err
+	}
+	log.Println(u)
+
+	i.User.ID = u.ID
+	i.User.Name = u.Name
+	i.User.Phone = u.Phone
 
 	log.Println("ID: branch")
 	b, err := models.GetBranchFromSubnet(s)

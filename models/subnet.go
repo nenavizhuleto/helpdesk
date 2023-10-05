@@ -29,8 +29,8 @@ func GetSubnetFromDevice(device *Device) (*Subnet, error) {
 		}
 		if network.Contains(ip) {
 			subnet = s
-			break
+			return &subnet, nil
 		}
 	}
-	return &subnet, nil
+	return nil, ErrUnsupportedDevice
 }

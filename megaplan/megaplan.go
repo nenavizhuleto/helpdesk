@@ -64,7 +64,7 @@ func NewAuthOpt(username, password string) *AuthOpt {
 	}
 }
 
-func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) error {
+func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.Task, error) {
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -116,7 +116,7 @@ func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) error {
 	log.Printf("URL: %v", string(mp.Url+"/task"))
 	req, err := http.NewRequest("POST", mp.Url+"/task", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -128,8 +128,14 @@ func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) error {
 	defer res.Body.Close()
 
 	body, _ := io.ReadAll(res.Body)
-	log.Printf("Status: %v, Body: %v", res.Status, string(body))
-	return nil
+	log.Println(string(body))
+	var response struct {
+		Meta Meta        `json:"meta"`
+		Data models.Task `json:"data"`
+	}
+	json.Unmarshal(body, &response)
+
+	return &response.Data, nil
 }
 
 func setField(w *multipart.Writer, fieldName string, value string) error {

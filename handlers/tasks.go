@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
 
 	"application/auth"
@@ -11,22 +9,29 @@ import (
 )
 
 func HandleGetTaskNew(c *fiber.Ctx) error {
-	return c.Render("pages/tasks", fiber.Map{})
+	return c.Render("partials/task-modal-new", fiber.Map{})
 }
 
 func HandlePostTaskNew(c *fiber.Ctx) error {
 	i := auth.GetIdentity(c)
+	name := c.FormValue("title")
+	subject := c.FormValue("subject")
 	task := &models.Task{
-		Name:    c.FormValue("title"),
-		Subject: c.FormValue("description"),
+		Name:    name,
+		Subject: subject,
 	}
 
-	c.Set("HX-Trigger", "issue-created")
-
-	if err := megaplan.MP.HandleCreateTask(i, task); err != nil {
+	newTask, err := megaplan.MP.HandleCreateTask(i, task)
+	if err != nil {
 		return err
 	}
 
-	log.Printf("formData: %v", task)
+	println("task", newTask)
+
+	if err := models.SaveTaskForUser(i.User.ID, newTask); err != nil {
+		return err
+	}
+	c.Set("HX-Trigger", "task-created")
+
 	return c.SendStatus(200)
 }
