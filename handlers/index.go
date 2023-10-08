@@ -21,3 +21,7 @@ func HandleIndex(c *fiber.Ctx) error {
 func HandleIdentityInfo(c *fiber.Ctx) error {
 	return c.Render("pages/identity", fiber.Map{})
 }
+
+func HandleSvelte(c *fiber.Ctx) error {
+	return c.Render("index.html", nil)
+}

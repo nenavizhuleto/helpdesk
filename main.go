@@ -21,17 +21,19 @@ func main() {
 	initMegaplan()
 
 	// initializing fiber application
-	engine := django.New("./views", ".html")
+	engine := django.New("./svelte", ".html")
 	engine.Reload(true)
 	app := fiber.New(fiber.Config{
 		Views:             engine,
 		PassLocalsToViews: true,
 	})
-	app.Static("/", "./public")
+	// app.Static("/", "./public")
+	app.Static("/", "./svelte")
 
 	app.Use(logger.New())
 
-	app.Get("/", handlers.HandleIndex)
+	// app.Get("/", handlers.HandleIndex)
+	app.Get("/", handlers.HandleSvelte)
 	app.Post("/register", handlers.HandleRegister)
 
 	app.Use("/system", handlers.IdentityMiddlewareDevice)

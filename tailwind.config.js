@@ -4,7 +4,8 @@ module.exports = {
         "./views/components/**/*.html",
         "./views/layout/**/*.html",
         "./views/partials/**/*.html",
-        "./views/screens/**/*.html"
+        "./views/screens/**/*.html",
+        "./svelte/**/*.html"
     ],
     theme: {
         colors: {
