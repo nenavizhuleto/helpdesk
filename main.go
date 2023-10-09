@@ -31,6 +31,7 @@ func main() {
 	app.Use(cors.New())
 
 	app.Post("/register", handlers.HandleRegister)
+	app.Post("/megaplan/event", handlers.HandleMegaplanEvent)
 
 	apiRouter := app.Group("/api")
 	apiRouter.Use(handlers.IdentityMiddlewareDevice)
@@ -40,6 +41,7 @@ func main() {
 
 	// Tasks
 	apiRouter.Get("/tasks", api.GetTasks)
+	apiRouter.Get("/tasks/:id", api.GetTask)
 	apiRouter.Post("/tasks", api.CreateTask)
 
 	log.Fatal(app.Listen(":3000"))

@@ -77,6 +77,18 @@ var TaskSubjectFormat = `
     </ul>
     `
 
+func (mp *MegaPlan) HandleFetchTaskUpdates(i *auth.Identity, t *models.Task) (*models.Task, error) {
+	var response struct {
+		Meta Meta        `json:"meta"`
+		Data models.Task `json:"data"`
+	}
+	if err := mp.doRequest("GET", fmt.Sprintf("/task/%s", t.ID), nil, &response); err != nil {
+		return nil, err
+	}
+
+	return &response.Data, nil
+}
+
 func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.Task, error) {
 	task_name := fmt.Sprintf("%s", t.Name)
 	task_subject := fmt.Sprintf(TaskSubjectFormat,

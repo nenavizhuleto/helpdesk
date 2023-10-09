@@ -54,6 +54,17 @@ func (t *Task) Prettify() error {
 	return nil
 }
 
+func GetTaskForUser(uid string, id string) (*Task, error) {
+	db := data.DB
+
+	var task Task
+	if err := db.Get(&task, "SELECT * FROM tasks WHERE user_id = ? AND id = ?", uid, id); err != nil {
+		return nil, err
+	}
+
+	return &task, nil
+}
+
 func GetTasksForUser(uid string) ([]Task, error) {
 	db := data.DB
 
@@ -63,6 +74,25 @@ func GetTasksForUser(uid string) ([]Task, error) {
 	}
 
 	return tasks, nil
+}
+
+func UpdateTaskForUser(uid string, task *Task) error {
+	db := data.DB
+	task.UserID = uid
+	_, err := db.NamedExec("UPDATE tasks SET name = :name, status = :status WHERE id = :id AND user_id = :user_id", task)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateTaskStatus(id string, status string) error {
+	db := data.DB
+	_, err := db.Exec("UPDATE tasks SET status = ? WHERE id = ?", status, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func SaveTaskForUser(uid string, task *Task) error {

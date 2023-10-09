@@ -17,7 +17,33 @@ func GetTasks(c *fiber.Ctx) error {
 	if err != nil {
 		return models.ErrEntityNotFound
 	}
+
 	return c.JSON(tasks)
+}
+
+func GetTask(c *fiber.Ctx) error {
+	i := auth.GetIdentity(c)
+	if i == nil {
+		return models.ErrNotIdentified
+	}
+
+	task_id := c.Params("id")
+
+	task, err := models.GetTaskForUser(i.User.ID, task_id)
+	if err != nil {
+		return models.ErrEntityNotFound
+	}
+	if taskMP, err := megaplan.MP.HandleFetchTaskUpdates(i, task); err != nil {
+		return models.ErrMegaplan
+	} else {
+		if taskMP.Status != task.Status {
+			task.Status = taskMP.Status
+			task.Name = taskMP.Name
+			models.UpdateTaskForUser(i.User.ID, task)
+		}
+	}
+
+	return c.JSON(task)
 }
 
 func CreateTask(c *fiber.Ctx) error {
