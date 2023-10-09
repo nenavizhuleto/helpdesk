@@ -1,26 +1,26 @@
 <script>
-    import TaskTable from '$lib/TaskTable.svelte';
-    import TaskTableRow from '$lib/TaskTableRow.svelte';
-    import PrimaryButton from '$lib/UI/PrimaryButton.svelte';
-    import { onMount } from 'svelte';
+    import Header from '$lib/Header.svelte';
+    import Registration from '$lib/pages/Registration.svelte';
+    import System from '$lib/pages/System.svelte';
 
-    let tasks = [];
-
-    onMount(async () => {
-        const res = await fetch("http://localhost:3000/api/tasks");
-        tasks = await res.json();
-    })
+    async function getIdentity() {
+        const res = await fetch("http://localhost:3000/api/identity");
+        if (res.status == 200) {
+            return res.json()
+        } else {
+            return undefined
+        }
+    }
 
 </script>
 
-<div class="flex justify-between items-center mt-16 mb-10">
-  <h1 class="text-4xl font-bold">Обращения</h1>
-  <PrimaryButton>
-    Новое обращение
-  </PrimaryButton>
-</div>
-<TaskTable>
-  {#each tasks as task}
-  <TaskTableRow task={task} />
-  {/each}
-</TaskTable>
+{#await getIdentity()}
+    <h1>loading...</h1>
+{:then identity}
+    <Header {identity} />
+    {#if identity}
+        <System {identity} />
+    {:else}
+        <Registration />
+    {/if}
+{/await}
