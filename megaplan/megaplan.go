@@ -64,9 +64,7 @@ func NewAuthOpt(username, password string) *AuthOpt {
 	}
 }
 
-func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.Task, error) {
-	task_name := fmt.Sprintf("%s", t.Name)
-	task_subject := fmt.Sprintf(`
+var TaskSubjectFormat = `
     <h2>%s от %s:</h2>
     <h3>Суть обращения:</h3>
     <p>%s</p>
@@ -77,7 +75,11 @@ func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.
     <li>Устройство: %s (%s)</li>
     <li>Отдел: <br/>Название: %s <br/>Описание: %s <br/>Адрес: %s <br/>Контакты: %s</li>
     </ul>
-    `,
+    `
+
+func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.Task, error) {
+	task_name := fmt.Sprintf("%s", t.Name)
+	task_subject := fmt.Sprintf(TaskSubjectFormat,
 		i.Company.Name,
 		i.User.Name,
 		t.Subject,
