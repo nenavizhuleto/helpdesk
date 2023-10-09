@@ -1,13 +1,16 @@
-<!-- {% if Identity %} -->
+<script>
+
+  export let login;
+</script>
 <!-- Header -->
 <div class="flex justify-between items-center py-8">
   <!-- Logo -->
   <img src="./img/Logotype.svg" alt="" />
-
+  {#if login}
   <!-- User Profile -->
   <div class="h-max flex items-center relative group">
     <div class="font-medium">
-      <!-- {{ Identity.User.Name }} {{ Identity.Device.IP }} -->
+      USERNAME
     </div>
     <svg
       class="inline ml-2 group-hover:-rotate-90 transition-all"
@@ -29,7 +32,7 @@
 
     <!-- Profile Details -->
     <div
-      class="pt-3 absolute top-full invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-all"
+      class="pt-3 absolute top-full -left-20 invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-all"
     >
       <div
         class="w-48 h-44 p-4 bg-white text-sm rounded-xl shadow-sm flex-col justify-start items-start gap-3 flex"
@@ -39,7 +42,6 @@
         >
           <div class="text-zinc-500 leading-tight">Компания</div>
           <div class="text-stone-950 leading-tight">
-            <!-- {{ Identity.Company.Name }} -->
           </div>
         </div>
         <div
@@ -47,7 +49,6 @@
         >
           <div class="text-zinc-500 leading-tight">Отдел</div>
           <div class="text-stone-950 leading-tight">
-            <!-- {{ Identity.Branch.Name }} -->
           </div>
         </div>
         <div
@@ -55,15 +56,10 @@
         >
           <div class="text-zinc-500 leading-tight">Номер телефона</div>
           <div class="text-stone-950 leading-tight">
-            <!-- {{ Identity.User.Phone }} -->
           </div>
         </div>
       </div>
     </div>
   </div>
+  {/if}
 </div>
-<!-- {% else %} -->
-<!-- <div class="flex py-8"> -->
-<!--   <img src="./img/Logotype.svg" alt="" /> -->
-<!-- </div> -->
-<!-- {% endif %} -->
