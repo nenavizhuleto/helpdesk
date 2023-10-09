@@ -1,12 +1,6 @@
 build:
 	go build -o bin/helpform
 
-tailwind:
-	npx tailwindcss -i svelte/css/main.css -o svelte/css/style.css
-
-tailwind-watch:
-	npx tailwindcss -i public/css/main.css -o public/css/style.css --watch
-
 run: build
 	./bin/helpform
 
