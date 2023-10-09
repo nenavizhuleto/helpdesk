@@ -1,7 +1,21 @@
-<!-- New Taks Modal -->
+<script>
+  import TextField from '$lib/UI/TextField.svelte'
+  import Button from '$lib/UI/Button.svelte';
+  export let open;
+  export let handleShowModal;
+  export let handleSubmit;
+
+  export let task = {
+    "name": '',
+    "subject": ''
+  }
+
+
+</script>
+{#if open}
+<!-- Taks Create Modal -->
 <div
   class="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center"
-  id="modal"
 >
   <!-- Modal Body -->
   <div class="w-[506px] bg-white px-12 py-10 flex flex-col rounded-3xl gap-10">
@@ -49,44 +63,42 @@
       </div>
     </div>
 
-    <form hx-post="/system/task/new" hx-target="#modal" hx-swap="delete">
+    <form on:submit={handleSubmit}>
       <!-- Theme Field -->
       <div class="relative w-full mb-8">
-        <input
+        <!-- <input
           type="text"
           class="w-full px-4 py-5 border border-disabled rounded-xl outline-none text-black peer focus:border-primary"
           required
           name="title"
-        />
-        <label
+        /> -->
+        <TextField bind:value={task.name} label="Тема обращения" type="text" required ></TextField>
+        <!-- <span
           class="bg-white px-1 absolute -top-2 left-3 leading-4 text-disabled peer-focus:text-primary"
-        >
+            >
           Тема обращения
-        </label>
+        </span> -->
       </div>
 
       <div class="relative w-full mb-8">
-        <textarea
+        <TextField bind:value={task.subject} type="textarea" label="Суть обращения" required ></TextField>
+        <!-- <textarea
           class="w-full h-96 px-4 py-5 border border-disabled rounded-xl outline-none text-black peer focus:border-primary resize-none"
           required
           name="subject"
-        ></textarea>
-        <label
+        ></textarea> -->
+        <!-- <span
           class="bg-white px-1 absolute -top-2 left-3 leading-4 text-disabled peer-focus:text-primary"
-        >
+            >
           Суть обращения
-        </label>
+        </span> -->
       </div>
       <div class="flex justify-between">
-        <button
-          class="inline-flex border-primary border text-primary py-4 px-8 rounded-xl items-center gap-4 font-semibold transition-all hover:border-hover hover:text-hover"
-          type="button"
-        >
+        <Button on:click={handleShowModal} type="secondary">
           Отмена
-        </button>
+        </Button>
         <button
           class="inline-flex bg-primary text-white py-4 px-8 rounded-xl items-center gap-4 font-semibold transition-all hover:bg-hover"
-          type="submit"
         >
           Отправить
         </button>
@@ -94,3 +106,4 @@
     </form>
   </div>
 </div>
+{/if}
