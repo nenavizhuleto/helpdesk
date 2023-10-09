@@ -1,17 +1,17 @@
 <script>
 	import TextField from "$lib/UI/TextField.svelte";
-	import PrimaryButton from "$lib/UI/PrimaryButton.svelte";
+	import Button from "$lib/UI/Button.svelte";
 
     let name = '';
     let phone = '';
 
     async function handleSubmit() {
         console.log(name, phone)
-        await fetch("http://localhost:3000/register", { method: "POST", headers: { 'Content-Type': "application/json" }, body: JSON.stringify({ "name": name, "phone": phone})})
+        await fetch("http://172.16.222.31:3000/register", { method: "POST", headers: { 'Content-Type': "application/json" }, body: JSON.stringify({ "name": name, "phone": phone})})
     }
 </script>
 
-<div class="flex justify-between items-center mt-32">
+<div class="flex justify-between items-center mt-32 max-w-5xl mx-auto">
 	<div class="mb-12 flex-shrink max-w-md">
 		<h1 class="mb-8 font-bold text-4xl">Вы почти у цели!</h1>
 		<p class="text-xl ">
@@ -29,6 +29,6 @@
             <TextField bind:value={name} label="Полное Имя" type="text" required name="name" />
             <TextField bind:value={phone} label="Внутренний номер" type="text" required name="phone" />
 		</div>
-		<PrimaryButton type="submit">Продолжить</PrimaryButton>
+		<Button type="submit">Продолжить</Button>
 	</form>
 </div>

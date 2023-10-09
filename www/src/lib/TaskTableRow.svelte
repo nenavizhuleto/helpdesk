@@ -1,9 +1,15 @@
 <script>
+	import { createEventDispatcher } from "svelte";
 	import TaskStatus from "./TaskStatus.svelte";
 	export let task;
+  const dispatch = createEventDispatcher()
+  function handleShowDetails() {
+    dispatch("click")
+  }
+
 </script>
 
-<div
+<div on:click={handleShowDetails}
 	class="py-5 rounded-xl items-stretch inline-flex transition-all hover:bg-white hover:cursor-pointer text-neutral-800 text-base font-normal leading-tight"
 >
 	<!-- ID -->
