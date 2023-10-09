@@ -7,7 +7,7 @@ tailwind:
 tailwind-watch:
 	npx tailwindcss -i public/css/main.css -o public/css/style.css --watch
 
-run: build tailwind
+run: build
 	./bin/helpform
 
 dbinit:

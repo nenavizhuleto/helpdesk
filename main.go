@@ -5,10 +5,10 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/monitor"
-	"github.com/gofiber/template/django/v2"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 
+	"application/api"
 	"application/data"
 	"application/handlers"
 	"application/megaplan"
@@ -21,34 +21,22 @@ func main() {
 	initMegaplan()
 
 	// initializing fiber application
-	engine := django.New("./svelte", ".html")
-	engine.Reload(true)
 	app := fiber.New(fiber.Config{
-		Views:             engine,
-		PassLocalsToViews: true,
+		ErrorHandler: api.HandleError,
 	})
-	// app.Static("/", "./public")
-	app.Static("/", "./svelte")
 
 	app.Use(logger.New())
+	app.Use(recover.New())
 
-	// app.Get("/", handlers.HandleIndex)
-	app.Get("/", handlers.HandleSvelte)
-	app.Post("/register", handlers.HandleRegister)
+	apiRouter := app.Group("/api")
+	apiRouter.Use(handlers.IdentityMiddlewareDevice)
 
-	app.Use("/system", handlers.IdentityMiddlewareDevice)
-	app.Get("/system", handlers.HandleMain)
-	app.Get("/system/tasks", handlers.HandleGetTasks)
-	app.Get("/system/task/new", handlers.HandleGetTaskNew)
-	app.Post("/system/task/new", handlers.HandlePostTaskNew)
-	app.Get("/dev/null", handlers.HandleDevNull)
+	// Identity
+	apiRouter.Get("/identity", api.GetIdentity)
 
-	app.Get("/identity/info", handlers.HandleIdentityInfo)
-	app.Get("/metrics", monitor.New())
-	app.Get("/chat", handlers.HandleChat)
-
-	// app.Use("/ws", handlers.HandleWebSocket)
-	// app.Get("/ws/:id", websocket.New(handlers.HandleGetWebSocket))
+	// Tasks
+	apiRouter.Get("/tasks", api.GetTasks)
+	apiRouter.Post("/tasks", api.CreateTask)
 
 	log.Fatal(app.Listen(":3000"))
 }
