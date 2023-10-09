@@ -30,6 +30,8 @@ func main() {
 	app.Use(recover.New())
 	app.Use(cors.New())
 
+	app.Static("/", "./dist")
+
 	app.Post("/register", handlers.HandleRegister)
 	app.Post("/megaplan/event", handlers.HandleMegaplanEvent)
 
