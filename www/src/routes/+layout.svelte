@@ -2,26 +2,25 @@
     import Header from '$lib/Header.svelte';
     import Registration from '$lib/Registration.svelte';
     import System from '$lib/System.svelte';
-    import { onMount } from 'svelte';
 
-    let identity;
-    let loggined = false;
-    onMount(async () => {
+    async function getIdentity() {
         const res = await fetch("http://localhost:3000/api/identity");
-        identity = await res.json();
-        if (identity?.status == 503) {
-            loggined = false
+        if (res.status == 200) {
+            return res.json()
         } else {
-            loggined = true
+            return undefined
         }
-        console.log(identity)
-    })
+    }
 
 </script>
 
-<Header {identity} />
-{#if loggined}
-<System {identity} />
-{:else}
-<Registration {identity} />
-{/if}
+{#await getIdentity()}
+    <h1>loading...</h1>
+{:then identity}
+    <Header {identity} />
+    {#if identity}
+        <System {identity} />
+    {:else}
+        <Registration {identity} />
+    {/if}
+{/await}

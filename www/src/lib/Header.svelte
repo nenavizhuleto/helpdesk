@@ -10,7 +10,7 @@
   <!-- User Profile -->
   <div class="h-max flex items-center relative group">
     <div class="font-medium">
-        { identity?.User?.Name }
+        { identity.User.Name }
     </div>
     <svg
       class="inline ml-2 group-hover:-rotate-90 transition-all"
@@ -42,7 +42,7 @@
         >
           <div class="text-zinc-500 leading-tight">Компания</div>
           <div class="text-stone-950 leading-tight">
-            { identity?.Company?.Name }
+            { identity.Company.Name }
           </div>
         </div>
         <div
@@ -50,7 +50,7 @@
         >
           <div class="text-zinc-500 leading-tight">Отдел</div>
           <div class="text-stone-950 leading-tight">
-            { identity?.Branch?.Name }
+            { identity.Branch.Name }
           </div>
         </div>
         <div
@@ -58,7 +58,7 @@
         >
           <div class="text-zinc-500 leading-tight">Номер телефона</div>
           <div class="text-stone-950 leading-tight">
-            { identity?.User?.Phone }
+            { identity.User.Phone }
           </div>
         </div>
       </div>
