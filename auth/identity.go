@@ -33,8 +33,11 @@ type Identity struct {
 }
 
 func GetIdentity(c *fiber.Ctx) *Identity {
-	i := c.Locals("Identity").(*Identity)
-	return i
+	i := c.Locals("Identity")
+	if i.(*Identity) == nil {
+		return nil
+	}
+	return i.(*Identity)
 }
 
 func MakeIdentity(ip string) (*Identity, error) {

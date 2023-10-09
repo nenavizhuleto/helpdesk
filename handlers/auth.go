@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 
 	"application/models"
@@ -8,6 +10,7 @@ import (
 
 func HandleRegister(c *fiber.Ctx) error {
 	var user models.User
+	log.Println(string(c.Body()))
 	if err := c.BodyParser(&user); err != nil {
 		return models.ErrAPIInvalidRequestBody
 	}

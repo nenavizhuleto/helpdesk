@@ -35,7 +35,7 @@ type TaskFilter struct {
 
 type Task struct {
 	ID          string          `json:"id" db:"id"`
-	HumanNumber int             `json:"number" db:"human_number"`
+	HumanNumber int             `json:"humanNumber" db:"human_number"`
 	UserID      string          `json:"user_id" db:"user_id"`
 	Name        string          `json:"name" db:"name"`
 	Subject     string          `json:"subject" db:"subject"`
