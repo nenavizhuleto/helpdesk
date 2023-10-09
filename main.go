@@ -28,6 +28,8 @@ func main() {
 	app.Use(logger.New())
 	app.Use(recover.New())
 
+	app.Post("/register", handlers.HandleRegister)
+
 	apiRouter := app.Group("/api")
 	apiRouter.Use(handlers.IdentityMiddlewareDevice)
 
