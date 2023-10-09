@@ -8,7 +8,7 @@
 >
 	<!-- ID -->
 	<div class="w-16 px-4 justify-start items-center gap-2.5 flex">
-		{task.number}
+		{task.humanNumber}
 	</div>
 
 	<!-- Theme -->

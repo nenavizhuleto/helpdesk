@@ -3,6 +3,8 @@
 	export let type;
 	export let required;
 	export let name;
+
+    export let value = '';
 </script>
 
 {#if type == "textarea"}
@@ -11,6 +13,7 @@
 			class="w-full h-96 px-4 py-5 border border-disabled rounded-xl outline-none text-black peer focus:border-primary resize-none"
 			{required}
 			{name}
+            bind:value={value}
 		/>
 		<span
 			class="bg-white px-1 absolute -top-2 left-3 leading-4 text-disabled peer-focus:text-primary"
@@ -23,11 +26,13 @@
 		<span class="bg-white text-disabled px-1 absolute -top-2 left-3 leading-4">
 			{label}
 		</span>
+        <!-- {type} -->
 		<input
-			{type}
+            type="text"
 			{name}
 			class="w-full px-4 py-5 border border-disabled rounded-xl outline-none text-black focus:border-primary"
 			{required}
+            bind:value={value}
 		/>
 	</div>
 {/if}
