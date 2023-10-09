@@ -1,0 +1,18 @@
+<a
+  href="#"
+	class="
+  inline-flex 
+  bg-primary 
+  text-white
+  py-4 
+  px-8
+  rounded-xl
+  items-center
+  justify-center
+  gap-4
+  font-semibold
+  transition-all
+  hover:bg-hover
+  hover:cursor-pointer">
+	<slot></slot>
+</a>

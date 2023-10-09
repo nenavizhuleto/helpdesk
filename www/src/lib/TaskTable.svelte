@@ -1,35 +1,37 @@
+<div class="flex-col flex">
+	<!-- Table Header -->
+	<div
+		class="py-5 mb-5 flex items-stretch transition-all border-b border-neutral-300 text-zinc-500 font-medium"
+	>
+		<div class="w-16 px-4">
+			<!-- ID -->
+			№
+		</div>
 
-<div class="flex flex-col" 
-    hx-get="/system/tasks" 
-    hx-target="#tableHeader" 
-    hx-swap="afterend" 
-    hx-trigger="task-created from:body, load" 
-    hx-indicator="#loader">
-  <!-- Table Header -->
-<div
-  class="py-5 mb-5 border-b border-neutral-300 text-zinc-500 font-semibold justify-start items-start inline-flex transition-all"
-  id="tableHeader"
->
-  <div class="w-16 self-stretch px-4 justify-start items-center gap-2.5 flex">
-    <!-- ID -->
-    <div class="leading-tight">№</div>
-  </div>
-  <div
-    class="grow shrink basis-0 self-stretch px-4 justify-between items-center flex"
-  >
-    <!-- Theme -->
-    <div class="grow shrink basis-0 leading-tight">Тема</div>
-  </div>
-  <div class="w-40 self-stretch px-4 justify-end items-center gap-2.5 flex">
-    <!-- Status -->
-    <div class="text-base leading-tight">Статус</div>
-  </div>
-  <div class="w-48 self-stretch px-4 justify-between items-center flex">
-    <!-- Date -->
-    <div class="grow shrink basis-0 text-right leading-tight">
-      Дата постановки
+		<div class="grow shrink basis-0 px-4 justify-between items-center flex">
+			<!-- Theme -->
+			Тема
+		</div>
+
+		<div class="w-40 px-4 justify-end items-center gap-2.5 flex">
+			<!-- Status -->
+			Статус
+		</div>
+
+		<div class="w-48 px-4 justify-end items-center flex">
+			<!-- Date -->
+			Дата постановки
+		</div>
+	</div>
+
+	<!-- Table Row -->
+  <slot>    
+    <div class="w-[440px] mx-auto py-40">
+      <div class="w-[268px] mb-10 mx-auto text-center text-zinc-500 text-xl font-medium">
+        У вас ещё нет обращений в техническую поддержку
+      </div>
+      <img src="img/empty-tickets.svg" alt="" />
     </div>
-  </div>
-</div>
-<!-- <img class="htmx-indicator" id="loader" src="assets/oval.svg" alt=""> -->
+  </slot>
+	
 </div>
