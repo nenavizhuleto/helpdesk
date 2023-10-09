@@ -24,7 +24,7 @@ func GetUserFromDevice(device *Device) (*User, error) {
 	return nil, ErrUserNotFound
 }
 
-func NewUser(ip, name, phone string) error {
+func NewUser(ip, name, phone string) (*User, error) {
 	db := data.DB
 
 	user := User{
@@ -35,12 +35,12 @@ func NewUser(ip, name, phone string) error {
 
 	_, err := db.NamedExec("INSERT INTO users VALUES (:id, :name, :phone)", &user)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	_, err = db.Exec("UPDATE devices SET user_id = $1 WHERE ip = $2", user.ID, ip)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &user, nil
 }

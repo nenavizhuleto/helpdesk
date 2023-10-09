@@ -1,0 +1,109 @@
+<script>
+  import TextField from '$lib/UI/TextField.svelte'
+  import Button from '$lib/UI/Button.svelte';
+  export let open;
+  export let handleShowModal;
+  export let handleSubmit;
+
+  export let task = {
+    "name": '',
+    "subject": ''
+  }
+
+
+</script>
+{#if open}
+<!-- Taks Create Modal -->
+<div
+  class="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center"
+>
+  <!-- Modal Body -->
+  <div class="w-[506px] bg-white px-12 py-10 flex flex-col rounded-3xl gap-10">
+    <div>
+      <h2 class="text-2xl font-bold mb-8">Новое обращение</h2>
+      <!-- Message -->
+      <div
+        class="w-full px-4 py-3 bg-orange-50 rounded-lg justify-start items-center gap-4 inline-flex"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <path
+            d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+            stroke="#A87E28"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M12 8V13"
+            stroke="#A87E28"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M11.9946 16H12.0036"
+            stroke="#A87E28"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <div
+          class="grow shrink basis-0 text-yellow-700 text-sm font-normal leading-tight"
+        >
+          Пожалуйста, постарайтесь сформулировать суть обращения как можно
+          точнее, это значительно ускорит процесс решения проблемы
+        </div>
+      </div>
+    </div>
+
+    <form on:submit={handleSubmit}>
+      <!-- Theme Field -->
+      <div class="relative w-full mb-8">
+        <!-- <input
+          type="text"
+          class="w-full px-4 py-5 border border-disabled rounded-xl outline-none text-black peer focus:border-primary"
+          required
+          name="title"
+        /> -->
+        <TextField bind:value={task.name} label="Тема обращения" type="text" required ></TextField>
+        <!-- <span
+          class="bg-white px-1 absolute -top-2 left-3 leading-4 text-disabled peer-focus:text-primary"
+            >
+          Тема обращения
+        </span> -->
+      </div>
+
+      <div class="relative w-full mb-8">
+        <TextField bind:value={task.subject} type="textarea" label="Суть обращения" required ></TextField>
+        <!-- <textarea
+          class="w-full h-96 px-4 py-5 border border-disabled rounded-xl outline-none text-black peer focus:border-primary resize-none"
+          required
+          name="subject"
+        ></textarea> -->
+        <!-- <span
+          class="bg-white px-1 absolute -top-2 left-3 leading-4 text-disabled peer-focus:text-primary"
+            >
+          Суть обращения
+        </span> -->
+      </div>
+      <div class="flex justify-between">
+        <Button on:click={handleShowModal} type="secondary">
+          Отмена
+        </Button>
+        <button
+          class="inline-flex bg-primary text-white py-4 px-8 rounded-xl items-center gap-4 font-semibold transition-all hover:bg-hover"
+        >
+          Отправить
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{/if}

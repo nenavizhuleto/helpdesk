@@ -1,21 +1,22 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 
 	"application/models"
 )
 
-func HandleAuth(c *fiber.Ctx) error {
-	return c.Render("auth", nil)
-}
-
 func HandleRegister(c *fiber.Ctx) error {
-	name := c.FormValue("name")
-	phone := c.FormValue("phone")
-	if err := models.NewUser(c.IP(), name, phone); err != nil {
-		return err
+	var user models.User
+	log.Println(string(c.Body()))
+	if err := c.BodyParser(&user); err != nil {
+		return models.ErrAPIInvalidRequestBody
 	}
-	c.Set("HX-Redirect", "/")
-	return c.SendStatus(200)
+	newUser, err := models.NewUser(c.IP(), user.Name, user.Phone)
+	if err != nil {
+		return models.ErrDatabase
+	}
+	return c.JSON(newUser)
 }
