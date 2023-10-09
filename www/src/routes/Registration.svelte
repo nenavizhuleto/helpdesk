@@ -7,7 +7,7 @@
 
     async function handleSubmit() {
         console.log(name, phone)
-        await fetch("http://172.16.222.31:3000/register", { method: "POST", headers: { 'Content-Type': "application/json" }, body: JSON.stringify({ "name": name, "phone": phone})})
+        await fetch("/register", { method: "POST", headers: { 'Content-Type': "application/json" }, body: JSON.stringify({ "name": name, "phone": phone})})
     }
 </script>
 

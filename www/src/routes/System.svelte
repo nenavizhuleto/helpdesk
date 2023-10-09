@@ -14,7 +14,7 @@
   let openDetails = false;
 
 	onMount(async () => {
-		const res = await fetch("http://172.16.222.31:3000/api/tasks");
+		const res = await fetch("/api/tasks");
 		tasks = await res.json();
 	});
 
@@ -26,7 +26,7 @@
 	}
 	async function handleSubmitModal() {
 		console.log(newTask);
-		const res = await fetch("http://172.16.222.31:3000/api/tasks", {
+		const res = await fetch("/api/tasks", {
 			method: "POST",
 			headers: {"Content-Type": "application/json"},
 			body: JSON.stringify(newTask),
@@ -52,7 +52,7 @@
         task = undefined
       } else {
         openDetails = true
-        // const res = await fetch("http://172.16.222.31:3000/api/tasks/" + _task.id)
+        // const res = await fetch("/api/tasks/" + _task.id)
         // task = await res.json()
         task = _task
       }
