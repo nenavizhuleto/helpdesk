@@ -5,7 +5,7 @@
     import Button from '$lib/UI/Button.svelte';
 
     async function getIdentity() {
-        const res = await fetch("http://172.16.222.31:3000/api/identity");
+        const res = await fetch("/api/identity");
         if (res.status == 200) {
             return res.json()
         } else {
