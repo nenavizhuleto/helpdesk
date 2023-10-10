@@ -1,14 +1,15 @@
 <script>
-  export let open;
-  export let handleShowModal;
+    import { createEventDispatcher } from "svelte";
+    const dispatch = createEventDispatcher();
+  export let show;
   export let task;
    import TaskStatus from "$lib/TaskStatus.svelte";
 </script>
-{#if open}
+{#if show}
 <div class="w-[400px] h-screen shadow-lg absolute flex flex-col top-0 right-0 bg-white transition-all duration-300">
   <div class="px-6 pt-8 pb-2">
 		<!-- Close Button -->
-		<button class="flex items-center cursor-pointer" on:click={() => handleShowModal(undefined, true)} >
+		<button class="flex items-center cursor-pointer" on:click={() => dispatch("close")} >
 			<svg
 				class="shrink-0"
 				xmlns="http://www.w3.org/2000/svg"

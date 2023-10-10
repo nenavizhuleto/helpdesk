@@ -1,18 +1,26 @@
 <script>
   import TextField from '$lib/UI/TextField.svelte'
   import Button from '$lib/UI/Button.svelte';
-  export let open;
-  export let handleShowModal;
-  export let handleSubmit;
-
+  import { createEventDispatcher } from 'svelte';
+  export let show;
+  export let isSubmittable;
   export let task = {
     "name": '',
     "subject": ''
   }
 
+  export const clearForm = () => {
+      task = {
+        "name": '',
+        "subject": ''
+      }  
+  }
+
+  const dispatch = createEventDispatcher();
+
 
 </script>
-{#if open}
+{#if show}
 <!-- Taks Create Modal -->
 <div
   class="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center"
@@ -63,45 +71,21 @@
       </div>
     </div>
 
-    <form on:submit={handleSubmit}>
+    <form>
       <!-- Theme Field -->
       <div class="relative w-full mb-8">
-        <!-- <input
-          type="text"
-          class="w-full px-4 py-5 border border-disabled rounded-xl outline-none text-black peer focus:border-primary"
-          required
-          name="title"
-        /> -->
-        <TextField bind:value={task.name} label="Тема обращения" type="text" required ></TextField>
-        <!-- <span
-          class="bg-white px-1 absolute -top-2 left-3 leading-4 text-disabled peer-focus:text-primary"
-            >
-          Тема обращения
-        </span> -->
+        <TextField disabled={!isSubmittable} bind:value={task.name} label="Тема обращения" type="text" required ></TextField>
       </div>
-
       <div class="relative w-full mb-8">
-        <TextField bind:value={task.subject} type="textarea" label="Суть обращения" required ></TextField>
-        <!-- <textarea
-          class="w-full h-96 px-4 py-5 border border-disabled rounded-xl outline-none text-black peer focus:border-primary resize-none"
-          required
-          name="subject"
-        ></textarea> -->
-        <!-- <span
-          class="bg-white px-1 absolute -top-2 left-3 leading-4 text-disabled peer-focus:text-primary"
-            >
-          Суть обращения
-        </span> -->
+        <TextField disabled={!isSubmittable} bind:value={task.subject} type="textarea" label="Суть обращения" required ></TextField>
       </div>
       <div class="flex justify-between">
-        <Button on:click={handleShowModal} type="secondary">
+        <Button on:click={() => dispatch("close")} type="secondary">
           Отмена
         </Button>
-        <button
-          class="inline-flex bg-primary text-white py-4 px-8 rounded-xl items-center gap-4 font-semibold transition-all hover:bg-hover"
-        >
+        <Button disabled={!isSubmittable} on:click={() => dispatch("submit")}>
           Отправить
-        </button>
+        </Button>
       </div>
     </form>
   </div>
