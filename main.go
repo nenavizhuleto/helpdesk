@@ -72,6 +72,6 @@ func initDb() {
 
 func initMegaplan() {
 	// initializing megaplan connection
-	opts := megaplan.NewAuthOpt(util.MustGetEnvVar("MEGAPLAN_USER"), util.MustGetEnvVar("MEGAPLAN_PASSWORD"))
+	opts := megaplan.NewAuthOpt(util.MustGetEnvVar("MEGAPLAN_USER"), util.MustGetEnvVar("MEGAPLAN_PASSWORD"), util.MustGetEnvVar("MEGAPLAN_RESPONSIBLE"))
 	megaplan.MP = megaplan.New(util.MustGetEnvVar("MEGAPLAN_URL"), opts).MustAuthenticateWithPassword(opts)
 }

@@ -7,7 +7,11 @@
     let isSubmittable = false;
 
     async function handleSubmit() {
-        const res = await fetch("/api/register", { method: "POST", headers: { 'Content-Type': "application/json" }, body: JSON.stringify({ "name": name, "phone": phone})})
+        const res = await fetch("/api/register", { 
+            method: "POST", 
+            headers: { 'Content-Type': "application/json" }, 
+            body: JSON.stringify({ "name": name, "phone": phone})
+        })
         if (res.ok) {
             window.location.href = "/system"
         }
