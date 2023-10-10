@@ -5,8 +5,11 @@ const config = {
   kit: {
     adapter: adapter({
       pages: "../dist",
-      strict: false,
+      assets: "../dist",
     }),
+    // paths: {
+    //   base: "/system",
+    // },
   },
 };
 

@@ -31,11 +31,16 @@ func main() {
 	app.Use(cors.New())
 
 	app.Static("/", "./dist")
-
-	app.Post("/register", handlers.HandleRegister)
-	app.Post("/megaplan/event", handlers.HandleMegaplanEvent)
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendFile("dist/index.html")
+	})
+	app.Get("/system", func(c *fiber.Ctx) error {
+		return c.SendFile("dist/system.html")
+	})
 
 	apiRouter := app.Group("/api")
+	apiRouter.Post("/register", handlers.HandleRegister)
+	apiRouter.Post("/megaplan/event", handlers.HandleMegaplanEvent)
 	apiRouter.Use(handlers.IdentityMiddlewareDevice)
 
 	// Identity
@@ -67,6 +72,6 @@ func initDb() {
 
 func initMegaplan() {
 	// initializing megaplan connection
-	opts := megaplan.NewAuthOpt(util.MustGetEnvVar("MEGAPLAN_USER"), util.MustGetEnvVar("MEGAPLAN_PASSWORD"))
+	opts := megaplan.NewAuthOpt(util.MustGetEnvVar("MEGAPLAN_USER"), util.MustGetEnvVar("MEGAPLAN_PASSWORD"), util.MustGetEnvVar("MEGAPLAN_RESPONSIBLE"))
 	megaplan.MP = megaplan.New(util.MustGetEnvVar("MEGAPLAN_URL"), opts).MustAuthenticateWithPassword(opts)
 }

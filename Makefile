@@ -1,6 +1,10 @@
 build:
 	go build -o bin/helpform
 
+build-web:
+	cd www/; \
+	npm run build
+
 run: build
 	./bin/helpform
 

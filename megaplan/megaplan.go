@@ -24,8 +24,9 @@ type Token struct {
 }
 
 type MegaPlan struct {
-	Url   string
-	Token Token
+	Url         string
+	Responsible string
+	Token       Token
 }
 
 var MP *MegaPlan
@@ -53,14 +54,16 @@ type AuthOpt struct {
 	Password       string
 	GrantType      string
 	AccessTokenUrl string
+	Responsible    string
 }
 
-func NewAuthOpt(username, password string) *AuthOpt {
+func NewAuthOpt(username, password, responsible string) *AuthOpt {
 	return &AuthOpt{
 		Username:       username,
 		Password:       password,
 		GrantType:      "password",
 		AccessTokenUrl: "/auth/access_token",
+		Responsible:    responsible,
 	}
 }
 
@@ -107,6 +110,7 @@ func (mp *MegaPlan) HandleCreateTask(i *auth.Identity, t *models.Task) (*models.
 	var responsible struct {
 		ID string `json:"id"`
 	}
+	responsible.ID = mp.Responsible
 	var task struct {
 		Name        string      `json:"name"`
 		Subject     string      `json:"subject"`
@@ -153,6 +157,17 @@ func (mp *MegaPlan) doRequest(method, url string, body interface{}, response int
 	bytes, _ := io.ReadAll(res.Body)
 	json.Unmarshal(bytes, &response)
 	return nil
+}
+
+func (mp *MegaPlan) Get(url string) *Response {
+	var res Response
+	if err := mp.doRequest("GET", url, nil, &res); err != nil {
+		panic(err)
+	}
+
+	log.Printf("F: %v", res)
+
+	return &res
 }
 
 func setField(w *multipart.Writer, fieldName string, value string) error {
@@ -204,7 +219,8 @@ func (mp *MegaPlan) MustAuthenticateWithPassword(auth *AuthOpt) *MegaPlan {
 
 func New(url string, authOpt *AuthOpt) *MegaPlan {
 	mp := &MegaPlan{
-		Url: url,
+		Url:         url,
+		Responsible: authOpt.Responsible,
 	}
 
 	return mp

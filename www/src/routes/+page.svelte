@@ -1,47 +1,27 @@
 <script>
-    import Header from '$lib/Header.svelte';
-    import Registration from './Registration.svelte';
-    import System from './System.svelte';
-    import Button from '$lib/UI/Button.svelte';
-
-    async function getIdentity() {
-        const res = await fetch("/api/identity");
-        if (res.status == 200) {
-            return res.json()
-        } else {
-            return undefined
-        }
-    }
-
-    function handleReload() {
-      window.location.href = "/"
-    }
-
+  import Button from "$lib/UI/Button.svelte";
 </script>
+<div class="max-w-6xl mx-auto flex items-center justify-between my-60 flex-wrap">
+	<div class="mb-20">
+		<div class="mb-12">
+			<h1 class="mb-8 font-bold text-4xl">
+				Добро пожаловать <br />
+				в help-desk!
+			</h1>
+			<p class="text-xl">
+				Это приложение для решения ваших <br />
+				технических проблем в офисе
+			</p>
+		</div>
 
-{#await getIdentity()}
-loadoing
-
-{:then identity}
-    <Header {identity} />
-    {#if identity}
-        <System {identity} />
-    {:else}
-        <Registration />
-    {/if}
-{:catch}
-<div class="max-w-6xl mx-auto flex flex-col gap-6 items-center justify-between mt-60 sm:flex-row ">
-  <div class="max-w-[373px]">
-    <div class="mb-12">
-      <h1 class="mb-8 font-bold text-4xl">Не можем найти <br> ваши данные</h1>
-      <p class="text-xl">Пожалуйста, обратитесь в техническую поддержку по телефону <a class="text-[#3627E7] font-medium hover:underline" href="tel:73512002123">+7 (351) 2002-123</a></p>
-    </div>
-
-    <Button on:click={handleReload}>
-      Обновить
+    <Button on:click={() => window.location.href = "/system"}>
+      Начать работу
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+        <path d="M5 12.5H19" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 19.5L19 12.5L12 5.5" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
     </Button>
-    
-  </div>
-  <img class="flex-shrink-1" src="./img/no-data.svg" alt="#">
+		
+	</div>
+	<img src="./img/support-asset.svg" alt="#"/>
 </div>
-{/await}
