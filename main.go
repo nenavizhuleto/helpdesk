@@ -39,6 +39,16 @@ func main() {
 	})
 
 	apiRouter := app.Group("/api")
+
+	users := apiRouter.Group("/users")
+
+	users.Get("/", api.GetAllUsers)
+	users.Post("/", api.CreateUser)
+	users.Put("/", api.UpdateUser)
+	users.Delete("/", api.DeleteUser)
+
+	apiRouter.Get("/devices", api.GetDevices)
+
 	apiRouter.Post("/register", handlers.HandleRegister)
 	apiRouter.Post("/megaplan/event", handlers.HandleMegaplanEvent)
 	apiRouter.Use(handlers.IdentityMiddlewareDevice)
@@ -68,6 +78,8 @@ func initDb() {
 	} else {
 		data.DB = db
 	}
+
+	data.MustConnectMongo("helpdesk")
 }
 
 func initMegaplan() {
