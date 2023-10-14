@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,3 +15,7 @@ var (
 	ErrMegaplan              = fiber.NewError(fiber.StatusServiceUnavailable, "megaplan api error")
 	ErrDatabase              = fiber.NewError(fiber.StatusInternalServerError, "database error")
 )
+
+func ValidationError(message string) error {
+	return errors.New(message)
+}

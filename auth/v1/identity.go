@@ -3,7 +3,7 @@ package auth
 import (
 	"github.com/gofiber/fiber/v2"
 
-	"application/models"
+	"application/models/v1"
 )
 
 type Identity struct {

@@ -12,6 +12,7 @@ import (
 	"application/util"
 )
 
+
 var (
 	MONGO       *mongo.Database
 	MONGOCLIENT *mongo.Client

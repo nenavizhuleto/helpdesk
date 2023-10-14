@@ -11,7 +11,7 @@ import (
 
 	"application/api"
 	"application/data"
-	"application/handlers"
+	"application/handlers/v1"
 	"application/megaplan"
 	"application/util"
 )
@@ -39,27 +39,26 @@ func main() {
 	})
 
 	apiRouter := app.Group("/api")
-
-	users := apiRouter.Group("/users")
-
-	users.Get("/", api.GetAllUsers)
-	users.Post("/", api.CreateUser)
-	users.Put("/", api.UpdateUser)
-	users.Delete("/", api.DeleteUser)
-
-	apiRouter.Get("/devices", api.GetDevices)
-
-	apiRouter.Post("/register", handlers.HandleRegister)
 	apiRouter.Post("/megaplan/event", handlers.HandleMegaplanEvent)
-	apiRouter.Use(handlers.IdentityMiddlewareDevice)
 
+	apiV1 := apiRouter.Group("/v1")
+	apiV1.Post("/register", handlers.HandleRegister)
+	apiV1.Use(handlers.IdentityMiddlewareDevice)
 	// Identity
-	apiRouter.Get("/identity", api.GetIdentity)
+	apiV1.Get("/identity", api.GetIdentity)
+	// Users API endpoints
+	api.SetUsersRoutes("/users", apiV1)
+	api.SetTasksRoutes("/tasks", apiV1)
+	api.SetDevicesRoutes("/devices", apiV1)
 
-	// Tasks
-	apiRouter.Get("/tasks", api.GetTasks)
-	apiRouter.Get("/tasks/:id", api.GetTask)
-	apiRouter.Post("/tasks", api.CreateTask)
+	apiV2 := apiRouter.Group("/v2")
+
+	apiV2.Get("/identity", api.GetIdentity)
+	apiV2.Post("/register", api.Register)
+	// Users API endpoints
+	api.SetUsersRoutes("/users", apiV2)
+	api.SetTasksRoutes("/tasks", apiV2)
+	api.SetDevicesRoutes("/devices", apiV2)
 
 	log.Fatal(app.Listen(":3000"))
 }

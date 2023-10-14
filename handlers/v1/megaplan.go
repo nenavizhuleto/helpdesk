@@ -5,13 +5,13 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	"application/models"
+	"application/models/v1"
 )
 
 type Event struct {
-	Data  map[string]interface{} `json:"data"`
-	Event string                 `json:"event"`
-	Model string                 `json:"model"`
+	Data  models.Task `json:"data"`
+	Event string      `json:"event"`
+	Model string      `json:"model"`
 }
 type Task struct {
 	ID     string `json:"id" db:"id"`
@@ -26,14 +26,16 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 		return c.SendStatus(500)
 	}
 
-	log.Printf("Event: %v", event)
+	if event.Model != "Task" {
+		return c.SendStatus(200)
+	}
 
-	if event.Model == "Task" {
-		task := event.Data
-		if err := models.UpdateTaskStatus(task["id"].(string), task["status"].(string)); err != nil {
-			log.Println(err)
-			return c.SendStatus(500)
-		}
+	log.Printf("Event: %#v", event)
+
+	task := event.Data
+	if err := models.UpdateTaskStatus(task.ID, task.Status); err != nil {
+		log.Println(err)
+		return c.SendStatus(500)
 	}
 
 	return c.SendStatus(200)

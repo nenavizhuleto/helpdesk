@@ -66,12 +66,26 @@ func (u *User) Exists() (bool, error) {
 	return false, nil
 }
 
+func (u *User) Fetch() error {
+	collection := data.GetCollection("users")
+	if u.ID == "" {
+		return fmt.Errorf("fetch: id is empty")
+	}
+
+	res := collection.FindOne(nil, bson.D{{Key: "id", Value: u.ID}})
+	if err := res.Decode(u); err != nil {
+		return fmt.Errorf("fetch: %w", err)
+	}
+
+	return nil
+}
+
 func (u *User) Update() error {
 	collection := data.GetCollection("users")
 	if exists, err := u.Exists(); err != nil {
 		return fmt.Errorf("update: %w", err)
 	} else if !exists {
-		return fmt.Errorf("update: user not found")
+		return fmt.Errorf("update: not found")
 	}
 	if err := u.Validate(); err != nil {
 		return fmt.Errorf("update: %w", err)
