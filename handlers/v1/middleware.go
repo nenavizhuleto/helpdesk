@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 
-	"application/auth"
+	"application/auth/v1"
 )
 
 const (
