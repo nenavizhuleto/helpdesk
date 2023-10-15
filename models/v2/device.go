@@ -13,6 +13,7 @@ type Device struct {
 	IP      string  `json:"ip"`
 	Company Company `json:"company"`
 	Branch  Branch  `json:"branch"`
+	Network Network `json:"network"`
 	User    User    `json:"user"`
 	Type    string  `json:"type"`
 }
@@ -118,6 +119,8 @@ func (d *Device) Identify() error {
 			network = n
 		}
 	}
+
+	d.Network = network
 
 	var branch Branch
 	if err := db.Get(&branch, "SELECT * FROM branches WHERE id = $1", network.BranchID); err != nil {
