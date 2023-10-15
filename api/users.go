@@ -2,10 +2,8 @@ package api
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 
 	"application/models/v2"
 )
