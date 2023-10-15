@@ -1,6 +1,6 @@
 # Information
 
-- [CONTRIBUTING.md]
+- [CONTRIBUTING](CONTRIBUTING.md)
 
 # Further plans:
 
