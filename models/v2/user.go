@@ -4,30 +4,53 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 
 	"application/data"
 )
 
 type User struct {
-	ID      string   `json:"id"`
-	Name    string   `json:"name"`
-	Phone   string   `json:"phone"`
-	Devices []string `json:"devices"`
+	ID            string       `json:"id"`
+	Name          string       `json:"name"`
+	Phone         string       `json:"phone"`
+	Devices       []string     `json:"devices"`    // Will be used in the future, to manage multiple device access by user
+	OnAfterCreate UserHookFunc `json:"-" bson:"-"` // Execute after user have been successfully inserted into database
 }
+
+type UserHookFunc func(*User) error
 
 const users = "users"
 
-func (u *User) Create(ip string) error {
+func NewUser() *User {
+	return &User{
+		ID:      uuid.NewString(),
+		Devices: make([]string, 0),
+	}
+}
+
+func UserByID(id string) (*User, error) {
 	coll := data.GetCollection(users)
-	u.Devices = append(u.Devices, ip)
+
+	var user User
+	if err := coll.FindOne(nil, bson.D{{Key: "id", Value: id}}).Decode(&user); err != nil {
+		return nil, fmt.Errorf("user: %w", err)
+	}
+
+	return &user, nil
+}
+
+func (u *User) Create() error {
+
+	coll := data.GetCollection(users)
 	if _, err := coll.InsertOne(nil, u); err != nil {
 		return fmt.Errorf("user: %w", err)
 	}
 
-	coll = data.GetCollection(devices)
-	if err := coll.FindOneAndUpdate(nil, bson.D{{Key: "ip", Value: ip}}, bson.D{{Key: "$set", Value: bson.M{"user": u}}}).Err(); err != nil {
-		return fmt.Errorf("user: %w", err)
+	if u.OnAfterCreate != nil {
+		if err := u.OnAfterCreate(u); err != nil {
+			return fmt.Errorf("user_after_create_hook: %w", err)
+		}
 	}
 
 	return nil

@@ -20,6 +20,18 @@ type Device struct {
 
 const devices = "devices"
 
+func NewDevice(ip string) (*Device, error) {
+	var device Device
+
+	device.IP = ip
+
+	if err := device.Identify(); err != nil {
+		return nil, err
+	}
+
+	return &device, nil
+}
+
 func DeviceGetByIP(ip string) (*Device, error) {
 	coll := data.GetCollection(devices)
 
@@ -29,6 +41,18 @@ func DeviceGetByIP(ip string) (*Device, error) {
 	}
 
 	return &dev, nil
+}
+
+// Updates all devices that a related to user
+func DeviceUserCreateHook(u *User) error {
+	coll := data.GetCollection(devices)
+	for _, ip := range u.Devices {
+		if err := coll.FindOneAndUpdate(nil, bson.D{{Key: "ip", Value: ip}}, bson.D{{Key: "$set", Value: bson.M{"user": u}}}).Err(); err != nil {
+			return fmt.Errorf("user: %w", err)
+		}
+	}
+
+	return nil
 }
 
 func DevicesAll() ([]Device, error) {
@@ -82,24 +106,6 @@ func (d *Device) Create() error {
 	return nil
 }
 
-func NewDevice(ip string) (*Device, error) {
-	db := data.DB
-
-	var device Device
-	if err := db.Get(&device, "SELECT * FROM devices WHERE ip = $1", ip); err != nil {
-		device = Device{
-			IP:   ip,
-			Type: "PC",
-		}
-		_, err := db.NamedExec("INSERT INTO devices(ip, type) VALUES (:ip, :type)", &device)
-		if err != nil {
-			return &device, err
-		}
-	}
-
-	return &device, nil
-}
-
 func (d *Device) Identify() error {
 	db := data.DB
 
@@ -119,6 +125,9 @@ func (d *Device) Identify() error {
 			network = n
 		}
 	}
+
+	// If we are here then device must be a PC type
+	d.Type = "PC"
 
 	d.Network = network
 
