@@ -1,3 +1,7 @@
+# Information
+
+- [CONTRIBUTING.md]
+
 # Further plans:
 
 - Reimagine task's statuses
