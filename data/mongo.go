@@ -26,6 +26,8 @@ var COLLECTION_OPTS = options.CollectionOptions{
 	BSONOptions: &BSON_OPTS,
 }
 
+var collections map[string]*mongo.Collection
+
 func MustDisconnectMongo() {
 	if err := MONGO.Drop(context.TODO()); err != nil {
 		panic(err)
@@ -33,7 +35,13 @@ func MustDisconnectMongo() {
 }
 
 func GetCollection(name string) *mongo.Collection {
-	return MONGO.Collection(name, &COLLECTION_OPTS)
+	if collection, ok := collections[name]; ok {
+		return collection
+	} else {
+		collection = MONGO.Collection(name, &COLLECTION_OPTS)
+		collections[name] = collection
+		return collection
+	}
 }
 
 func MustConnectMongo(dbname string) {
@@ -54,4 +62,6 @@ func MustConnectMongo(dbname string) {
 
 	MONGOCLIENT = client
 	MONGO = MONGOCLIENT.Database(dbname)
+
+	collections = make(map[string]*mongo.Collection)
 }

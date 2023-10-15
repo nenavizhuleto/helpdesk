@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 
 	"application/data"
@@ -25,7 +26,30 @@ type Task struct {
 const tasks = "tasks"
 
 func NewTask() *Task {
-	return new(Task)
+	tm := time.Now()
+	return &Task{
+		ID: uuid.NewString(),
+		Status: "created",
+		TimeCreated: tm,
+		LastActivity: tm,
+		Comments: make([]Comment, 0),
+	}
+}
+
+func TasksByUser(user *User) ([]Task, error) {
+	coll := data.GetCollection(tasks)
+
+	cursor, err := coll.Find(nil, bson.D{{Key: "user.id", Value: user.ID}})
+	if err != nil {
+		return nil, fmt.Errorf("tasks: %w", err)
+	}
+
+	var tasks []Task
+	if err := cursor.All(nil, &tasks); err != nil {
+		return nil, fmt.Errorf("tasks: %w", err)
+	}
+
+	return tasks, nil
 }
 
 func TasksAll() ([]Task, error) {
