@@ -6,24 +6,24 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 
-	"application/models/v1"
+	"application/models/v2"
 )
 
 func SetUsersRoutes(path string, router fiber.Router) {
 	users := router.Group(path)
-	users.Get("/", GetAllUsers)
+	users.Get("/", GetUsers)
 	users.Get("/:id", GetUser)
 	users.Post("/", CreateUser)
 	users.Put("/", UpdateUser)
 	users.Delete("/", DeleteUser)
 
-	users.Get("/:id/tasks", GetUserTasks)
+	// users.Get("/:id/tasks", GetUserTasks)
 }
 
-func GetAllUsers(c *fiber.Ctx) error {
+func GetUsers(c *fiber.Ctx) error {
 	users, err := models.UsersAll()
 	if err != nil {
-		return fmt.Errorf("getAllUsers: %w", err)
+		return fmt.Errorf("getUsers: %w", err)
 	}
 
 	return c.JSON(users)
@@ -42,18 +42,6 @@ func GetUser(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
-func GetUserTasks(c *fiber.Ctx) error {
-	id := c.Params("id")
-	fmt.Println(id)
-
-	tasks, err := models.TasksByUserID(id)
-	if err != nil {
-		return fmt.Errorf("getUserTasks: %w", err)
-	}
-
-	return c.JSON(tasks)
-}
-
 func CreateUser(c *fiber.Ctx) error {
 	var user models.User
 	if err := c.BodyParser(&user); err != nil {
@@ -61,7 +49,7 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	user.ID = uuid.NewString()
-	if err := user.Create(); err != nil {
+	if err := user.Create(c.IP()); err != nil {
 		return fmt.Errorf("createUser: %w", err)
 	}
 
