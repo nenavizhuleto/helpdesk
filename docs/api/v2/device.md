@@ -74,6 +74,7 @@ Response:
 ## Declaration
 
 ```go
+// models/v2/device.go
 type Device struct {
 	IP      string  `json:"ip"`
 	Company Company `json:"company"`
