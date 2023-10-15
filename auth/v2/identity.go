@@ -11,8 +11,10 @@ func GetIdentity(ip string) (*models.Device, error) {
 }
 
 func Register(ip string, user *models.User) (*models.Device, error) {
-	dev, err := MakeIdentity(ip)
-	if err != nil {
+	dev := new(models.Device)
+	dev.IP = ip
+
+	if err := dev.Identify(); err != nil {
 		return nil, fmt.Errorf("identity: %w", err)
 	}
 	if err := dev.Create(); err != nil {
