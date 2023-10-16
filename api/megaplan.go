@@ -3,6 +3,7 @@ package api
 import (
 	"application/megaplan"
 	"application/models/v2"
+	"encoding/json"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,7 +21,8 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 		return c.SendStatus(200)
 	}
 
-	log.Printf("Event: %#v", event)
+	str, _ := json.MarshalIndent(event, "", "  ")
+	log.Printf("Event: %s", string(str))
 
 	dto := event.Data
 	task, err := models.TaskByID(dto.ID)
@@ -32,6 +34,10 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 	
 
 	task.Status = dto.GetStatus()
+	task.Comments = dto.GetComments()
+	if dto.Activity != nil {
+		task.LastActivity = dto.Activity.Value
+	}
 
 	if err := task.Update(); err != nil {
 		log.Println(err)
