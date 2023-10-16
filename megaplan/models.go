@@ -33,6 +33,40 @@ type TaskDTO struct {
 	CommentsCount int          `json:"commentsCount,omitempty"`
 }
 
+const (
+	StatusCreated = "created"
+	StatusAssigned = "assigned"
+	StatusAccepted = "accepted"
+	StatusDone = "done"
+	StatusCompleted = "completed"
+	StatusRejected = "rejected"
+	StatusCancelled = "cancelled"
+	StatusExpired = "expired"
+	StatusDelayed = "delayed"
+	StatusTemplate = "template"
+	StatusOverdue = "overdue"
+)
+
+func (dto *TaskDTO) GetStatus() string {
+	status := dto.Status
+	switch status {
+	case StatusAssigned:
+		if dto.Responsible.ID == MP.Responsible {
+			return StatusCreated
+		} else {
+			return StatusAssigned
+		}
+	case StatusAccepted:
+		if dto.Responsible.ID == MP.Responsible {
+			return StatusCreated
+		} else {
+			return StatusAccepted
+		}
+	default:
+		return status
+	}
+}
+
 type TaskEvent struct {
 	Data  TaskDTO `json:"data"`
 	Event string  `json:"event"`

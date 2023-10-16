@@ -29,7 +29,9 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 		return c.SendStatus(200)
 	}
 
-	task.Status = dto.Status
+	
+
+	task.Status = dto.GetStatus()
 
 	if err := task.Update(); err != nil {
 		log.Println(err)
