@@ -39,7 +39,7 @@ func main() {
 	})
 
 	apiRouter := app.Group("/api")
-	apiRouter.Post("/megaplan/event", handlers.HandleMegaplanEvent)
+	apiRouter.Post("/megaplan/event", api.HandleMegaplanEvent)
 
 	apiV1 := apiRouter.Group("/v1")
 	apiV1.Post("/register", handlers.HandleRegister)
