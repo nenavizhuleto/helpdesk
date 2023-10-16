@@ -48,8 +48,6 @@ func (mp *MegaPlan) Get(url string) *Response {
 	return &res
 }
 
-
-
 func (mp *MegaPlan) MustAuthenticateWithPassword(auth *AuthOpt) *MegaPlan {
 
 	setField := func(w *multipart.Writer, fieldName string, value string) error {
