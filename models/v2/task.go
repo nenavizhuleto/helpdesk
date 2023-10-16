@@ -11,29 +11,43 @@ import (
 )
 
 type Task struct {
-	ID           string    `json:"id"`
-	Name         string    `json:"name"`
-	Subject      string    `json:"subject"`
-	Status       string    `json:"status"`
-	TimeCreated  time.Time `json:"created_at"`
-	LastActivity time.Time `json:"activity_at"`
-	Company      Company   `json:"company"`
-	Branch       Branch    `json:"branch"`
-	User         User      `json:"user"`
-	Comments     []Comment `json:"comments"`
+	ID               string           `json:"id"`
+	Name             string           `json:"name"`
+	Subject          string           `json:"subject"`
+	Status           string           `json:"status"`
+	TimeCreated      time.Time        `json:"created_at"`
+	LastActivity     time.Time        `json:"activity_at"`
+	Company          Company          `json:"company"`
+	Branch           Branch           `json:"branch"`
+	User             User             `json:"user"`
+	Comments         []Comment        `json:"comments"`
+	BeforeCreateHook BeforeCreateHook `json:"-" bson:"-"`
 }
 
 const tasks = "tasks"
 
+type BeforeCreateHook func(*Task) error
+
 func NewTask() *Task {
 	tm := time.Now()
 	return &Task{
-		ID: uuid.NewString(),
-		Status: "created",
-		TimeCreated: tm,
+		ID:           uuid.NewString(),
+		Status:       "created",
+		TimeCreated:  tm,
 		LastActivity: tm,
-		Comments: make([]Comment, 0),
+		Comments:     make([]Comment, 0),
 	}
+}
+
+func TaskByID(id string) (*Task, error) {
+	coll := data.GetCollection(tasks)
+
+	var task Task
+	if err := coll.FindOne(nil, bson.D{{Key: "id", Value: id}}).Decode(&task); err != nil {
+		return nil, fmt.Errorf("task: %s id not found. %w", id, err)
+	}
+
+	return &task, nil
 }
 
 func TasksByUser(user *User) ([]Task, error) {
@@ -68,6 +82,12 @@ func TasksAll() ([]Task, error) {
 }
 
 func (t *Task) Create() error {
+	if t.BeforeCreateHook != nil {
+		if err := t.BeforeCreateHook(t); err != nil {
+			return err
+		}
+	}
+
 	coll := data.GetCollection(tasks)
 	if _, err := coll.InsertOne(nil, t); err != nil {
 		return fmt.Errorf("create: %w", err)
