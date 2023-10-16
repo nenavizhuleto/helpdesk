@@ -71,15 +71,16 @@ Request body:
 
 ```go
 type Task struct {
-	ID           string    `json:"id"`
-	Name         string    `json:"name"`
-	Subject      string    `json:"subject"`
-	Status       string    `json:"status"`
-	TimeCreated  time.Time `json:"created_at"`
-	LastActivity time.Time `json:"activity_at"`
-	Company      Company   `json:"company"`
-	Branch       Branch    `json:"branch"`
-	User         User      `json:"user"`
-	Comments     []Comment `json:"comments"`
+	ID               string           `json:"id"`
+	Name             string           `json:"name"`
+	Subject          string           `json:"subject"`
+	Status           string           `json:"status"`
+	TimeCreated      time.Time        `json:"created_at"`
+	LastActivity     time.Time        `json:"activity_at"`
+	Company          Company          `json:"company"`
+	Branch           Branch           `json:"branch"`
+	User             User             `json:"user"`
+	Comments         []Comment        `json:"comments"`
+	BeforeCreateHook BeforeCreateHook `json:"-" bson:"-"`
 }
 ```

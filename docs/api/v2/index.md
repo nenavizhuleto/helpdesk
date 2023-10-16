@@ -1,5 +1,9 @@
 # API Version 2
 
+## Procedures
+
+- [Authorization](auth.md)
+
 ## Entities
 
 - [Device](device.md)
