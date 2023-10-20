@@ -1,5 +1,5 @@
 build:
-	go build -o bin/helpform ./cmd/helpdesk/main.go
+	go build -o bin/helpform ./cmd/helpdesk/helpdesk.go
 
 run: build
 	./bin/helpdesk
