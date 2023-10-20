@@ -1,4 +1,4 @@
-module application
+module helpdesk
 
 go 1.21.1
 

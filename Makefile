@@ -1,12 +1,8 @@
 build:
-	go build -o bin/helpform
-
-build-web:
-	cd www/; \
-	npm run build
+	go build -o bin/helpform ./cmd/helpdesk/main.go
 
 run: build
-	./bin/helpform
+	./bin/helpdesk
 
 dbinit:
 	go run ./cmd/database/database.go init
