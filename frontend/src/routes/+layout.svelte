@@ -9,7 +9,7 @@
 	} from "flowbite-svelte";
 	import {
 		ClipboardListOutline,
-		InboxFullOutline,
+    InboxFullOutline,
 		InfoCircleOutline,
 	} from "flowbite-svelte-icons";
 	import type { PageData } from "./$types";
@@ -25,9 +25,9 @@
 	setContext("identity", identity)
 </script>
 
-<div class="flex">
+<div class="flex h-screen p-6">
 	{#if identity}
-		<Sidebar {activeUrl}>
+		<Sidebar asideClass="h-full" {activeUrl}>
 			<SidebarWrapper>
 				<SidebarBrand
 					site={{ href: "/", name: "", img: "/Logotype.svg" }}
@@ -35,7 +35,7 @@
 				<SidebarGroup>
 					<SidebarItem href="/" label="Информация">
 						<svelte:fragment slot="icon">
-							<InfoCircleOutline />
+              <InfoCircleOutline />
 						</svelte:fragment>
 					</SidebarItem>
 					<SidebarItem href="/tasks" label="Обращения">
