@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { getContext } from "svelte";
+	import type { Identity } from "$lib/api/types";
 	import { Button, Badge } from "flowbite-svelte";
 	import {
 		Table,
@@ -13,9 +15,9 @@
 	import type { PageData } from "./$types";
 
 	export let data: PageData;
-	let identity = data.identity;
 	let tasks = data.tasks;
 </script>
+
 
 <div class="flex flex-col w-full">
 	<div class="flex p-4 my-4 w-full justify-between">
@@ -25,7 +27,7 @@
 			Новое обращение
 		</Button>
 	</div>
-	<Table divClass="w-full" hoverable={true}>
+	<Table divClass="w-full" hoverable shadow>
 		<TableHead>
 			<TableHeadCell>Номер</TableHeadCell>
 			<TableHeadCell class="w-full">Тема</TableHeadCell>

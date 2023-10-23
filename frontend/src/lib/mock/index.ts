@@ -1,4 +1,4 @@
-import * as types from "$lib/api/types"
+import type * as types from "$lib/api/types"
 
 
 
@@ -34,6 +34,9 @@ const mockIdentity: types.Identity = {
 	branch: mockBranch,
 	user: mockUser,
 }
+const Users: types.User[] = [
+	mockUser
+]
 
 const Tasks: types.Task[] = [
 	{
@@ -99,9 +102,22 @@ const Tasks: types.Task[] = [
 
 ]
 
+
 const TIMEOUT = 500
 
-function mock(data: any, timeout: number) {
+async function RegisterUser(firstName: string, lastName: string, phone: string): Promise<types.User> {
+	const user: types.User = {
+		id: "1234",
+		name: firstName + " " + lastName,
+		phone: phone,
+		devices: ["127.0.0.1"],
+	}
+
+	Users.push(user)
+	return mock(user, TIMEOUT)
+}
+
+function mock<T>(data: T, timeout: number): Promise<T> {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => {
 			if (!!data) {
@@ -113,7 +129,7 @@ function mock(data: any, timeout: number) {
 	})
 }
 
-async function GetIdentity() {
+async function GetIdentity(): Promise<types.Identity> {
 	return mock(mockIdentity, TIMEOUT)
 }
 
@@ -143,8 +159,5 @@ export default {
 	GetIdentity,
 	GetTasks,
 	CreateTask,
+	RegisterUser,
 }
-
-
-
-
