@@ -1,7 +1,6 @@
-import type * as types from "$lib/api/types"
+import * as types from "$lib/api/types"
 
 
-const Tasks: types.Task[] = []
 
 
 const mockCompany: types.Company = {
@@ -36,12 +35,76 @@ const mockIdentity: types.Identity = {
 	user: mockUser,
 }
 
+const Tasks: types.Task[] = [
+	{
+		id: "8412",
+		name: "PC Broken",
+		subject: "Help me please",
+		created_at: new Date(),
+		activity_at: new Date(),
+		user: mockUser,
+		branch: mockBranch,
+		company: mockCompany,
+		status: "created",
+		comments: [],
+	},
+	{
+		id: "8412",
+		name: "PC Broken",
+		subject: "Help me please",
+		created_at: new Date(),
+		activity_at: new Date(),
+		user: mockUser,
+		branch: mockBranch,
+		company: mockCompany,
+		status: "assigned",
+		comments: [],
+	},
+	{
+		id: "8412",
+		name: "PC Broken",
+		subject: "Help me please",
+		created_at: new Date(),
+		activity_at: new Date(),
+		user: mockUser,
+		branch: mockBranch,
+		company: mockCompany,
+		status: "accepted",
+		comments: [],
+	},
+	{
+		id: "8412",
+		name: "PC Broken",
+		subject: "Help me please",
+		created_at: new Date(),
+		activity_at: new Date(),
+		user: mockUser,
+		branch: mockBranch,
+		company: mockCompany,
+		status: "completed",
+		comments: [],
+	},
+	{
+		id: "8412",
+		name: "PC Broken",
+		subject: "Help me please",
+		created_at: new Date(),
+		activity_at: new Date(),
+		user: mockUser,
+		branch: mockBranch,
+		company: mockCompany,
+		status: "cancelled",
+		comments: [],
+	}
+
+]
+
 const TIMEOUT = 500
 
 function mock(data: any, timeout: number) {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => {
-			if(!!data) {
+			if (!!data) {
 				resolve(data)
 			} else {
 				reject({ message: "error" })
