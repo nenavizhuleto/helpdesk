@@ -1,14 +1,14 @@
 package api
 
 import (
-	"helpdesk/internals/megaplan"
-	"helpdesk/internals/models/v2"
 	"encoding/json"
+	"helpdesk/internals/megaplan"
+	"helpdesk/internals/models/v3/task"
+	"helpdesk/telegram"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
-
 
 func HandleMegaplanEvent(c *fiber.Ctx) error {
 	var event megaplan.TaskEvent
@@ -25,21 +25,25 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 	log.Printf("Event: %s", string(str))
 
 	dto := event.Data
-	task, err := models.TaskByID(dto.ID)
+	task, err := task.Get(dto.ID)
 	if err != nil {
 		log.Printf("event: %s", err.Error())
 		return c.SendStatus(200)
 	}
-
-	
 
 	task.Status = dto.GetStatus()
 	task.Comments = dto.GetComments()
 	if dto.Activity != nil {
 		task.LastActivity = dto.Activity.Value
 	}
+	tg, err := task.User.GetTelegram()
+	// If not error then telegram exists
+	// then need to notify
+	if err == nil {
+		telegram.Bot.NotifyUser(tg)
+	}
 
-	if err := task.Update(); err != nil {
+	if err := task.Save(); err != nil {
 		log.Println(err)
 		return c.SendStatus(500)
 	}

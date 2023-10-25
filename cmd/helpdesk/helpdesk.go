@@ -9,7 +9,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 
-	"helpdesk/internals/api/v2"
 	apiv3 "helpdesk/internals/api/v3"
 	"helpdesk/internals/data"
 	"helpdesk/internals/megaplan"
@@ -18,12 +17,12 @@ import (
 )
 
 func initTelegram() {
-	bot, err := telegram.NewTelegramNotificator(util.MustGetEnvVar("TELEGRAM_TOKEN"))
-	if err != nil {
+	if err := telegram.InitDefault(util.MustGetEnvVar("TELEGRAM_TOKEN")); err != nil {
 		panic(err)
+
 	}
 
-	go bot.Run()
+	go telegram.Bot.Run()
 }
 
 func main() {
@@ -42,7 +41,7 @@ func main() {
 	app.Use(cors.New())
 
 	apiRouter := app.Group("/api")
-	apiRouter.Post("/megaplan/event", api.HandleMegaplanEvent)
+	apiRouter.Post("/megaplan/event", apiv3.HandleMegaplanEvent)
 
 	apiV3 := apiRouter.Group("/v3")
 

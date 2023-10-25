@@ -6,6 +6,7 @@ import (
 
 	"helpdesk/internals/data"
 	"helpdesk/internals/models"
+	"helpdesk/internals/util"
 )
 
 type User struct {
@@ -20,6 +21,7 @@ type User struct {
 type HookFunc func(*User) error
 
 const users = "users"
+const telegram = "telegram"
 
 func New(username string, phone string) (*User, error) {
 	validName, err := newName(username)
@@ -36,6 +38,33 @@ func New(username string, phone string) (*User, error) {
 		Phone:   validPhone,
 		Devices: make([]string, 0),
 	}, nil
+}
+
+func (u *User) CreateTelegram() error {
+	coll := data.GetCollection(telegram)
+
+	tg := TelegramUser{
+		User: *u,
+		Pass: util.RandStringBytes(TelegramPassLength),
+	}
+
+	if _, err := coll.InsertOne(nil, tg); err != nil {
+		return models.NewDatabaseError("user", "telegram", err)
+	}
+
+	return nil
+}
+
+func (u *User) GetTelegram() (*TelegramUser, error) {
+	coll := data.GetCollection(telegram)
+
+	var tg TelegramUser
+	if err := coll.FindOne(nil, bson.M{ "user.id": u.ID }).Decode(&tg); err != nil {
+		return nil, models.NewDatabaseError("user", "get_telegram", err)
+	}
+
+
+	return &tg, nil
 }
 
 func Get(id string) (*User, error) {

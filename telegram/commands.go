@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"fmt"
+	"helpdesk/internals/models/v3/user"
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -27,7 +28,7 @@ func (t *TelegramNotificator) StartCommand(update tg.Update) {
 	chat := t.chats.ChangeState(update.Message.Chat.ID, ChatNormal)
 	if auth, ok := chat.Data["authorized"]; ok {
 		if auth.(bool) {
-			t.SendMarkdown(update, WelcomeAuthorized, chat.Data["user"].(*tg.User).UserName)
+			t.SendMarkdown(update, WelcomeAuthorized, chat.Data["user"].(*user.User).Name)
 			return
 		}
 	}
@@ -63,16 +64,17 @@ func (t *TelegramNotificator) LoginCommand(update tg.Update) {
 	chat.OnReceive = func(u tg.Update) error {
 		// Verify user's authorization code
 
-		if u.Message.Text == "1234" {
-			chat.Data["authorized"] = true
-			chat.Data["user"] = update.Message.From
-			t.SendMarkdown(u, WelcomeAuthorized, update.Message.From.UserName)
-		} else {
+		user, err := user.VerifyTelegramPass(u.Message.Text)
+		if err != nil {
 			t.SendMarkdown(u, LoginInvalid)
 			chat.Data["authorized"] = false
+			return nil
 		}
+		chat.Data["authorized"] = true
+		chat.Data["user"] = user.User
+		user.ConnectTelegramChat(update.Message.Chat.ID)
+		t.SendMarkdown(u, WelcomeAuthorized, update.Message.From.UserName)
 
-		// if user is successfully authorized
 		return nil
 	}
 

@@ -9,11 +9,27 @@ import (
 
 type CommandHandlerFunc func(tg.Update)
 
+var Bot *TelegramNotificator
+
 type TelegramNotificator struct {
 	b        *tg.BotAPI
 	u        tg.UpdateConfig
 	commands map[string]CommandHandlerFunc
 	chats    Chats
+}
+
+func InitDefault(token string) error {
+	bot, err := NewTelegramNotificator(token)
+	if err != nil {
+		return err
+	}
+	bot.AddCommandHandler("start", bot.StartCommand)
+	bot.AddCommandHandler("help", bot.HelpCommand)
+	bot.AddCommandHandler("login", bot.LoginCommand)
+	bot.AddCommandHandler("info", bot.InfoCommand)
+
+	Bot = bot
+	return nil
 }
 
 func NewTelegramNotificator(token string) (*TelegramNotificator, error) {
@@ -42,11 +58,6 @@ func (t *TelegramNotificator) AddCommandHandler(command string, handler CommandH
 }
 
 func (t *TelegramNotificator) Run() {
-	t.AddCommandHandler("start", t.StartCommand)
-	t.AddCommandHandler("help", t.HelpCommand)
-	t.AddCommandHandler("login", t.LoginCommand)
-	t.AddCommandHandler("info", t.InfoCommand)
-
 	log.Printf("Starting telegram bot...")
 
 	updates := t.b.GetUpdatesChan(t.u)

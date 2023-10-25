@@ -9,6 +9,10 @@ import (
 func (t *TelegramNotificator) send(c tg.Chattable) (tg.Message, error) {
 	return t.b.Send(c)
 }
+func (t *TelegramNotificator) SendMessageDirectlyToChat(chat_id int64, text string) (tg.Message, error) {
+	msg := tg.NewMessage(chat_id, text)
+	return t.b.Send(msg)
+}
 
 func (t *TelegramNotificator) SendMessage(update tg.Update, text string) (tg.Message, error) {
 	msg := tg.NewMessage(update.Message.Chat.ID, text)

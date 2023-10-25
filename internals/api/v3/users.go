@@ -21,6 +21,7 @@ func SetUsersRoutes(path string, router fiber.Router) {
 
 	users.Get("/:id/tasks", GetUserTasks)
 	users.Post("/:id/tasks", CreateUserTask)
+	users.Post("/:id/telegram", CreateUserTelegram)
 }
 
 func GetUsers(c *fiber.Ctx) error {
@@ -43,9 +44,9 @@ func GetUser(c *fiber.Ctx) error {
 }
 
 func CreateUser(c *fiber.Ctx) error {
-	
+
 	var body struct {
-		Name string
+		Name  string
 		Phone string
 	}
 	if err := c.BodyParser(&body); err != nil {
@@ -57,6 +58,26 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(user)
+}
+
+func CreateUserTelegram(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	user, err := user.Get(id)
+	if err != nil {
+		return err
+	}
+
+	if err := user.CreateTelegram(); err != nil {
+		return err
+	}
+
+	tg, err := user.GetTelegram()
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(tg)
 }
 
 func UpdateUser(c *fiber.Ctx) error {
