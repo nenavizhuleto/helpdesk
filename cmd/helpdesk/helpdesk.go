@@ -14,10 +14,21 @@ import (
 	"helpdesk/internals/data"
 	"helpdesk/internals/megaplan"
 	"helpdesk/internals/util"
+	"helpdesk/telegram"
 )
+
+func initTelegram() {
+	bot, err := telegram.NewTelegramNotificator(util.MustGetEnvVar("TELEGRAM_TOKEN"))
+	if err != nil {
+		panic(err)
+	}
+
+	go bot.Run()
+}
 
 func main() {
 	initEnv()
+	initTelegram()
 	initDb()
 	initMegaplan()
 
