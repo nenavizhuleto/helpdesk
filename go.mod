@@ -3,6 +3,7 @@ module helpdesk
 go 1.21.1
 
 require (
+	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/gofiber/fiber/v2 v2.49.2
 	github.com/google/uuid v1.3.1
 	github.com/jmoiron/sqlx v1.3.5

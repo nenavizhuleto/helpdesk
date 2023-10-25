@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"application/data"
+	"helpdesk/internals/data"
 )
 
 func initDatabase() {

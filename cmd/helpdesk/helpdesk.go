@@ -9,21 +9,31 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 
-	"helpdesk/internals/api"
+	apiv3 "helpdesk/internals/api/v3"
 	"helpdesk/internals/data"
-	"helpdesk/internals/handlers/v1"
 	"helpdesk/internals/megaplan"
 	"helpdesk/internals/util"
+	"helpdesk/telegram"
 )
+
+func initTelegram() {
+	if err := telegram.InitDefault(util.MustGetEnvVar("TELEGRAM_TOKEN")); err != nil {
+		panic(err)
+
+	}
+
+	go telegram.Bot.Run()
+}
 
 func main() {
 	initEnv()
+	initTelegram()
 	initDb()
 	initMegaplan()
 
 	// initializing fiber application
 	app := fiber.New(fiber.Config{
-		ErrorHandler: api.HandleError,
+		ErrorHandler: apiv3.HandleError,
 	})
 
 	app.Use(logger.New())
@@ -31,26 +41,17 @@ func main() {
 	app.Use(cors.New())
 
 	apiRouter := app.Group("/api")
-	apiRouter.Post("/megaplan/event", api.HandleMegaplanEvent)
+	apiRouter.Post("/megaplan/event", apiv3.HandleMegaplanEvent)
 
-	apiV1 := apiRouter.Group("/v1")
-	apiV1.Post("/register", handlers.HandleRegister)
-	apiV1.Use(handlers.IdentityMiddlewareDevice)
-	// Identity
-	apiV1.Get("/identity", api.GetIdentity)
-	// Users API endpoints
-	api.SetUsersRoutes("/users", apiV1)
-	api.SetTasksRoutes("/tasks", apiV1)
-	api.SetDevicesRoutes("/devices", apiV1)
+	apiV3 := apiRouter.Group("/v3")
 
-	apiV2 := apiRouter.Group("/v2")
+	apiV3.Get("/identity", apiv3.GetIdentity)
+	apiV3.Post("/register", apiv3.Register)
 
-	apiV2.Get("/identity", api.GetIdentity)
-	apiV2.Post("/register", api.Register)
-	// Users API endpoints
-	api.SetUsersRoutes("/users", apiV2)
-	api.SetTasksRoutes("/tasks", apiV2)
-	api.SetDevicesRoutes("/devices", apiV2)
+	apiv3.SetUsersRoutes("/users", apiV3)
+	apiv3.SetCompaniesRoutes("/company", apiV3)
+	apiv3.SetBranchesRoutes("/branch", apiV3)
+	apiv3.SetNetworksRoutes("/network", apiV3)
 
 	log.Fatal(app.Listen(":3000"))
 }
