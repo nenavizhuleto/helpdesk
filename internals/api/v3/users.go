@@ -2,11 +2,13 @@ package api
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 
 	"helpdesk/internals/megaplan"
-	"helpdesk/internals/models/v2"
+	"helpdesk/internals/models"
+	"helpdesk/internals/models/v3/device"
 	"helpdesk/internals/models/v3/task"
 	"helpdesk/internals/models/v3/user"
 )
@@ -16,7 +18,6 @@ func SetUsersRoutes(path string, router fiber.Router) {
 	users.Get("/", GetUsers)
 	users.Get("/:id", GetUser)
 	users.Post("/", CreateUser)
-	users.Put("/", UpdateUser)
 	users.Delete("/", DeleteUser)
 
 	users.Get("/:id/tasks", GetUserTasks)
@@ -80,19 +81,6 @@ func CreateUserTelegram(c *fiber.Ctx) error {
 	return c.JSON(tg)
 }
 
-func UpdateUser(c *fiber.Ctx) error {
-	var user models.User
-	if err := c.BodyParser(&user); err != nil {
-		return fmt.Errorf("updateUser: %w", err)
-	}
-
-	if err := user.Update(); err != nil {
-		return fmt.Errorf("updateUser: %w", err)
-	}
-
-	return c.JSON(user)
-}
-
 func DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -128,27 +116,38 @@ func GetUserTasks(c *fiber.Ctx) error {
 func CreateUserTask(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	dev, err := models.DeviceGetByIP(c.IP())
-	if err != nil {
-		return fmt.Errorf("user: %w", err)
-	}
+	log.Printf("Body: %s", string(c.BodyRaw()))
 
-	var task = models.NewTask()
-
-	if err := c.BodyParser(&task); err != nil {
-		return fmt.Errorf("user: %w", err)
-	}
-
-	user, err := models.UserByID(id)
+	user, err := user.Get(id)
 	if err != nil {
 		return err
 	}
 
-	task.User = *user
-	task.Company = dev.Company
-	task.Branch = dev.Branch
+	dev, err := device.Get(c.IP())
+	if err != nil {
+		return err
+	}
 
-	task.BeforeCreateHook = func(t *models.Task) error {
+	var body struct {
+		Name    string
+		Subject string
+	}
+	if err := c.BodyParser(&body); err != nil {
+		return models.NewParseError("task", err)
+	}
+
+	tk, err := task.New()
+	if err != nil {
+		return err
+	}
+
+	tk.Name = body.Name
+	tk.Subject = body.Subject
+	tk.User = user
+	tk.Branch = dev.Branch
+	tk.Company = dev.Company
+
+	tk.BeforeCreateHook = func(t *task.Task) error {
 		var TaskSubjectFormat = `
 			<h2>от %s:</h2>
 			<h3>Суть обращения:</h3>
@@ -187,10 +186,10 @@ func CreateUserTask(c *fiber.Ctx) error {
 		return nil
 	}
 
-	if err := task.Create(); err != nil {
+	if err := tk.Save(); err != nil {
 		return err
 	}
 
-	return c.JSON(task)
+	return c.JSON(tk)
 
 }
