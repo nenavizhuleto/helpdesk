@@ -1,10 +1,13 @@
 
-const baseURL = "http://127.0.0.1:3000/api/v2"
+const baseURL = "http://127.0.0.1:3000/api/v3"
 
 async function apiCall(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body: any): Promise<any> {
 	const res = await fetch(baseURL + url, {
 		method: method,
-		body: body
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify(body)
 	})
 
 	const data = await res.json()
