@@ -4,11 +4,6 @@ const baseURL = "http://127.0.0.1:3000/api/v3"
 
 type Response<T> = [T | undefined, APIError | undefined]
 
-enum ErrorType {
-	Database = "database",
-	Parse = "parse"
-}
-
 async function apiCall(method: "GET" | "POST" | "PUT" | "DELETE", url: string, body: any): Promise<Response<any>> {
 	const res = await fetch(baseURL + url, {
 		method: method,
@@ -18,11 +13,10 @@ async function apiCall(method: "GET" | "POST" | "PUT" | "DELETE", url: string, b
 		body: JSON.stringify(body)
 	})
 
+
 	const data = await res.json()
 
-	console.log(data)
-
-	if ((data as APIError).type in ErrorType) {
+	if (res.status == 500) {
 		return [undefined, data as APIError]
 	}
 
