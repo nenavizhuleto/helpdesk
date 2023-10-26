@@ -12,6 +12,7 @@ import (
 func SetTasksRoutes(path string, router fiber.Router) {
 	tasks := router.Group(path)
 	tasks.Get("/", GetTasks)
+	tasks.Get("/:id", GetTask)
 	tasks.Post("/", CreateTask)
 	tasks.Delete("/:id", DeleteTask)
 }
@@ -24,6 +25,16 @@ func GetTasks(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(tasks)
+}
+
+func GetTask(c *fiber.Ctx) error {
+	id := c.Params("id")
+	task, err := task.Get(id)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(task)
 }
 
 func CreateTask(c *fiber.Ctx) error {

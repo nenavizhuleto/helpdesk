@@ -52,6 +52,7 @@ func main() {
 	apiv3.SetCompaniesRoutes("/company", apiV3)
 	apiv3.SetBranchesRoutes("/branch", apiV3)
 	apiv3.SetNetworksRoutes("/network", apiV3)
+	apiv3.SetTasksRoutes("/tasks", apiV3)
 
 	log.Fatal(app.Listen(":3000"))
 }
