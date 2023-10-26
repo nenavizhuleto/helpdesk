@@ -1,19 +1,19 @@
 import type { PageServerLoad } from './$types';
-import mock from '$lib/mock';
-import { apiGET } from '$lib/api';
-import { createUserTask, getUserTasks } from '$lib/api/tasks';
 import type { Actions } from '@sveltejs/kit';
-import { getIdentity } from '$lib/api/auth';
+import * as api from '$lib/api'
 
 export const load = (async ({ parent }) => {
-	//const identity = await mock.GetIdentity()
-	//const tasks = await mock.GetTasks()
 	const data = await parent()
 	const identity = data.identity!;
-	const tasks = await getUserTasks(identity.user.id)
+	const [tasks, error] = await api.getUserTasks(identity.user.id)
+	if (error) {
+		return {
+			error
+		}
+	}
 	return {
 		identity: identity,
-		tasks: tasks,
+		tasks: tasks!,
 	};
 }) satisfies PageServerLoad;
 
@@ -26,13 +26,23 @@ export const actions: Actions = {
 		const subject = data.get("subject")?.toString()!
 		console.log(name, subject)
 
-		const identity = (await getIdentity())!
+		let [identity, i_error] = await api.getIdentity()
+		if (i_error) {
+			return {
+				error: i_error
+			}
+		}
 
-		const task = await createUserTask(identity.user.id, name, subject)
+		let [task, error] = await api.createUserTask(identity!.user.id, name, subject)
+		if (error) {
+			return {
+				error
+			}
+		}
 		console.log(task)
 		return {
 			success: true,
-			task
+			task: task!
 		}
 	}
 }

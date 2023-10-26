@@ -6,10 +6,17 @@
 	import type { Writable } from "svelte/store";
 	import type { Identity } from "$lib/api/types";
 	import type { ActionData } from "./$types";
+    import { redirect } from "@sveltejs/kit";
 	export let data: PageData;
 
 	const identity: Writable<Identity> = getContext("identity");
 	export let form: ActionData;
+
+	$: () => {
+		if (form?.success) {
+			throw redirect(302, "/")
+		}
+	}
 </script>
 
 {#if $identity}
@@ -27,7 +34,7 @@
     <div class="text-xl font-normal leading-tight">Чтобы начать пользоваться приложением, пожалуйста, пройдите быструю и простую процедуру регистрации</div>
   </div>
   <Card class="w-full max-w-md">
-  	<form class="flex flex-col space-y-6" action="/" method="post">
+  	<form class="flex flex-col space-y-6" action="?/register" method="post">
   		<h3 class="text-xl font-medium text-gray-900 dark:text-white">
   			Регистрация в системе
   		</h3>

@@ -5,7 +5,7 @@ export const load = (async ({ parent }) => {
 	const data = await parent()
 	console.log(data)
 
-	if (!data.identity) {
+	if (data.error) {
 		throw redirect(300, "/register")
 	}
 

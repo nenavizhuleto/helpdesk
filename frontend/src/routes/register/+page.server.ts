@@ -1,6 +1,6 @@
 import type { Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import mock from '$lib/mock';
+import * as api from '$lib/api'
 
 export const load = (async () => {
 	return {
@@ -9,7 +9,7 @@ export const load = (async () => {
 
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	register: async ({ request }) => {
 		const err = {
 			success: false,
 			field: ""
@@ -30,10 +30,16 @@ export const actions: Actions = {
 			err.field = "phone"
 			return err
 		}
-		const user = await mock.RegisterUser(firstName.toString(), lastName.toString(), phone.toString())
+		const [user, error] = await api.RegisterUser(firstName.toString() + " " + lastName.toString(), phone.toString())
+		if (error) {
+			return {
+				success: false,
+				error: error,
+			}
+		}
 		return {
 			success: true,
-			user,
+			user: user,
 		}
 	}
 }

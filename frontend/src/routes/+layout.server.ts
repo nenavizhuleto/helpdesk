@@ -1,12 +1,11 @@
-import { getIdentity } from "$lib/api/auth"
-import mock from "$lib/mock"
+import * as api from "$lib/api"
 
 
 export async function load () {
-	//const identity = await mock.GetIdentity()
-	const identity = getIdentity()
+	const [identity, error] = await api.getIdentity()
 
 	return {
-		identity: identity
+		identity: identity,
+		error: error,
 	} 
 } 

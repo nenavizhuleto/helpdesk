@@ -49,3 +49,12 @@ export interface Task {
 	user: User,
 	comments: Comment[],
 }
+
+export interface APIError {
+	type: string,
+	body: {
+		action: string,
+		entity: string,
+		errors: string[]
+	}
+}

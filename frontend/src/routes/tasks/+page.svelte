@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { getContext } from "svelte";
-	import type { Identity } from "$lib/api/types";
 	import { Button, Badge, Alert } from "flowbite-svelte";
 	import { Modal, Label, Input, Checkbox } from "flowbite-svelte";
 	import {
