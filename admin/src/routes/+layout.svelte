@@ -20,6 +20,7 @@
 				<SidebarItem label="Companies" href="/companies" />
 				<SidebarItem label="Branches" href="/branches" />
 				<SidebarItem label="Networks" href="/networks" />
+				<SidebarItem label="Users" href="/users" />
 			</SidebarGroup>
 		</SidebarWrapper>
 	</Sidebar>

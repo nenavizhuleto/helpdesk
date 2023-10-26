@@ -13,3 +13,8 @@ export async function getNetworks() {
 	const res = await fetch("http://127.0.0.1:3000/api/v3/network")
 	return res.json()
 }
+
+export async function getUsers() {
+	const res = await fetch("http://127.0.0.1:3000/api/v3/users")
+	return res.json()
+}
