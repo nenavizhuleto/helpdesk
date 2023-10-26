@@ -18,7 +18,7 @@ func SetUsersRoutes(path string, router fiber.Router) {
 	users.Get("/", GetUsers)
 	users.Get("/:id", GetUser)
 	users.Post("/", CreateUser)
-	users.Delete("/", DeleteUser)
+	users.Delete("/:id", DeleteUser)
 
 	users.Get("/:id/tasks", GetUserTasks)
 	users.Post("/:id/tasks", CreateUserTask)
