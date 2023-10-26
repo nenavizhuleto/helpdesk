@@ -105,6 +105,7 @@ func GetUserTasks(c *fiber.Ctx) error {
 	}
 
 	tasks, err := task.ByUser(user)
+	fmt.Println(tasks)
 	if err != nil {
 		return err
 	}

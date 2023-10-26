@@ -18,6 +18,7 @@ func SetTasksRoutes(path string, router fiber.Router) {
 
 func GetTasks(c *fiber.Ctx) error {
 	tasks, err := task.All()
+	fmt.Println(tasks)
 	if err != nil {
 		return fmt.Errorf("getTasks: %w", err)
 	}

@@ -60,7 +60,7 @@ func ByUser(user *user.User) ([]Task, error) {
 		return nil, models.NewDatabaseError("task", "by_user", err)
 	}
 
-	var tasks []Task
+	tasks := make([]Task, 0)
 	if err := cursor.All(nil, &tasks); err != nil {
 		return nil, models.NewDatabaseError("task", "by_user", err)
 	}
@@ -75,7 +75,7 @@ func All() ([]Task, error) {
 		return nil, models.NewDatabaseError("task", "all", err)
 	}
 
-	var tasks []Task
+	tasks := make([]Task, 0)
 	if err := cursor.All(nil, &tasks); err != nil {
 		return nil, models.NewDatabaseError("task", "all", err)
 	}
