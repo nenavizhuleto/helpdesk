@@ -21,6 +21,8 @@
 
 	import { PlusSolid } from "flowbite-svelte-icons";
 	import type { PageData } from "./$types";
+    import { redirect } from "@sveltejs/kit";
+    import { goto } from "$app/navigation";
 
 	let formData = {
 		name: "",
@@ -31,7 +33,7 @@
 	let popupModal = false;
 
 	export let data: PageData;
-	let tasks = data.tasks;
+	let tasks = data.tasks!;
 </script>
 
 <Modal bind:open={popupModal} dismissable={false} size="xs" autoclose>
@@ -115,7 +117,7 @@
 		</TableHead>
 		<TableBody>
 			{#each tasks as task}
-				<TableBodyRow class="cursor-pointer" on:click={() => {}}>
+				<TableBodyRow class="cursor-pointer" on:click={() => { console.log(task); goto(`/tasks/${task.id}`)}}>
 					<TableBodyCell>{task.id}</TableBodyCell>
 					<TableBodyCell>{task.name}</TableBodyCell>
 					<TableBodyCell>

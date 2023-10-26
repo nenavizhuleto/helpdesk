@@ -54,6 +54,11 @@ export async function getUserTasks(user_id: string): Promise<Response<Task[]>> {
 	return [tasks as Task[], error]
 }
 
+export async function getTaskById(task_id: string): Promise<Response<Task>> {
+	const [task, error] = await apiGET(`/tasks/${task_id}`)
+	return [task as Task, error]
+}
+
 export async function createUserTask(user_id: string, name: string, subject: string): Promise<Response<Task>> {
 	const [task, error] = await apiPOST(`/users/${user_id}/tasks`, { name, subject })
 	return [task as Task, error];
