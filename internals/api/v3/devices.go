@@ -1,22 +1,20 @@
 package api
 
 import (
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 
-	"helpdesk/internals/models/v2"
+	"helpdesk/internals/models/v3/device"
 )
 
 func SetDevicesRoutes(path string, router fiber.Router) {
 	devices := router.Group(path)
-
 	devices.Get("/", GetDevices)
-	devices.Post("/", CreateDevice)
+	devices.Delete("/:id", DeleteDevice)
 }
 
 func GetDevices(c *fiber.Ctx) error {
-	devices, err := models.DevicesAll()
+	devices, err := device.All()
 	if err != nil {
 		return err
 	}
@@ -24,14 +22,15 @@ func GetDevices(c *fiber.Ctx) error {
 	return c.JSON(devices)
 }
 
-func CreateDevice(c *fiber.Ctx) error {
-	var device models.Device
-	if err := c.BodyParser(&device); err != nil {
-		return fmt.Errorf("createDevice: %w", err)
+func DeleteDevice(c *fiber.Ctx) error {
+	id := c.Params("id")
+	device, err := device.Get(id)
+	if err != nil {
+		return err
 	}
 
-	if err := device.Create(); err != nil {
-		return fmt.Errorf("createDevice: %w", err)
+	if err := device.Delete(); err != nil {
+		return err
 	}
 
 	return c.JSON(device)

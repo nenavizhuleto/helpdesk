@@ -49,6 +49,7 @@ func main() {
 	apiV3.Post("/register", apiv3.Register)
 
 	apiv3.SetUsersRoutes("/users", apiV3)
+	apiv3.SetDevicesRoutes("/devices", apiV3)
 	apiv3.SetCompaniesRoutes("/company", apiV3)
 	apiv3.SetBranchesRoutes("/branch", apiV3)
 	apiv3.SetNetworksRoutes("/network", apiV3)

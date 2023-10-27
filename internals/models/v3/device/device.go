@@ -101,6 +101,14 @@ func (d *Device) Save() error {
 	return nil
 }
 
+func (d *Device) Delete() error {
+	coll := data.GetCollection(devices)
+	if err := coll.FindOneAndDelete(nil, bson.D{{Key: "ip", Value: d.IP}}).Err(); err != nil {
+		return models.NewDatabaseError("device", "delete", err)
+	}
+	return nil
+}
+
 func Identify(ip string) error {
 
 	network, err := network.GetByIP(ip)
