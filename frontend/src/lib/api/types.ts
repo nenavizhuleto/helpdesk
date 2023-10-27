@@ -38,6 +38,9 @@ export interface Device {
 export interface Comment {
 	id: string,
 	content: string,
+	user: User | undefined,
+	direction: "to" | "from",
+	timeCreated: Date,
 }
 
 export type TaskStatus = "created" | "assigned" | "accepted" | "done" | "completed" | "rejected" | "cancelled" | "expired" | "delayed" | "template" | "overdue";

@@ -10,6 +10,7 @@ export const load = (async ({ params }) => {
 			error
 		}
 	}
+	task.comments = task?.comments.reverse()
 	return {
 		task: task!,
 	};
