@@ -28,6 +28,11 @@
 	<TableHead>
 		<TableHeadCell>UserID</TableHeadCell>
 		<TableHeadCell>Name</TableHeadCell>
+		<TableHeadCell>Phone</TableHeadCell>
+		<TableHeadCell>Network</TableHeadCell>
+		<TableHeadCell>Branch</TableHeadCell>
+		<TableHeadCell>Company</TableHeadCell>
+		<TableHeadCell>Devices</TableHeadCell>
 		<TableHeadCell>Action</TableHeadCell>
 	</TableHead>
 	<TableBody class="divide-y">
@@ -36,6 +41,15 @@
 				<TableBodyRow>
 					<TableBodyCell>{item.id}</TableBodyCell>
 					<TableBodyCell>{item.name}</TableBodyCell>
+					<TableBodyCell>{item.phone}</TableBodyCell>
+					<TableBodyCell>{item.network.netmask}</TableBodyCell>
+					<TableBodyCell>{item.branch.name}</TableBodyCell>
+					<TableBodyCell>{item.company.name}</TableBodyCell>
+					<TableBodyCell>
+						{#each item.devices as dev}
+							<a>{dev.ip}</a>
+						{/each}
+					</TableBodyCell>
 					<TableBodyCell>
 						<Button on:click={() => deleteUser(item.id)} color="red"
 							>Delete</Button
