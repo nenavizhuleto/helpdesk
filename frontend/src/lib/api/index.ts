@@ -62,15 +62,6 @@ export async function getUserTasks(user_id: string): Promise<Response<Task[]>> {
 	return [tasks as Task[], error];
 }
 
-<<<<<<< HEAD
-export async function getTaskById(task_id: string): Promise<Response<Task>> {
-	const [task, error] = await apiGET(`/tasks/${task_id}`)
-	return [task as Task, error]
-}
-
-export async function createUserTask(user_id: string, name: string, subject: string): Promise<Response<Task>> {
-	const [task, error] = await apiPOST(`/users/${user_id}/tasks`, { name, subject })
-=======
 export async function createUserTask(
 	user_id: string,
 	name: string,
@@ -80,6 +71,5 @@ export async function createUserTask(
 		name,
 		subject,
 	});
->>>>>>> 5644a37 (chore:begin task-chat)
 	return [task as Task, error];
 }
