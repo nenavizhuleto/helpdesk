@@ -42,7 +42,7 @@
 </script>
 
 <div class="flex h-full">
-	<div class="bg-gray-50">
+	<div class="bg-gray-50 border-r border-gray-300 px-3 pt-3">
 		<Sidebar asideClass="" {activeUrl}>
 			<SidebarWrapper>
 				<SidebarBrand
