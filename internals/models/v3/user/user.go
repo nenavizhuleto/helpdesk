@@ -60,8 +60,11 @@ func New(username string, phone string, ip string) (*User, error) {
 		ID:         newID(),
 		Name:       validName,
 		Phone:      validPhone,
+		Network: network,
+		Branch: branch,
+		Company: company,
 		Devices:    make([]*device.Device, 0),
-		Identified: false,
+		Identified: true,
 	}, nil
 }
 
