@@ -39,26 +39,8 @@
 	};
 
 	export let data: PageData;
-<<<<<<< HEAD:frontend/src/routes/system/tasks/+page.svelte
 	// TODO: Why we expect that tasks cannot be undefined?
 	let tasks = data.tasks!;
-=======
-	let tasks = data.tasks;
-
-
-  import { Drawer, CloseButton } from 'flowbite-svelte';
-  import { InfoCircleSolid, ArrowRightOutline } from 'flowbite-svelte-icons';
-  import { sineIn } from 'svelte/easing';
-
-  let hidden6 = true;
-  let transitionParamsRight = {
-    x: 320,
-    duration: 200,
-    easing: sineIn
-  };
-
-
->>>>>>> 5644a37 (chore:begin task-chat):frontend/src/routes/tasks/+page.svelte
 </script>
 
 <Modal bind:open={popupModal} dismissable={false} size="xs" autoclose>
@@ -142,7 +124,6 @@
 		</TableHead>
 		<TableBody>
 			{#each tasks as task}
-<<<<<<< HEAD:frontend/src/routes/system/tasks/+page.svelte
 				<TableBodyRow
 					class="cursor-pointer"
 					on:click={() => {
@@ -150,9 +131,6 @@
 						goto(`/system/tasks/${task.id}`);
 					}}
 				>
-=======
-				<TableBodyRow class="cursor-pointer" on:click={() => (hidden6 = false)}>
->>>>>>> 5644a37 (chore:begin task-chat):frontend/src/routes/tasks/+page.svelte
 					<TableBodyCell>{task.id}</TableBodyCell>
 					<TableBodyCell>{task.name}</TableBodyCell>
 					<TableBodyCell>
@@ -175,7 +153,6 @@
 			{/each}
 		</TableBody>
 	</Table>
-<<<<<<< HEAD:frontend/src/routes/system/tasks/+page.svelte
 	{#if tasks.length == 0}
 		<div class="w-[440px] mx-auto py-40">
 			<div
@@ -252,6 +229,3 @@
 		<div class="text-base">Описание</div>
 	</div>
 </div>
-=======
-</div>
->>>>>>> 5644a37 (chore:begin task-chat):frontend/src/routes/tasks/+page.svelte
