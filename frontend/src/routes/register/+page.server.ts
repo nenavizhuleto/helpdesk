@@ -39,7 +39,7 @@ export const actions: Actions = {
 		}
 		return {
 			success: true,
-			user: user,
+			user: user
 		}
 	}
 }

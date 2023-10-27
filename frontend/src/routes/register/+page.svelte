@@ -1,22 +1,17 @@
 <script lang="ts">
 	import { getContext } from "svelte";
 	import type { PageData } from "./$types";
+	import { enhance } from "$app/forms";
 
 	import { Card, Button, Label, Input } from "flowbite-svelte";
 	import type { Writable } from "svelte/store";
 	import type { Identity } from "$lib/api/types";
 	import type { ActionData } from "./$types";
-	import { redirect } from "@sveltejs/kit";
+	import { goto } from "$app/navigation";
 	export let data: PageData;
 
 	const identity: Writable<Identity> = getContext("identity");
 	export let form: ActionData;
-
-	$: () => {
-		if (form?.success) {
-			throw redirect(302, "/");
-		}
-	};
 </script>
 
 <div class="flex gap-24 justify-center max-w-4xl mx-auto mt-56">
@@ -28,7 +23,18 @@
 		</div>
 	</div>
 	<Card class="w-full max-w-md">
-		<form class="flex flex-col space-y-6" action="?/register" method="post">
+		<form
+			class="flex flex-col space-y-6"
+			action="?/register"
+			method="post"
+			use:enhance={() => {
+				return async ({ result }) => {
+					if (result.data.success) {
+						goto("/system");
+					}
+				};
+			}}
+		>
 			<h3 class="text-xl font-medium text-gray-900 dark:text-white">
 				Регистрация в системе
 			</h3>

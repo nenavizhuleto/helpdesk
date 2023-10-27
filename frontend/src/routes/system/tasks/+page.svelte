@@ -21,8 +21,8 @@
 
 	import { PlusSolid } from "flowbite-svelte-icons";
 	import type { PageData } from "./$types";
-    import { redirect } from "@sveltejs/kit";
-    import { goto } from "$app/navigation";
+	import { redirect } from "@sveltejs/kit";
+	import { goto } from "$app/navigation";
 
 	let formData = {
 		name: "",
@@ -117,7 +117,13 @@
 		</TableHead>
 		<TableBody>
 			{#each tasks as task}
-				<TableBodyRow class="cursor-pointer" on:click={() => { console.log(task); goto(`/tasks/${task.id}`)}}>
+				<TableBodyRow
+					class="cursor-pointer"
+					on:click={() => {
+						console.log(task);
+						goto(`/tasks/${task.id}`);
+					}}
+				>
 					<TableBodyCell>{task.id}</TableBodyCell>
 					<TableBodyCell>{task.name}</TableBodyCell>
 					<TableBodyCell>
@@ -140,6 +146,17 @@
 			{/each}
 		</TableBody>
 	</Table>
+{#if tasks.length == 0}
+	<div class="w-[440px] mx-auto py-40">
+		<div
+			class="w-[268px] mb-10 mx-auto text-center text-zinc-500 text-xl font-medium"
+		>
+			У вас ещё нет обращений в техническую поддержку
+		</div>
+
+		<img src="/EmptyTickets.svg" alt="Empty Tasks" />
+	</div>
+{/if}
 </div>
 
 <div
