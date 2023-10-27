@@ -1,10 +1,9 @@
 package api
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 
+	"helpdesk/internals/models"
 	"helpdesk/internals/models/v3/device"
 	"helpdesk/internals/models/v3/user"
 )
@@ -14,31 +13,37 @@ func GetIdentity(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-
-	return c.JSON(dev)
+	user, err := user.Get(dev.OwnerID)
+	if err != nil {
+		return err
+	}
+	return c.JSON(user)
 }
 
 func Register(c *fiber.Ctx) error {
-	if err := device.Identify(c.IP()); err != nil {
-		return err
-	}
 
 	var body struct {
-		Name string
+		Name  string
 		Phone string
 	}
 
 	if err := c.BodyParser(&body); err != nil {
-		return fmt.Errorf("register: %w", err)
+		return models.NewParseError("register", err)
 	}
 
-	user, err := user.New(body.Name, body.Phone)
+	user, err := user.New(body.Name, body.Phone, c.IP())
+	if err != nil {
+		return err
+	}
+	dev, err := device.New(c.IP(), device.PC)
 	if err != nil {
 		return err
 	}
 
-	user.Devices = append(user.Devices, c.IP())
-	user.OnAfterCreate = device.DeviceUserCreateHook
+	if err := user.AddDevice(dev); err != nil {
+		return err
+	}
+
 	if err := user.Save(); err != nil {
 		return err
 	}

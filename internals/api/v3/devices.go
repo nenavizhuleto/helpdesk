@@ -1,7 +1,6 @@
 package api
 
 import (
-
 	"github.com/gofiber/fiber/v2"
 
 	"helpdesk/internals/models/v3/device"
