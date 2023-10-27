@@ -5,19 +5,12 @@ import (
 
 	"helpdesk/internals/data"
 	"helpdesk/internals/models"
-	"helpdesk/internals/models/v3/branch"
-	"helpdesk/internals/models/v3/company"
-	"helpdesk/internals/models/v3/network"
-	"helpdesk/internals/models/v3/user"
 )
 
 type Device struct {
-	IP      string           `json:"ip"`
-	Company *company.Company `json:"company"`
-	Branch  *branch.Branch   `json:"branch"`
-	Network *network.Network `json:"network"`
-	User    *user.User       `json:"user"`
-	Type    string           `json:"type"`
+	IP      string `json:"ip"`
+	Type    string `json:"type"`
+	OwnerID string `json:"owner_id"` // User ID
 }
 
 const devices = "devices"
@@ -27,19 +20,15 @@ var (
 	Unknown = "unknown"
 )
 
-func New(ip string, company *company.Company, branch *branch.Branch, network *network.Network, user *user.User, typ string) (*Device, error) {
+func New(ip string, typ string) (*Device, error) {
 	validIP, err := newIP(ip)
 	if err != nil {
 		return nil, models.NewValidationError("device", "ip")
 	}
 
 	return &Device{
-		IP:      validIP,
-		Company: company,
-		Branch:  branch,
-		Network: network,
-		User:    user,
-		Type:    typ,
+		IP:   validIP,
+		Type: typ,
 	}, nil
 }
 
@@ -71,16 +60,16 @@ func All() ([]Device, error) {
 }
 
 // Updates all devices that a related to user
-func DeviceUserCreateHook(u *user.User) error {
-	coll := data.GetCollection(devices)
-	for _, ip := range u.Devices {
-		if err := coll.FindOneAndUpdate(nil, bson.D{{Key: "ip", Value: ip}}, bson.D{{Key: "$set", Value: bson.M{"user": u}}}).Err(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
+//func DeviceUserCreateHook(u *user.User) error {
+//	coll := data.GetCollection(devices)
+//	for _, ip := range u.Devices {
+//		if err := coll.FindOneAndUpdate(nil, bson.D{{Key: "ip", Value: ip}}, bson.D{{Key: "$set", Value: bson.M{"user": u}}}).Err(); err != nil {
+//			return err
+//		}
+//	}
+//
+//	return nil
+//}
 
 func (d *Device) Save() error {
 	coll := data.GetCollection(devices)
@@ -106,35 +95,6 @@ func (d *Device) Delete() error {
 	if err := coll.FindOneAndDelete(nil, bson.D{{Key: "ip", Value: d.IP}}).Err(); err != nil {
 		return models.NewDatabaseError("device", "delete", err)
 	}
-	return nil
-}
-
-func Identify(ip string) error {
-
-	network, err := network.GetByIP(ip)
-	if err != nil {
-		return err
-	}
-
-	branch, err := branch.Get(network.BranchID)
-	if err != nil {
-		return err
-	}
-
-	company, err := company.Get(branch.CompanyID)
-	if err != nil {
-		return err
-	}
-
-	device, err := New(ip, company, branch, network, nil, PC)
-	if err != nil {
-		return err
-	}
-
-	if err := device.Save(); err != nil {
-		return err
-	}
-
 	return nil
 }
 

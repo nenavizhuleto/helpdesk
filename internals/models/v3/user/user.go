@@ -6,16 +6,24 @@ import (
 
 	"helpdesk/internals/data"
 	"helpdesk/internals/models"
+	"helpdesk/internals/models/v3/branch"
+	"helpdesk/internals/models/v3/company"
+	"helpdesk/internals/models/v3/device"
+	"helpdesk/internals/models/v3/network"
 	"helpdesk/internals/util"
 )
 
 type User struct {
-	ID            string   `json:"id"`
-	Name          string   `json:"name"`
-	Phone         string   `json:"phone"`
-	Devices       []string `json:"devices"`    // Will be used in the future, to manage multiple device access by user
-	OnAfterCreate HookFunc `json:"-" bson:"-"` // Execute after user have been successfully inserted into database
-	OnAfterUpdate HookFunc `json:"-" bson:"-"` // Execute after user have been successfully inserted into database
+	ID            string           `json:"id"`
+	Name          string           `json:"name"`
+	Phone         string           `json:"phone"`
+	Network       *network.Network `json:"network"`
+	Branch        *branch.Branch   `json:"branch"`
+	Company       *company.Company `json:"company"`
+	Devices       []*device.Device `json:"devices"` // Will be used in the future, to manage multiple device access by user
+	Identified    bool             `json:"identified"`
+	OnAfterCreate HookFunc         `json:"-" bson:"-"` // Execute after user have been successfully inserted into database
+	OnAfterUpdate HookFunc         `json:"-" bson:"-"` // Execute after user have been successfully inserted into database
 }
 
 type HookFunc func(*User) error
@@ -23,20 +31,37 @@ type HookFunc func(*User) error
 const users = "users"
 const telegram = "telegram"
 
-func New(username string, phone string) (*User, error) {
+func New(username string, phone string, ip string) (*User, error) {
+	network, err := network.GetByIP(ip)
+	if err != nil {
+		return nil, err
+	}
+
+	branch, err := branch.Get(network.BranchID)
+	if err != nil {
+		return nil, err
+	}
+
+	company, err := company.Get(branch.CompanyID)
+	if err != nil {
+		return nil, err
+	}
+
 	validName, err := newName(username)
 	if err != nil {
 		return nil, err
 	}
-	validPhone, err := newPhone(phone)
+
+	validPhone, err := newPhone(phone, company)
 	if err != nil {
 		return nil, err
 	}
 	return &User{
-		ID:      newID(),
-		Name:    validName,
-		Phone:   validPhone,
-		Devices: make([]string, 0),
+		ID:         newID(),
+		Name:       validName,
+		Phone:      validPhone,
+		Devices:    make([]*device.Device, 0),
+		Identified: false,
 	}, nil
 }
 
@@ -59,10 +84,9 @@ func (u *User) GetTelegram() (*TelegramUser, error) {
 	coll := data.GetCollection(telegram)
 
 	var tg TelegramUser
-	if err := coll.FindOne(nil, bson.M{ "user.id": u.ID }).Decode(&tg); err != nil {
+	if err := coll.FindOne(nil, bson.M{"user.id": u.ID}).Decode(&tg); err != nil {
 		return nil, models.NewDatabaseError("user", "get_telegram", err)
 	}
-
 
 	return &tg, nil
 }
@@ -131,6 +155,45 @@ func (u *User) Delete() error {
 	return nil
 }
 
+func (u *User) Identify(ip string) error {
+	network, err := network.GetByIP(ip)
+	if err != nil {
+		return err
+	}
+
+	branch, err := branch.Get(network.BranchID)
+	if err != nil {
+		return err
+	}
+
+	company, err := company.Get(branch.CompanyID)
+	if err != nil {
+		return err
+	}
+
+	u.Network = network
+	u.Branch = branch
+	u.Company = company
+
+	u.Identified = true
+
+	return nil
+}
+
+func (u *User) AddDevice(dev *device.Device) error {
+	if !u.Identified {
+		return models.NewIdentificationError("user", nil)
+	}
+
+	dev.OwnerID = u.ID
+	if err := dev.Save(); err != nil {
+		return err
+	}
+
+	u.Devices = append(u.Devices, dev)
+	return nil
+}
+
 // Private functions
 
 func newID() string {
@@ -146,11 +209,22 @@ func newName(username string) (string, error) {
 	return username, nil
 }
 
-func newPhone(phone string) (string, error) {
+func newPhone(phone string, c *company.Company) (string, error) {
 	// Validation etc...
 	if len(phone) == 0 {
 		return "", models.NewValidationError("user", "phone")
 	}
+
+	coll := data.GetCollection(users)
+	users, err := coll.CountDocuments(nil, bson.M{"company.id": c.ID, "phone": phone})
+	if err != nil {
+		return "", models.NewValidationError("user", "phone")
+	}
+
+	if users != 0 {
+		return "", models.NewValidationError("user", "phone", "user exists")
+	}
+
 	return phone, nil
 }
 

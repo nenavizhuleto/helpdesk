@@ -11,10 +11,10 @@
 	} from "flowbite-svelte";
 	let searchTerm = "";
 	export let data;
-	let items = data.users;
+	let items = data.tasks;
 
-	function deleteUser(user_id) {
-		fetch("http://127.0.0.1:3000/api/v3/users/" + user_id, {
+	function deleteTask(task_id) {
+		fetch("http://127.0.0.1:3000/api/v3/tasks/" + task_id, {
 			method: "DELETE",
 		});
 	}
@@ -26,13 +26,11 @@
 	bind:inputValue={searchTerm}
 >
 	<TableHead>
-		<TableHeadCell>UserID</TableHeadCell>
+		<TableHeadCell>TaskID</TableHeadCell>
 		<TableHeadCell>Name</TableHeadCell>
-		<TableHeadCell>Phone</TableHeadCell>
-		<TableHeadCell>Network</TableHeadCell>
+		<TableHeadCell>User</TableHeadCell>
 		<TableHeadCell>Branch</TableHeadCell>
 		<TableHeadCell>Company</TableHeadCell>
-		<TableHeadCell>Devices</TableHeadCell>
 		<TableHeadCell>Action</TableHeadCell>
 	</TableHead>
 	<TableBody class="divide-y">
@@ -41,17 +39,11 @@
 				<TableBodyRow>
 					<TableBodyCell>{item.id}</TableBodyCell>
 					<TableBodyCell>{item.name}</TableBodyCell>
-					<TableBodyCell>{item.phone}</TableBodyCell>
-					<TableBodyCell>{item.network.netmask}</TableBodyCell>
+					<TableBodyCell>{item.user.name}</TableBodyCell>
 					<TableBodyCell>{item.branch.name}</TableBodyCell>
 					<TableBodyCell>{item.company.name}</TableBodyCell>
 					<TableBodyCell>
-						{#each item.devices as dev}
-							<a>{dev.ip}</a>
-						{/each}
-					</TableBodyCell>
-					<TableBodyCell>
-						<Button on:click={() => deleteUser(item.id)} color="red"
+						<Button on:click={() => deleteTask(item.id)} color="red"
 							>Delete</Button
 						>
 					</TableBodyCell>

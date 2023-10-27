@@ -8,9 +8,10 @@ import (
 type ErrorType string
 
 var (
-	ErrTypeValidation = ErrorType("validation")
-	ErrTypeDatabase   = ErrorType("database")
-	ErrTypeParse      = ErrorType("parse")
+	ErrTypeValidation     = ErrorType("validation")
+	ErrTypeDatabase       = ErrorType("database")
+	ErrTypeIdentification = ErrorType("identification")
+	ErrTypeParse          = ErrorType("parse")
 )
 
 type ErrorBody map[string]any
@@ -32,8 +33,8 @@ func NewValidationError(entity string, field string, message ...string) Error {
 	return Error{
 		Type: ErrTypeValidation,
 		Body: ErrorBody{
-			"entity": entity,
-			"field":  field,
+			"entity":  entity,
+			"field":   field,
 			"message": message,
 		},
 	}
@@ -61,6 +62,17 @@ func NewParseError(endpoint string, err error) Error {
 		Type: ErrTypeParse,
 		Body: ErrorBody{
 			"endpoint": endpoint,
+			"message":  err.Error(),
+		},
+	}
+
+}
+
+func NewIdentificationError(ip string, err error) Error {
+	return Error{
+		Type: ErrTypeIdentification,
+		Body: ErrorBody{
+			"ip": ip,
 			"message":  err.Error(),
 		},
 	}

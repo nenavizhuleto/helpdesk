@@ -8,7 +8,6 @@ import (
 
 	"helpdesk/internals/megaplan"
 	"helpdesk/internals/models"
-	"helpdesk/internals/models/v3/device"
 	"helpdesk/internals/models/v3/task"
 	"helpdesk/internals/models/v3/user"
 )
@@ -49,11 +48,12 @@ func CreateUser(c *fiber.Ctx) error {
 	var body struct {
 		Name  string
 		Phone string
+		IP    string
 	}
 	if err := c.BodyParser(&body); err != nil {
 		return fmt.Errorf("createUser: %w", err)
 	}
-	user, err := user.New(body.Name, body.Phone)
+	user, err := user.New(body.Name, body.Phone, body.IP)
 	if err != nil {
 		return err
 	}
@@ -124,15 +124,11 @@ func CreateUserTask(c *fiber.Ctx) error {
 		return err
 	}
 
-	dev, err := device.Get(c.IP())
-	if err != nil {
-		return err
-	}
-
 	var body struct {
 		Name    string
 		Subject string
 	}
+
 	if err := c.BodyParser(&body); err != nil {
 		return models.NewParseError("task", err)
 	}
@@ -145,8 +141,8 @@ func CreateUserTask(c *fiber.Ctx) error {
 	tk.Name = body.Name
 	tk.Subject = body.Subject
 	tk.User = user
-	tk.Branch = dev.Branch
-	tk.Company = dev.Company
+	tk.Branch = user.Branch
+	tk.Company = user.Company
 
 	tk.BeforeCreateHook = func(t *task.Task) error {
 		var TaskSubjectFormat = `
