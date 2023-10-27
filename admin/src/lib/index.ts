@@ -18,3 +18,8 @@ export async function getUsers() {
 	const res = await fetch("http://127.0.0.1:3000/api/v3/users")
 	return res.json()
 }
+
+export async function getDevices() {
+	const res = await fetch("http://127.0.0.1:3000/api/v3/devices")
+	return res.json()
+}

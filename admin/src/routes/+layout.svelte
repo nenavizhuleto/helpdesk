@@ -21,6 +21,7 @@
 				<SidebarItem label="Branches" href="/branches" />
 				<SidebarItem label="Networks" href="/networks" />
 				<SidebarItem label="Users" href="/users" />
+				<SidebarItem label="Devices" href="/devices" />
 			</SidebarGroup>
 		</SidebarWrapper>
 	</Sidebar>
