@@ -1,6 +1,9 @@
 <script lang="ts">
-	import { Button } from "flowbite-svelte";
+	// --- Utils ---
 	import { goto } from "$app/navigation";
+
+	// --- Components ---
+	import { Button } from "flowbite-svelte";
 </script>
 
 <div

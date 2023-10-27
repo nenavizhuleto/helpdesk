@@ -1,6 +1,14 @@
 <script lang="ts">
+	// --- Utils ---
+	import { goto } from "$app/navigation";
+
+	// --- Types ---
+	import type { PageData } from "./$types";
+
+	// --- Components ---
 	import { Button, Badge, Alert } from "flowbite-svelte";
-	import { Modal, Label, Input, Checkbox } from "flowbite-svelte";
+	import { Modal, Label, Input } from "flowbite-svelte";
+	// `-- Table
 	import {
 		Table,
 		TableBody,
@@ -10,29 +18,28 @@
 		TableHeadCell,
 		Textarea,
 	} from "flowbite-svelte";
-	import { ExclamationCircleOutline } from "flowbite-svelte-icons";
 
+	// --- Icons ---
+	import { ExclamationCircleOutline, PlusSolid } from "flowbite-svelte-icons";
+
+	// --- Init ---
+	// `-- TextArea
 	let taskTextareaProps = {
 		id: "subject",
 		name: "subject",
 		rows: 4,
 		placeholder: "Опишите подробнее",
 	};
-
-	import { PlusSolid } from "flowbite-svelte-icons";
-	import type { PageData } from "./$types";
-	import { redirect } from "@sveltejs/kit";
-	import { goto } from "$app/navigation";
-
+	// `-- Form
+	let formModal = false;
+	let popupModal = false;
 	let formData = {
 		name: "",
 		subject: "",
 	};
 
-	let formModal = false;
-	let popupModal = false;
-
 	export let data: PageData;
+	// TODO: Why we expect that tasks cannot be undefined?
 	let tasks = data.tasks!;
 </script>
 
@@ -146,17 +153,17 @@
 			{/each}
 		</TableBody>
 	</Table>
-{#if tasks.length == 0}
-	<div class="w-[440px] mx-auto py-40">
-		<div
-			class="w-[268px] mb-10 mx-auto text-center text-zinc-500 text-xl font-medium"
-		>
-			У вас ещё нет обращений в техническую поддержку
-		</div>
+	{#if tasks.length == 0}
+		<div class="w-[440px] mx-auto py-40">
+			<div
+				class="w-[268px] mb-10 mx-auto text-center text-zinc-500 text-xl font-medium"
+			>
+				У вас ещё нет обращений в техническую поддержку
+			</div>
 
-		<img src="/EmptyTickets.svg" alt="Empty Tasks" />
-	</div>
-{/if}
+			<img src="/EmptyTickets.svg" alt="Empty Tasks" />
+		</div>
+	{/if}
 </div>
 
 <div

@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { getContext } from "svelte";
-	import type { PageData } from "./$types";
+	// --- Utils ---
 	import { enhance } from "$app/forms";
-
-	import { Card, Button, Label, Input } from "flowbite-svelte";
-	import type { Writable } from "svelte/store";
-	import type { Identity } from "$lib/api/types";
-	import type { ActionData } from "./$types";
 	import { goto } from "$app/navigation";
-	export let data: PageData;
 
-	const identity: Writable<Identity> = getContext("identity");
+	// --- Types ---
+	import type { PageData, ActionData } from "./$types";
+
+	// --- Components ---
+	import { Card, Button, Label, Input } from "flowbite-svelte";
+
+	export let data: PageData;
 	export let form: ActionData;
 </script>
 
@@ -29,6 +28,7 @@
 			method="post"
 			use:enhance={() => {
 				return async ({ result }) => {
+					// TODO: type checking
 					if (result.data.success) {
 						goto("/system");
 					}

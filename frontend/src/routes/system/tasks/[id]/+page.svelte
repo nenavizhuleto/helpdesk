@@ -1,10 +1,11 @@
 <!-- CHAT GOES HERE -->
 <script lang="ts">
-    import type { PageData } from "./$types";
-
+	// --- Types ---
+	import type { PageData } from "./$types";
 
 	export let data: PageData;
-
+	// TODO: Why we expect that task cannot be undefined?
+	let task = data?.task!;
 </script>
 
-<h1>Task {data?.task.name}</h1>
+<h1>Task {task.name}</h1>
