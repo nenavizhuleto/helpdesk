@@ -58,31 +58,45 @@ const (
 	CommentTagFrom = "#[FROMUSER]:"
 )
 
+func filterComment(_comment *Comment) *models.Comment {
+	var comment models.Comment
+	content := _comment.Content
+	if strings.Contains(content, CommentTagTo) {
+		comment.Direction = models.DirectionTo
+		content = strings.Replace(content, CommentTagTo, "", 1)
+	} else if strings.Contains(content, CommentTagFrom) {
+		comment.Direction = models.DirectionFrom
+		content = strings.Replace(content, CommentTagFrom, "", 1)
+	} else {
+		return nil
+	}
+	comment.ID = _comment.ID
+	comment.Content = content
+	if _comment.TimeCreated != nil {
+		comment.TimeCreated = _comment.TimeCreated.Value
+	}
+
+	return &comment
+}
+
 func (dto *TaskDTO) GetComments() []models.Comment {
+	var comments = make([]models.Comment, 0)
+	if dto.LastComment != nil {
+		comment := filterComment(dto.LastComment)
+		if comment != nil {
+			comments = append(comments, *comment)
+		}
+	}
 	if dto.CommentsCount == 0 {
 		return []models.Comment{}
 	}
 
-	var comments = make([]models.Comment, 0)
 	for _, _comment := range dto.Comments {
 		// Parse comment.Content and determine which direction it is
-		var comment models.Comment
-		content := _comment.Content
-		if strings.Contains(content, CommentTagTo) {
-			comment.Direction = models.DirectionTo
-		} else if strings.Contains(content, CommentTagFrom) {
-			comment.Direction = models.DirectionFrom
-		} else {
-			continue
+		comment := filterComment(&_comment)
+		if comment != nil {
+			comments = append(comments, *comment)
 		}
-
-		comment.ID = _comment.ID
-		comment.Content = _comment.Content
-		if _comment.TimeCreated != nil {
-			comment.TimeCreated = _comment.TimeCreated.Value
-		}
-
-		comments = append(comments, comment)
 	}
 
 	return comments
