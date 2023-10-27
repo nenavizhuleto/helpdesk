@@ -7,7 +7,7 @@
 
 	// --- Types ---
 	import type { PageData } from "./$types";
-	import type { Identity } from "$lib/api/types";
+	import type { User } from "$lib/api/types";
 
 	// --- Components ---
 	import {
@@ -25,7 +25,7 @@
 	} from "flowbite-svelte-icons";
 
 	export let data: PageData;
-	const identity = writable<Identity>();
+	const identity = writable<User>();
 	// If couldn't identify user goto registration
 	// Else move identity to storage for using in other pages
 	$: () => {

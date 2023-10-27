@@ -13,21 +13,26 @@ export interface Branch {
 	company_id: string,
 }
 
+export interface Network {
+	netmask: string
+}
+
 export interface User {
 	id: string,
 	name: string,
 	phone: string,
-	devices: string[],
+	network: Network,
+	branch: Branch,
+	company: Company,
+	devices: Device[],
 }
 
 export type DeviceType = "PC" | "Unknown"
 
-export interface Identity {
+export interface Device {
 	ip: string,
-	company: Company,
-	branch: Branch,
-	user: User,
 	type: DeviceType
+	owner_id: string,
 }
 
 export interface Comment {

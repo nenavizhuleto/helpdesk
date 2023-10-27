@@ -1,4 +1,4 @@
-import type {APIError, Identity, User, Task} from "./types";
+import type {APIError, User, Task} from "./types";
 const baseURL = "http://172.16.222.31:3000/api/v3";
 
 type Response<T> = [T | undefined, APIError | undefined];
@@ -44,9 +44,9 @@ export async function apiDELETE(
 	return await apiCall("PUT", url, body);
 }
 
-export async function getIdentity(): Promise<Response<Identity>> {
+export async function getIdentity(): Promise<Response<User>> {
 	const [identity, err] = await apiGET("/identity");
-	return [identity as Identity, err];
+	return [identity as User, err];
 }
 
 export async function RegisterUser(

@@ -5,7 +5,7 @@ import * as api from '$lib/api'
 export const load = (async ({ parent }) => {
 	const data = await parent()
 	const identity = data.identity!;
-	const [tasks, error] = await api.getUserTasks(identity.user.id)
+	const [tasks, error] = await api.getUserTasks(identity.id)
 	if (error) {
 		return {
 			error
@@ -33,7 +33,7 @@ export const actions: Actions = {
 			}
 		}
 
-		let [task, error] = await api.createUserTask(identity!.user.id, name, subject)
+		let [task, error] = await api.createUserTask(identity!.id, name, subject)
 		if (error) {
 			return {
 				error

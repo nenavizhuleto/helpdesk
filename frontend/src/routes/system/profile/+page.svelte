@@ -19,7 +19,7 @@
 	</div>
 	<div class="shadow-md p-6 bg-white rounded-xl">
 		<div class="mb-2 text-xl font-medium">Пользователь:</div>
-		<div class="text-black text-xl font-medium">{identity.user.name}</div>
+		<div class="text-black text-xl font-medium">{identity.name}</div>
 	</div>
 </div>
 
