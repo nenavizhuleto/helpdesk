@@ -121,7 +121,7 @@
 					class="cursor-pointer"
 					on:click={() => {
 						console.log(task);
-						goto(`/tasks/${task.id}`);
+						goto(`/system/tasks/${task.id}`);
 					}}
 				>
 					<TableBodyCell>{task.id}</TableBodyCell>
