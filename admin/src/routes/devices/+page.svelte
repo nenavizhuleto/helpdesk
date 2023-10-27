@@ -28,6 +28,7 @@
 	<TableHead>
 		<TableHeadCell>DeviceID</TableHeadCell>
 		<TableHeadCell>Type</TableHeadCell>
+		<TableHeadCell>OwnerID</TableHeadCell>
 		<TableHeadCell>Action</TableHeadCell>
 	</TableHead>
 	<TableBody class="divide-y">
@@ -36,6 +37,7 @@
 				<TableBodyRow>
 					<TableBodyCell>{item.ip}</TableBodyCell>
 					<TableBodyCell>{item.type}</TableBodyCell>
+					<TableBodyCell>{item.owner_id}</TableBodyCell>
 					<TableBodyCell>
 						<Button on:click={() => deleteDevice(item.ip)} color="red"
 							>Delete</Button
