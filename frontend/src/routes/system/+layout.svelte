@@ -39,12 +39,12 @@
 					site={{ href: "/", name: "", img: "/Logotype.svg" }}
 				/>
 				<SidebarGroup>
-					<SidebarItem href="profile" label="Профиль">
+					<SidebarItem href="/system/profile" label="Профиль">
 						<svelte:fragment slot="icon">
 							<UserCircleOutline />
 						</svelte:fragment>
 					</SidebarItem>
-					<SidebarItem href="tasks" label="Обращения">
+					<SidebarItem href="/system/tasks" label="Обращения">
 						<svelte:fragment slot="icon">
 							<ClipboardListOutline />
 						</svelte:fragment>

@@ -1,3 +1,4 @@
+<!-- CHAT GOES HERE -->
 <script lang="ts">
     import type { PageData } from "./$types";
 
