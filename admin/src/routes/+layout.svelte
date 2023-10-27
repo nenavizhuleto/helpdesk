@@ -22,6 +22,7 @@
 				<SidebarItem label="Networks" href="/networks" />
 				<SidebarItem label="Users" href="/users" />
 				<SidebarItem label="Devices" href="/devices" />
+				<SidebarItem label="Tasks" href="/tasks" />
 			</SidebarGroup>
 		</SidebarWrapper>
 	</Sidebar>

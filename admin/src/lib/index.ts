@@ -23,3 +23,8 @@ export async function getDevices() {
 	const res = await fetch("http://127.0.0.1:3000/api/v3/devices")
 	return res.json()
 }
+
+export async function getTasks() {
+	const res = await fetch("http://127.0.0.1:3000/api/v3/tasks")
+	return res.json()
+}
