@@ -1,4 +1,4 @@
-import type {APIError, User, Task} from "./types";
+import type {APIError, User, Task, Comment} from "./types";
 const baseURL = "http://172.16.222.31:3000/api/v3";
 
 type Response<T> = [T | undefined, APIError | undefined];
@@ -65,6 +65,11 @@ export async function getUserTasks(user_id: string): Promise<Response<Task[]>> {
 export async function getTaskById(task_id: string): Promise<Response<Task>> {
 	const [task, error] = await apiGET(`/tasks/${task_id}`);
 	return [task as Task, error];
+}
+
+export async function commentTask(task_id: string, message: string): Promise<Response<Comment>> {
+	const [comment, error] = await apiPUT(`/tasks/${task_id}/comment`, { content: message });
+	return [comment as Comment, error];
 }
 
 export async function createUserTask(

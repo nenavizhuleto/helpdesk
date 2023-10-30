@@ -17,6 +17,7 @@
 	// TODO: Why we expect that task cannot be undefined?
 	let task = data?.task!;
 
+	let message = "";
 </script>
 
 <div class="flex w-full">
@@ -89,17 +90,20 @@
 				{/each}
 			</div>
 			<!-- Chat Input -->
-			<div class="p-6 border-t border-gray-300">
+			<form method="post" action="?/comment" class="p-6 border-t border-gray-300">
 				<ButtonGroup class="w-full">
+					<Input defaultClass="hidden" name="task_id" value={task.id} />
 					<Input
 						id="input-addon"
 						size="lg"
 						type="text"
 						placeholder="Ваше сообщение..."
+						name="message"
+						bind:value={message}
 					/>
-					<Button color="blue">Отправить</Button>
+					<Button type="submit" color="blue">Отправить</Button>
 				</ButtonGroup>
-			</div>
+			</form>
 		</div>
 	</div>
 	<div
