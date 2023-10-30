@@ -3,12 +3,13 @@ package api
 import (
 	"encoding/json"
 	"helpdesk/internals/megaplan"
-	"helpdesk/internals/models/v3/task"
+	tk "helpdesk/internals/models/v3/task"
 	"helpdesk/telegram"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
+
 
 func HandleMegaplanEvent(c *fiber.Ctx) error {
 	var event megaplan.TaskEvent
@@ -25,27 +26,40 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 	log.Printf("Event: %s", string(str))
 
 	dto := event.Data
-	task, err := task.Get(dto.ID)
+	task, err := tk.Get(dto.ID)
 	if err != nil {
 		log.Printf("event: %s", err.Error())
 		return c.SendStatus(200)
 	}
 
-	task.Status = dto.GetStatus()
-	task.Comments = dto.GetComments()
-	if dto.Activity != nil {
-		task.LastActivity = dto.Activity.Value
+	needUpdate := false
+	update := make(tk.UpdateEvent, 0)
+	newStatus := dto.GetStatus()
+	if task.Status != newStatus {
+		task.Status = newStatus
+		update = append(update, tk.StatusUpdate)
+		needUpdate = true
 	}
-	tg, err := task.User.GetTelegram()
-	// If not error then telegram exists
-	// then need to notify
-	if err == nil {
-		telegram.Bot.NotifyUser(tg)
+	newComment := dto.GetLastComment()
+	if newComment != nil {
+		task.Comments = append(task.Comments, *newComment)
+		update = append(update, tk.CommentUpdate)
+		needUpdate = true
+	}
+	if dto.Activity != nil && needUpdate {
+		task.LastActivity = dto.Activity.Value
+		update = append(update, tk.ActivityUpdate)
 	}
 
-	if err := task.Save(); err != nil {
-		log.Println(err)
-		return c.SendStatus(500)
+	if needUpdate {
+		if err := task.Save(); err != nil {
+			log.Println(err)
+			return c.SendStatus(500)
+		}
+
+		if tg, _ := task.User.GetTelegram(); tg != nil {
+			telegram.Bot.NotifyUser(tg, task, update)
+		}
 	}
 
 	return c.SendStatus(200)

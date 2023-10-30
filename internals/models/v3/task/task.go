@@ -14,6 +14,15 @@ import (
 	"helpdesk/internals/models/v3/comment"
 )
 
+type updatable int
+const (
+	StatusUpdate updatable = iota // type string
+	CommentUpdate // type models.Comment
+	ActivityUpdate // type time.Time
+)
+
+type UpdateEvent []updatable
+
 type Task struct {
 	ID               string            `json:"id"`
 	Name             string            `json:"name"`

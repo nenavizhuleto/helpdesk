@@ -61,10 +61,13 @@ const (
 func filterComment(_comment *Comment) *models.Comment {
 	var comment models.Comment
 	content := _comment.Content
-	if strings.Contains(content, CommentTagTo) {
+	content = strings.ReplaceAll(content, "\u003cp\u003e", "")
+	content = strings.ReplaceAll(content, "\u003c/p\u003e", "")
+
+	if strings.HasPrefix(content, CommentTagTo) {
 		comment.Direction = models.DirectionTo
 		content = strings.Replace(content, CommentTagTo, "", 1)
-	} else if strings.Contains(content, CommentTagFrom) {
+	} else if strings.HasPrefix(content, CommentTagFrom) {
 		comment.Direction = models.DirectionFrom
 		content = strings.Replace(content, CommentTagFrom, "", 1)
 	} else {
@@ -79,6 +82,10 @@ func filterComment(_comment *Comment) *models.Comment {
 	return &comment
 }
 
+func (dto *TaskDTO) GetLastComment() *models.Comment {
+	return filterComment(dto.LastComment)
+
+}
 func (dto *TaskDTO) GetComments() []models.Comment {
 	var comments = make([]models.Comment, 0)
 	if dto.LastComment != nil {
