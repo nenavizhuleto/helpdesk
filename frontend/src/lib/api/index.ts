@@ -67,8 +67,8 @@ export async function getTaskById(task_id: string): Promise<Response<Task>> {
 	return [task as Task, error];
 }
 
-export async function commentTask(task_id: string, message: string): Promise<Response<Comment>> {
-	const [comment, error] = await apiPUT(`/tasks/${task_id}/comment`, { content: message });
+export async function commentTask(task_id: string, message: string, direction: string): Promise<Response<Comment>> {
+	const [comment, error] = await apiPUT(`/tasks/${task_id}/comment`, { content: message, direction: direction });
 	return [comment as Comment, error];
 }
 
