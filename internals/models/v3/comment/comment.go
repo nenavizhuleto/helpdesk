@@ -1,8 +1,10 @@
 package comment
 
 import (
-	"time"
 	"helpdesk/internals/models/v3/user"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -16,4 +18,13 @@ type Comment struct {
 	User        *user.User `json:"user"`
 	Direction   string     `json:"direction"`
 	TimeCreated time.Time  `json:"timeCreated"`
+}
+
+func NewComment(content string, dir string) Comment {
+	return Comment{
+		ID:          uuid.NewString(),
+		Content:     content,
+		Direction:   dir,
+		TimeCreated: time.Now(),
+	}
 }

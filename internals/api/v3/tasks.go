@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 
-	"helpdesk/internals/megaplan"
 	"helpdesk/internals/models"
 	"helpdesk/internals/models/v3/comment"
 	"helpdesk/internals/models/v3/task"
@@ -22,7 +21,8 @@ func SetTasksRoutes(path string, router fiber.Router) {
 
 func CommentTask(c *fiber.Ctx) error {
 	var body struct {
-		Content string
+		Content   string
+		Direction string
 	}
 
 	if err := c.BodyParser(&body); err != nil {
@@ -35,18 +35,12 @@ func CommentTask(c *fiber.Ctx) error {
 		return err
 	}
 
-	content := fmt.Sprintf("#[FROMUSER]: %s", body.Content)
-	com, err := megaplan.MP.CommentTask(t.ID, content)
-	if err != nil {
+	comm := comment.NewComment(body.Content, body.Direction)
+	t.Comments = append(t.Comments, comm)
+
+	if err := t.Save(); err != nil {
 		return err
 	}
-
-	var comm comment.Comment
-	comm.ID = com.ID
-	comm.Content = com.Content
-	comm.Direction = comment.DirectionFrom
-
-	t.Comments = append(t.Comments, comm)
 
 	return c.JSON(comm)
 }

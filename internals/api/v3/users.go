@@ -2,11 +2,9 @@ package api
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 
-	"helpdesk/internals/megaplan"
 	"helpdesk/internals/models"
 	"helpdesk/internals/models/v3/task"
 	"helpdesk/internals/models/v3/user"
@@ -117,8 +115,6 @@ func GetUserTasks(c *fiber.Ctx) error {
 func CreateUserTask(c *fiber.Ctx) error {
 	id := c.Params("id")
 
-	log.Printf("Body: %s", string(c.BodyRaw()))
-
 	user, err := user.Get(id)
 	if err != nil {
 		return err
@@ -143,45 +139,6 @@ func CreateUserTask(c *fiber.Ctx) error {
 	tk.User = user
 	tk.Branch = user.Branch
 	tk.Company = user.Company
-
-	tk.BeforeCreateHook = func(t *task.Task) error {
-		var TaskSubjectFormat = `
-			<h2>от %s:</h2>
-			<h3>Суть обращения:</h3>
-			<p>%s</p>
-			<hr/>
-			<h3>Дополнительная информания:</h3>
-			<ul>
-			<li>Контакты: %s</li>
-			<li>Устройство: %s</li>
-			<li>Отдел: <br/>Название: %s <br/>Описание: %s <br/>Адрес: %s <br/>Контакты: %s</li>
-			</ul>
-		`
-		task_name := fmt.Sprintf("%s: %s", t.Company.Name, t.Name)
-		task_subject := fmt.Sprintf(TaskSubjectFormat,
-			t.User.Name,
-			t.Subject,
-			t.User.Phone,
-			t.User.Devices[0],
-			t.Branch.Name,
-			t.Branch.Description,
-			t.Branch.Address,
-			t.Branch.Contacts,
-		)
-
-		dto, err := megaplan.MP.CreateTask(task_name, task_subject)
-		if err != nil {
-			return fmt.Errorf("before_create_hook: %w", err)
-		}
-
-		if dto.TimeCreated != nil {
-			t.ID = dto.ID
-			t.TimeCreated = dto.TimeCreated.Value
-			t.LastActivity = dto.TimeCreated.Value
-		}
-
-		return nil
-	}
 
 	if err := tk.Save(); err != nil {
 		return err
