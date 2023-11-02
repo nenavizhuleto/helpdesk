@@ -11,7 +11,6 @@ export const load = (async ({ params }) => {
 			error
 		}
 	}
-	task.comments = task?.comments.reverse()
 	return {
 		task: task!,
 	};
@@ -23,7 +22,9 @@ export const actions: Actions = {
 		const task_id = data.get("task_id")!
 		const message = data.get("message")!
 
-		const [comment, error] = await api.commentTask(task_id.toString(), message)
+		const direction = "from"
+
+		const [comment, error] = await api.commentTask(task_id.toString(), message, direction)
 		if (error) {
 			return {
 				error
