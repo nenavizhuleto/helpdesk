@@ -1,8 +1,6 @@
 <!-- CHAT GOES HERE -->
 <script lang="ts">
 	// --- Utils ---
-	import { scrollToBottom } from "$lib";
-	import { enhance } from "$app/forms";
 
 	// --- Types ---
 	import type { PageData } from "./$types";
@@ -11,24 +9,38 @@
 	import { Button, Alert, Input, ButtonGroup } from "flowbite-svelte";
 	import Message from "./Message.svelte";
 	import Details from "./Details.svelte";
-	import { newTaskComment } from "$lib/api";
+	import { getTaskComments, newTaskComment } from "$lib/api";
+	import { scrollToBottom } from "$lib";
+	import { afterUpdate } from "svelte";
+
+	afterUpdate(() => {
+		if (comments && sending) {
+			scrollToBottom(chat);
+			sending = false;
+		}
+	});
 
 	export let data: PageData;
-	// TODO: Why we expect that task cannot be undefined?
 	let task = data.task;
-	let comments = task.comments ?? [];
-	let sending = false;
+	let comments = data.comments!;
+	let sending = true;
 	let message = "";
+	let chat: Element;
+	let messageInput: HTMLInputElement;
 
 	async function sendMessage(content: string) {
 		sending = true;
-		const response = await newTaskComment(task.id, content);
-		if (!response.status) {
-			// do something
+		const com = await newTaskComment(task.id, content);
+		if (!com.status) {
 			return;
 		}
+		const coms = await getTaskComments(task.id);
+		if (!coms.status) {
+			return;
+		}
+		comments = coms.data;
 		message = "";
-		sending = false;
+		messageInput.focus();
 	}
 </script>
 
@@ -44,7 +56,8 @@
 		<div class="flex flex-col flex-grow w-full bg-white overflow-hidden">
 			<!-- Chat Flow -->
 			<div
-				class="flex flex-col flex-grow h-0 p-4 overflow-auto scrollbar-hide"
+				class="flex flex-col flex-grow h-0 p-4 overflow-y-scroll scrollbar-hide"
+				bind:this={chat}
 			>
 				<div class="flex flex-col gap-4 mb-6">
 					<Alert color="blue">
@@ -73,14 +86,21 @@
 			>
 				<ButtonGroup class="w-full">
 					<Input
+						let:props
 						defaultClass="outline-none w-full"
 						id="input-addon"
 						size="lg"
 						type="text"
 						placeholder="Ваше сообщение..."
+						required
 						name="message"
-						bind:value={message}
-					/>
+					>
+						<input
+							{...props}
+							bind:value={message}
+							bind:this={messageInput}
+						/>
+					</Input>
 					<Button type="submit" color="blue">Отправить</Button>
 				</ButtonGroup>
 			</form>

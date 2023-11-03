@@ -20,7 +20,7 @@ export function formatDate(date) {
 	return `${day}.${month}.${year} ${hour}:${minutes}`;
 }
 
-export const scrollToBottom = async (node) => {
+export const scrollToBottom = async (node: Element) => {
 	node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
 };
 

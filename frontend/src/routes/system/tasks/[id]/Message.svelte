@@ -2,6 +2,7 @@
 	import type { Comment } from "$lib/api/types";
 	// --- Utils ---
 	import { formatDate } from "$lib";
+
 	export let comment: Comment;
 </script>
 
