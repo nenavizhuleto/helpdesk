@@ -12,6 +12,7 @@ var (
 	ErrTypeDatabase       = ErrorType("database")
 	ErrTypeIdentification = ErrorType("identification")
 	ErrTypeParse          = ErrorType("parse")
+	ErrTypeToken          = ErrorType("token")
 )
 
 type ErrorBody map[string]any
@@ -68,12 +69,22 @@ func NewParseError(endpoint string, err error) Error {
 
 }
 
+func NewTokenError(token string, err error) Error {
+	return Error{
+		Type: ErrTypeToken,
+		Body: ErrorBody{
+			"token":   token,
+			"message": err,
+		},
+	}
+}
+
 func NewIdentificationError(ip string, err error) Error {
 	return Error{
 		Type: ErrTypeIdentification,
 		Body: ErrorBody{
-			"ip": ip,
-			"message":  err.Error(),
+			"ip":      ip,
+			"message": err.Error(),
 		},
 	}
 
