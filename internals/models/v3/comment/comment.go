@@ -28,3 +28,13 @@ func NewComment(content string, dir string) Comment {
 		TimeCreated: time.Now(),
 	}
 }
+
+func NewUserComment(u *user.User, content string) Comment {
+	return Comment{
+		ID:          uuid.NewString(),
+		Content:     content,
+		Direction:   DirectionFrom,
+		User:        u,
+		TimeCreated: time.Now(),
+	}
+}

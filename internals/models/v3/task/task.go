@@ -9,16 +9,17 @@ import (
 	"helpdesk/internals/data"
 	"helpdesk/internals/models"
 	"helpdesk/internals/models/v3/branch"
+	"helpdesk/internals/models/v3/comment"
 	"helpdesk/internals/models/v3/company"
 	"helpdesk/internals/models/v3/user"
-	"helpdesk/internals/models/v3/comment"
 )
 
 type updatable int
+
 const (
-	StatusUpdate updatable = iota // type string
-	CommentUpdate // type models.Comment
-	ActivityUpdate // type time.Time
+	StatusUpdate   updatable = iota // type string
+	CommentUpdate                   // type models.Comment
+	ActivityUpdate                  // type time.Time
 )
 
 type UpdateEvent []updatable
@@ -75,6 +76,38 @@ func ByUser(user *user.User) ([]Task, error) {
 	}
 
 	return tasks, nil
+}
+
+func ByBranch(branch_id string) ([]Task, error) {
+	coll := data.GetCollection(tasks)
+	cursor, err := coll.Find(nil, bson.D{{Key: "branch.id", Value: branch_id}})
+	if err != nil {
+		return nil, models.NewDatabaseError("task", "by_branch", err)
+	}
+
+	tasks := make([]Task, 0)
+	if err := cursor.All(nil, &tasks); err != nil {
+		return nil, models.NewDatabaseError("task", "by_branch", err)
+	}
+
+	return tasks, nil
+
+}
+
+func ByCompany(company_id string) ([]Task, error) {
+	coll := data.GetCollection(tasks)
+	cursor, err := coll.Find(nil, bson.D{{Key: "company.id", Value: company_id}})
+	if err != nil {
+		return nil, models.NewDatabaseError("task", "by_company", err)
+	}
+
+	tasks := make([]Task, 0)
+	if err := cursor.All(nil, &tasks); err != nil {
+		return nil, models.NewDatabaseError("task", "by_company", err)
+	}
+
+	return tasks, nil
+
 }
 
 func All() ([]Task, error) {
