@@ -17,9 +17,6 @@ import (
 	"helpdesk/telegram"
 )
 
-func initTelegram() {
-}
-
 func main() {
 	// --- Environment ---
 	if err := godotenv.Load(); err != nil {
@@ -65,6 +62,8 @@ func main() {
 	hd := apiRouter.Group("/helpdesk")
 	hd.Use(api.UserMiddleware)
 	hd.Get("/profile", api.GetUserProfile)
+	hd.Get("/telegram", api.GetUserTelegram)
+	hd.Post("/telegram", api.NewUserTelegram)
 	hd.Get("/tasks", api.GetUserTasks)
 	hd.Post("/tasks", api.NewUserTask)
 	hd.Get("/tasks/:id", api.GetUserTask)
@@ -74,13 +73,4 @@ func main() {
 	apiv3.SetTasksRoutes("/v3/tasks", apiRouter)
 
 	log.Fatal(app.Listen(":3000"))
-}
-
-func initEnv() {
-}
-
-func initDb() {
-}
-
-func initMegaplan() {
 }
