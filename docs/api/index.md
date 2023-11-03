@@ -1,5 +1,19 @@
 # API Documentation
 
+## Response
+
+```typescript
+interface Response {
+    status: bool,
+    ?data: any,
+    ?error: {
+        type: string,
+        message: string,
+    },
+}
+
+```
+
 ## Routes
 
 
