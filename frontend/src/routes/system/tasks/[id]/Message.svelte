@@ -5,13 +5,13 @@
 
 	export let comment: Comment;
 </script>
-
+<!-- to User -->
 {#if comment.direction == "to"}
 	<!-- START Message from HelpDesk -->
 	<div class="flex w-full mt-2 space-x-3 max-w-xs">
 		<!-- Message Avatar -->
 		<div
-			class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-tr from-indigo-700 to-indigo-400"
+			class="flex-shrink-0 flex items-center justify-center h-9 w-9 rounded-full bg-gradient-to-tr from-indigo-700 to-indigo-400"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -27,6 +27,7 @@
 			</svg>
 		</div>
 		<div>
+			<div class="text-sm leading-none text-blue-700 pt-2 pb-4 font-semibold">{comment.user.name}</div>
 			<!-- Message Text-->
 			<div class="bg-indigo-200 p-3 rounded-r-lg rounded-bl-lg text-sm">
 				{comment.content}

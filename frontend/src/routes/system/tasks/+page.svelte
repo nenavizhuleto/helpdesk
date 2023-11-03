@@ -73,7 +73,7 @@
 			<div
 				class="w-[268px] mb-10 mx-auto text-center text-zinc-500 text-xl font-medium"
 			>
-				У вас ещё нет обращений в техническую поддержку
+				Здесь ещё нет обращений в техническую поддержку
 			</div>
 
 			<img src="/EmptyTickets.svg" alt="Empty Tasks" />
