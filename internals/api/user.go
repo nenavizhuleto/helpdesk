@@ -102,11 +102,11 @@ func GetUserTask(c *fiber.Ctx) error {
 			"name":  t.User.Name,
 			"phone": t.User.Phone,
 		},
-		"comments": t.Comments,
 	}))
 }
 
 func GetUserTaskComments(c *fiber.Ctx) error {
+	u := c.Locals("user").(user.User)
 	task_id := c.Params("id")
 
 	t, err := task.Get(task_id)
@@ -114,7 +114,25 @@ func GetUserTaskComments(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(Success(t.Comments))
+	comments := make([]fiber.Map, 0)
+	for _, com := range t.Comments {
+		direction := comment.DirectionTo
+		if com.User.ID == u.ID {
+			direction = comment.DirectionFrom
+		}
+		comments = append(comments, fiber.Map{
+			"id":      com.ID,
+			"content": com.Content,
+			"user": fiber.Map{
+				"name":  com.User.Name,
+				"phone": com.User.Phone,
+			},
+			"direction":  direction,
+			"created_at": com.TimeCreated,
+		})
+	}
+
+	return c.JSON(Success(comments))
 }
 
 func NewUserTaskComment(c *fiber.Ctx) error {

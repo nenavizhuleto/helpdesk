@@ -1,218 +1,82 @@
 <script lang="ts">
-  // --- Utils ---
-  import { goto } from "$app/navigation";
-  import { formatDate } from "$lib";
-  import { getIdentity } from "$lib/api";
+	// --- Utils ---
+	import { getTasks, newTask } from "$lib/api";
 
-  // --- Types ---
-  import type { PageData } from "./$types";
+	// --- Types ---
+	import type { PageData } from "./$types";
 
-  // --- Components ---
-  import {
-    Button,
-    Badge,
-    Alert,
-    Modal,
-    Label,
-    Input,
-    Tabs,
-    TabItem,
-  } from "flowbite-svelte";
-  // `-- Table
-  import {
-    Table,
-    TableBody,
-    TableBodyCell,
-    TableBodyRow,
-    TableHead,
-    TableHeadCell,
-    Textarea,
-  } from "flowbite-svelte";
+	// --- Components ---
+	import { Button, Tabs, TabItem } from "flowbite-svelte";
+	import UserTaskTable from "./UserTaskTable.svelte";
+	import BranchTaskTable from "./BranchTaskTable.svelte";
+	import CompanyTaskTable from "./CompanyTaskTable.svelte";
+	import NewTaskModal from "./NewTaskModal.svelte";
 
-  // --- Icons ---
-  import { ExclamationCircleOutline, PlusSolid } from "flowbite-svelte-icons";
+	// --- Icons ---
+	import { PlusSolid } from "flowbite-svelte-icons";
 
-  // --- Init ---
-  // `-- TextArea
-  let taskTextareaProps = {
-    id: "subject",
-    name: "subject",
-    rows: 4,
-    placeholder: "Опишите подробнее",
-  };
-  // `-- Form
-  let formModal = false;
-  let popupModal = false;
-  let formData = {
-    name: "",
-    subject: "",
-  };
+	export let data: PageData;
+	let tasks = data.tasks;
+	let taskFilter: "branch" | "company" | undefined;
 
-  export let data: PageData;
-  // TODO: Why we expect that tasks cannot be undefined?
-  let tasks = data.tasks!;
+	$: fetchTasks(taskFilter);
+
+	async function fetchTasks(filter?: "branch" | "company") {
+		const res = await getTasks(filter);
+		if (!res.status) {
+			return;
+		}
+		tasks = res.data;
+	}
+
+	let taskModal = false;
+	async function createTask(name: string, subject: string) {
+		const task = await newTask(name, subject);
+		if (!task.status) {
+			return "";
+		}
+		let task_id = task.data;
+		fetchTasks(taskFilter);
+		return task_id;
+	}
 </script>
 
-<Modal bind:open={popupModal} dismissable={false} size="xs" autoclose>
-  <div class="text-center">
-    <ExclamationCircleOutline
-      class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-    />
-    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-      Закрыть создание обращения? Введенные данные не сохранятся.
-    </h3>
-    <Button
-      color="blue"
-      class="mr-2"
-      on:click={() => {
-        formData = {
-          name: "",
-          subject: "",
-        };
-      }}>Закрыть</Button
-    >
-    <Button color="alternative" on:click={() => (formModal = true)}
-      >Отмена</Button
-    >
-  </div>
-</Modal>
-<Modal
-  bind:open={formModal}
-  on:close={() => (popupModal = true)}
-  size="xs"
-  autoclose={false}
-  class="w-full"
->
-  <form class="flex flex-col space-y-6" method="POST" action="?/task">
-    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-      Создание обращения
-    </h3>
-    <Alert color="blue">
-      Опишите в поле «Тема обращения» краткое содержание обращения, в поле «Суть
-      обращения» опишите проблему подробно.
-    </Alert>
-    <Label class="space-y-2">
-      <span>Тема обращения</span>
-      <Input
-        type="text"
-        name="name"
-        bind:value={formData.name}
-        placeholder="Поломка принтера..."
-        required
-        size="md"
-      />
-    </Label>
-    <Label class="space-y-2">
-      <span>Суть обращения</span>
-      <Textarea {...taskTextareaProps} bind:value={formData.subject} required />
-    </Label>
-    <Button color="blue" type="submit" class="w-full gap-4" size="lg"
-      >Создать обращение</Button
-    >
-  </form>
-</Modal>
+<NewTaskModal bind:open={taskModal} onSubmit={createTask} />
 
 <div class="flex flex-col w-full p-6">
-  <div class="flex w-full justify-between pb-8">
-    <div class="text-2xl font-semibold">Обращения</div>
+	<div class="flex w-full justify-between pb-8">
+		<div class="text-2xl font-semibold">Обращения</div>
 
-    <Button color="blue" on:click={() => (formModal = true)}>
-      <PlusSolid class="mr-2 w-3 h-3" />
-      Новое обращение
-    </Button>
-  </div>
-  <Tabs contentClass="bg-white pt-4" activeClasses='p-4 text-blue-600 bg-gray-100 rounded-t-lg dark:bg-gray-800 dark:text-blue-500'>
-    <TabItem open title="Мои">
-      <Table hoverable shadow>
-        <TableHead>
-          <TableHeadCell>Номер</TableHeadCell>
-          <TableHeadCell class="w-full">Тема</TableHeadCell>
-          <TableHeadCell>Статус</TableHeadCell>
-          <TableHeadCell>Создано</TableHeadCell>
-        </TableHead>
-        <TableBody>
-          {#each tasks as task}
-            <TableBodyRow
-              class="cursor-pointer"
-              on:click={() => {
-                console.log(task);
-                goto(`/system/tasks/${task.id}`);
-              }}
-            >
-              <TableBodyCell>{task.id}</TableBodyCell>
-              <TableBodyCell>{task.name}</TableBodyCell>
-              <TableBodyCell>
-                {#if task.status == "assigned"}
-                  <Badge large color="blue">Назначена</Badge>
-                {:else if task.status == "accepted"}
-                  <Badge large color="yellow">В работе</Badge>
-                {:else if task.status == "completed"}
-                  <Badge large color="green">Решено</Badge>
-                {:else if task.status == "cancelled"}
-                  <Badge large color="red">Отклонено</Badge>
-                {:else}
-                  <Badge large color="dark">Создано</Badge>
-                {/if}
-              </TableBodyCell>
-              <TableBodyCell>{formatDate(task.created_at)}</TableBodyCell>
-            </TableBodyRow>
-          {/each}
-        </TableBody>
-      </Table>
-    </TabItem>
-    <TabItem title="Отдел">
-      <Table hoverable shadow>
-        <TableHead>
-          <TableHeadCell>Номер</TableHeadCell>
-          <TableHeadCell class="w-full">Тема</TableHeadCell>
-          <TableHeadCell>Постановщик</TableHeadCell>
-          <TableHeadCell>Статус</TableHeadCell>
-          <TableHeadCell>Создано</TableHeadCell>
-        </TableHead>
-        <TableBody>
-          {#each tasks as task}
-            <TableBodyRow
-              class="cursor-pointer"
-              on:click={() => {
-                console.log(task);
-                goto(`/system/tasks/${task.id}`);
-              }}
-            >
-              <TableBodyCell>{task.id}</TableBodyCell>
-              <TableBodyCell>{task.name}</TableBodyCell>
-              <TableBodyCell>{task.user.name}</TableBodyCell>
-              <TableBodyCell>
-                {#if task.status == "assigned"}
-                  <Badge large color="blue">Назначена</Badge>
-                {:else if task.status == "accepted"}
-                  <Badge large color="yellow">В работе</Badge>
-                {:else if task.status == "completed"}
-                  <Badge large color="green">Решено</Badge>
-                {:else if task.status == "cancelled"}
-                  <Badge large color="red">Отклонено</Badge>
-                {:else}
-                  <Badge large color="dark">Создано</Badge>
-                {/if}
-              </TableBodyCell>
-              <TableBodyCell>{formatDate(task.created_at)}</TableBodyCell>
-            </TableBodyRow>
-          {/each}
-        </TableBody>
-      </Table>
-    </TabItem>
-    <TabItem title="Компания">
-      <p>Обращения компании</p>
-    </TabItem>
-  </Tabs>
-  {#if tasks.length == 0}
-    <div class="w-[440px] mx-auto py-40">
-      <div
-        class="w-[268px] mb-10 mx-auto text-center text-zinc-500 text-xl font-medium"
-      >
-        У вас ещё нет обращений в техническую поддержку
-      </div>
+		<Button color="blue" on:click={() => (taskModal = true)}>
+			<PlusSolid class="mr-2 w-3 h-3" />
+			Новое обращение
+		</Button>
+	</div>
+	<Tabs
+		contentClass="bg-white pt-4"
+		activeClasses="p-4 text-blue-600 bg-gray-100 rounded-t-lg dark:bg-gray-800 dark:text-blue-500"
+	>
+		{#if tasks}
+			<TabItem open title="Мои" on:click={() => (taskFilter = undefined)}>
+				<UserTaskTable {tasks} />
+			</TabItem>
+			<TabItem title="Отдел" on:click={() => (taskFilter = "branch")}>
+				<BranchTaskTable {tasks} />
+			</TabItem>
+			<TabItem title="Компания" on:click={() => (taskFilter = "company")}>
+				<CompanyTaskTable {tasks} />
+			</TabItem>
+		{/if}
+	</Tabs>
+	{#if tasks?.length == 0}
+		<div class="w-[440px] mx-auto py-40">
+			<div
+				class="w-[268px] mb-10 mx-auto text-center text-zinc-500 text-xl font-medium"
+			>
+				У вас ещё нет обращений в техническую поддержку
+			</div>
 
-      <img src="/EmptyTickets.svg" alt="Empty Tasks" />
-    </div>
-  {/if}
+			<img src="/EmptyTickets.svg" alt="Empty Tasks" />
+		</div>
+	{/if}
 </div>

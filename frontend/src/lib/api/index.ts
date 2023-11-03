@@ -1,5 +1,5 @@
 import type { Token, Profile, Task, Comment } from "./types";
-const url = "http://172.16.223.26:3000/api";
+const url = "http://192.168.3.36:3000/api";
 
 interface Error {
 	type: string,
@@ -21,6 +21,7 @@ async function call<T>(
 		method: method,
 		headers: {
 			"Content-Type": "application/json",
+			"token": window.localStorage.getItem("token") ?? "",
 		},
 		body: JSON.stringify(body),
 	});

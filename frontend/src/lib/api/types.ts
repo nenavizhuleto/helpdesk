@@ -3,7 +3,10 @@ export interface Token {
 	refresh_token: string,
 }
 
-export interface User { }
+export interface User {
+	name: string,
+	phone: string,
+}
 export interface Profile {
 	name: string,
 	phone: string,
@@ -45,5 +48,5 @@ export interface Comment {
 	content: string,
 	user: User,
 	direction: "to" | "from",
-	timeCreated: Date,
+	created_at: Date,
 }

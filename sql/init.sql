@@ -64,6 +64,7 @@ INSERT INTO networks VALUES ("127.0.0.1/32", "0000-1111-0000-1111");
 INSERT INTO companies VALUES ("gtINN", "General Telecom", "gt");
 INSERT INTO branches VALUES ("gtUUID", "gtINN", "Основной отдел", "Труда 24", "880005553535", "Главный офис");
 INSERT INTO networks VALUES ("172.16.222.0/24", "gtUUID");
+INSERT INTO networks VALUES ("192.168.0.0/16", "gtUUID");
 
 
 INSERT INTO companies VALUES ("7451195700", "Южноуральский Лизинговый Центр", "lizing");
