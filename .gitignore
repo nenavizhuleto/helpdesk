@@ -2,3 +2,4 @@
 bin/*
 *.db
 helpdesk
+frontend/static/css/style.css
