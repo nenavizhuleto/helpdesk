@@ -1,14 +1,23 @@
-import type {APIError, User, Task, Comment} from "./types";
-const baseURL = "http://172.16.222.31:3000/api/v3";
+import type { Token, Profile, Task, Comment } from "./types";
+const url = "http://172.16.223.26:3000/api";
 
-type Response<T> = [T | undefined, APIError | undefined];
+interface Error {
+	type: string,
+	body: any,
+}
 
-async function apiCall(
+interface Response<T> {
+	status: boolean,
+	data: T,
+	error: Error | undefined,
+}
+
+async function call<T>(
 	method: "GET" | "POST" | "PUT" | "DELETE",
-	url: string,
+	path: string,
 	body: any
-): Promise<Response<any>> {
-	const res = await fetch(baseURL + url, {
+): Promise<Response<T>> {
+	const response = await fetch(url + path, {
 		method: method,
 		headers: {
 			"Content-Type": "application/json",
@@ -16,70 +25,50 @@ async function apiCall(
 		body: JSON.stringify(body),
 	});
 
-	const data = await res.json();
+	const data = await response.json();
 
-	if (res.status == 500) {
-		return [undefined, data as APIError];
-	}
-
-	return [data, undefined];
+	return data;
 }
 
-export async function apiGET(url: string, body?: any): Promise<Response<any>> {
-	return await apiCall("GET", url, body);
+export async function GET<T>(path: string): Promise<Response<T>> {
+	return await call<T>("GET", path, undefined);
+}
+export async function POST<T>(path: string, body: any): Promise<Response<T>> {
+	return await call<T>("POST", path, body);
 }
 
-export async function apiPOST(url: string, body?: any): Promise<Response<any>> {
-	return await apiCall("POST", url, body);
+export async function getToken(): Promise<Response<Token>> {
+	return await GET<Token>("/auth/token");
 }
 
-export async function apiPUT(url: string, body?: any): Promise<Response<any>> {
-	return await apiCall("PUT", url, body);
+export async function register(name: string, phone: string): Promise<Response<Token>> {
+	return await POST<Token>("/auth/register", { name, phone });
 }
 
-export async function apiDELETE(
-	url: string,
-	body?: any
-): Promise<Response<any>> {
-	return await apiCall("PUT", url, body);
+
+export async function getProfile(): Promise<Response<Profile>> {
+	return await GET<Profile>("/helpdesk/profile");
 }
 
-export async function getIdentity(): Promise<Response<User>> {
-	const [identity, err] = await apiGET("/identity");
-	return [identity as User, err];
+type TaskFilterOptions = "branch" | "company";
+
+export async function getTasks(filter?: TaskFilterOptions): Promise<Response<Task[]>> {
+	const url = filter ? "/helpdesk/tasks?filter=" + filter : "/helpdesk/tasks";
+	return await GET<Task[]>(url);
 }
 
-export async function RegisterUser(
-	name: string,
-	phone: string
-): Promise<Response<User>> {
-	const [user, err] = await apiPOST("/register", {name, phone});
-	return [user as User, err];
+export async function getTask(id: string): Promise<Response<Task>> {
+	return await GET<Task>("/helpdesk/tasks/" + id);
 }
 
-export async function getUserTasks(user_id: string): Promise<Response<Task[]>> {
-	const [tasks, error] = await apiGET(`/users/${user_id}/tasks`);
-	return [tasks as Task[], error];
+export async function newTask(name: string, subject: string): Promise<Response<string>> {
+	return await POST<string>("/helpdesk/tasks", { name, subject });
 }
 
-export async function getTaskById(task_id: string): Promise<Response<Task>> {
-	const [task, error] = await apiGET(`/tasks/${task_id}`);
-	return [task as Task, error];
+export async function getTaskComments(id: string): Promise<Response<Comment[]>> {
+	return await GET<Comment[]>("/helpdesk/tasks/" + id + "/comments");
 }
 
-export async function commentTask(task_id: string, message: string, direction: string): Promise<Response<Comment>> {
-	const [comment, error] = await apiPUT(`/tasks/${task_id}/comment`, { content: message, direction: direction });
-	return [comment as Comment, error];
-}
-
-export async function createUserTask(
-	user_id: string,
-	name: string,
-	subject: string
-): Promise<Response<Task>> {
-	const [task, error] = await apiPOST(`/users/${user_id}/tasks`, {
-		name,
-		subject,
-	});
-	return [task as Task, error];
+export async function newTaskComment(id: string, content: string): Promise<Response<string>> {
+	return await POST<string>("/helpdesk/tasks/" + id + "/comments", { content });
 }

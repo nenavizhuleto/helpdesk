@@ -1,13 +1,11 @@
 <script lang="ts">
 	// --- Utils ---
 	import { page } from "$app/stores";
-	import { goto } from "$app/navigation";
-	import { writable } from "svelte/store";
-	import { setContext } from "svelte";
+	import type { Writable } from "svelte/store";
+	import { getContext } from "svelte";
 
 	// --- Types ---
 	import type { PageData } from "./$types";
-	import type { User } from "$lib/api/types";
 
 	// --- Components ---
 	import {
@@ -25,18 +23,25 @@
 	} from "flowbite-svelte-icons";
 
 	export let data: PageData;
-	const identity = writable<User>();
-	// If couldn't identify user goto registration
-	// Else move identity to storage for using in other pages
-	$: () => {
-		if (!data.identity) {
-			goto("/register");
-		} else {
-			identity.set(data.identity);
-			setContext("identity", identity);
-		}
-	};
+	import type { User } from "$lib/api/types";
+	import { beforeNavigate, goto } from "$app/navigation";
+	import { getIdentity } from "$lib/api";
+	import { setContext } from "svelte";
+	import { userStore } from "$lib";
 
+	beforeNavigate(async (nav) => {
+		let [identity, error] = await getIdentity();
+		if (identity) {
+			userStore.set(identity);
+			setContext("user", identity)
+		}
+		if (error) {
+			nav.cancel();
+			goto("/register");
+		}
+	});
+	let user = getContext<Writable<User>>("user");
+	$: console.log(user);
 	// highlight corresponding SideBarItem in relation of current url
 	$: activeUrl = $page.url.pathname;
 </script>

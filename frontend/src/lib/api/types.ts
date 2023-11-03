@@ -1,46 +1,21 @@
-export interface Company {
-	id: string,
-	name: string,
-	slug: string,
+export interface Token {
+	token: string,
+	refresh_token: string,
 }
 
-export interface Branch {
-	id: string,
-	name: string,
-	description: string,
-	address: string,
-	contacts: string,
-	company_id: string,
-}
-
-export interface Network {
-	netmask: string
-}
-
-export interface User {
-	id: string,
+export interface User { }
+export interface Profile {
 	name: string,
 	phone: string,
-	network: Network,
-	branch: Branch,
-	company: Company,
-	devices: Device[],
-}
-
-export type DeviceType = "PC" | "Unknown"
-
-export interface Device {
-	ip: string,
-	type: DeviceType
-	owner_id: string,
-}
-
-export interface Comment {
-	id: string,
-	content: string,
-	user: User | undefined,
-	direction: "to" | "from",
-	timeCreated: Date,
+	company: {
+		name: string,
+	},
+	branch: {
+		name: string,
+		description: string,
+		address: string,
+		contacts: string,
+	}
 }
 
 export type TaskStatus = "created" | "assigned" | "accepted" | "done" | "completed" | "rejected" | "cancelled" | "expired" | "delayed" | "template" | "overdue";
@@ -52,17 +27,23 @@ export interface Task {
 	status: TaskStatus,
 	created_at: Date,
 	activity_at: Date,
-	company: Company,
-	branch: Branch,
-	user: User,
-	comments: Comment[],
+	branch: {
+		name: string,
+		description: string,
+		address: string,
+		contacts: string,
+	},
+	user: {
+		name: string,
+		phone: string,
+	}
+	comments?: Comment[],
 }
 
-export interface APIError {
-	type: string,
-	body: {
-		action: string,
-		entity: string,
-		errors: string[]
-	}
+export interface Comment {
+	id: string,
+	content: string,
+	user: User,
+	direction: "to" | "from",
+	timeCreated: Date,
 }
