@@ -76,6 +76,32 @@ func GetUserTasks(c *fiber.Ctx) error {
 	return c.JSON(Success(res))
 }
 
+func NewUserTelegram(c *fiber.Ctx) error {
+	u := c.Locals("user").(user.User)
+
+	tg, err := u.CreateTelegram()
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(Success(fiber.Map{
+		"pass": tg.Pass,
+	}))
+}
+
+func GetUserTelegram(c *fiber.Ctx) error {
+	u := c.Locals("user").(user.User)
+
+	tg, err := u.GetTelegram()
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(Success(fiber.Map{
+		"pass": tg.Pass,
+	}))
+}
+
 func GetUserTask(c *fiber.Ctx) error {
 	task_id := c.Params("id")
 

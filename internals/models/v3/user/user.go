@@ -60,30 +60,30 @@ func New(username string, phone string, ip string) (*User, error) {
 		ID:         newID(),
 		Name:       validName,
 		Phone:      validPhone,
-		Network: network,
-		Branch: branch,
-		Company: company,
+		Network:    network,
+		Branch:     branch,
+		Company:    company,
 		Devices:    make([]*device.Device, 0),
 		Identified: true,
 	}, nil
 }
 
-func (u *User) CreateTelegram() error {
+func (u User) CreateTelegram() (*TelegramUser, error) {
 	coll := data.GetCollection(telegram)
 
 	tg := TelegramUser{
-		User: *u,
+		User: u,
 		Pass: util.RandStringBytes(TelegramPassLength),
 	}
 
 	if _, err := coll.InsertOne(nil, tg); err != nil {
-		return models.NewDatabaseError("user", "telegram", err)
+		return nil, models.NewDatabaseError("user", "telegram", err)
 	}
 
-	return nil
+	return &tg, nil
 }
 
-func (u *User) GetTelegram() (*TelegramUser, error) {
+func (u User) GetTelegram() (*TelegramUser, error) {
 	coll := data.GetCollection(telegram)
 
 	var tg TelegramUser
