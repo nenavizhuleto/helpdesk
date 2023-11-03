@@ -33,6 +33,26 @@ interface Token
 }
 ```
 
+### Registration
+
+POST: `/api/auth/register`
+
+payload: request's ip address +
+```typescript
+interface RegisterForm {
+    name: string,
+    phone: string
+}
+```
+response:
+```typescript
+interface Token 
+{
+    token: string,
+    refresh_token: string,
+}
+```
+
 ### Client's routes
 
 #### Get Profile Information
