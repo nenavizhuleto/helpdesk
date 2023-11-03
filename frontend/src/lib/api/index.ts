@@ -1,4 +1,4 @@
-import type { Token, Profile, Task, Comment } from "./types";
+import type { Token, Profile, Task, Comment, Telegram } from "./types";
 const url = "http://192.168.3.36:3000/api";
 
 interface Error {
@@ -49,6 +49,14 @@ export async function register(name: string, phone: string): Promise<Response<To
 
 export async function getProfile(): Promise<Response<Profile>> {
 	return await GET<Profile>("/helpdesk/profile");
+}
+
+export async function getTelegram(): Promise<Response<Telegram>> {
+	return await GET<Telegram>("/helpdesk/telegram")
+}
+
+export async function newTelegram(): Promise<Response<Telegram>> {
+	return await POST<Telegram>("/helpdesk/telegram", undefined)
 }
 
 type TaskFilterOptions = "branch" | "company";

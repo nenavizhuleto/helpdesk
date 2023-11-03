@@ -3,6 +3,7 @@
 	import type { Task, TaskStatus } from "$lib/api/types";
 	import { ImagePlaceholder } from "flowbite-svelte";
 	import type { PageData } from "./$types";
+	import TelegramWidget from "./TelegramWidget.svelte";
 
 	export let data: PageData;
 	let profile = data.profile;
@@ -70,4 +71,7 @@
 			</div>
 		</div>
 	{/if}
+	<div class="mt-4">
+		<TelegramWidget />
+	</div>
 </div>

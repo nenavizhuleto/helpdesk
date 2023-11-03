@@ -7,6 +7,11 @@ export interface User {
 	name: string,
 	phone: string,
 }
+
+export interface Telegram {
+	pass: string,
+}
+
 export interface Profile {
 	name: string,
 	phone: string,
