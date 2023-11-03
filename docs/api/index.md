@@ -6,7 +6,9 @@
 ### Authorization 
 
 POST: `/api/auth/token`
+
 payload: request's ip address
+
 response:
 
 ```typescript
@@ -22,8 +24,11 @@ interface Token
 #### Get Profile Information
 
 GET: `/api/helpdesk/profile`
+
 payload: none
+
 headers: token
+
 response:
 
 ```typescript
@@ -43,11 +48,24 @@ interface Profile
 }
 ```
 
+#### Get User's Telegram Pass
+
+GET: `/api/helpdesk/telegram`
+
+payload: none
+
+headers: token
+
+response: `telegram token`
+
 #### Get User's Tasks
 
 GET: `/api/helpdesk/tasks`
+
 payload: none
+
 headers: token
+
 response: `Task[]`
 
 ```typescript
@@ -64,8 +82,11 @@ interface Task {
 #### Get Branch's Tasks
 
 GET: `/api/helpdesk/tasks?filter=branch`
+
 payload: none
+
 headers: token
+
 response: `Task[]`
 
 ```typescript
@@ -86,8 +107,11 @@ interface Task {
 #### Get Company's Tasks
 
 GET: `/api/helpdesk/tasks?filter=company`
+
 payload: none
+
 headers: token
+
 response: `Task[]`
 
 ```typescript
@@ -115,8 +139,11 @@ interface Task {
 #### Get Task
 
 GET: `/api/helpdesk/tasks/:id`
+
 payload: none
+
 headers: token
+
 response: `Task`
 
 ```typescript
@@ -156,8 +183,11 @@ interface Task {
 #### Get Task's comments
 
 GET: `/api/helpdesk/tasks/:id/comments`
+
 payload: none
+
 headers: token
+
 response: `Comment[]`
 
 ```typescript
@@ -176,6 +206,7 @@ interface Comment {
 #### Create New Task
 
 POST: `/api/helpdesk/tasks`
+
 payload:
 ```typescript
 interface NewTask {
@@ -183,18 +214,22 @@ interface NewTask {
     subject: string,
 }
 ```
+
 headers: token
+
 response: `task id`
 
 #### Comment Task
 
 POST: `/api/helpdesk/tasks/:id/comments`
+
 payload:
 ```typescript
 interface NewComment {
     content: string
 }
 ```
-headers: token
-response: `comment id`
 
+headers: token
+
+response: `comment id`
