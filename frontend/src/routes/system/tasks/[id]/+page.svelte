@@ -7,6 +7,7 @@
 
 	// --- Components ---
 	import { Button, Alert, Input, ButtonGroup } from "flowbite-svelte";
+	import { ArrowLeftOutline } from "flowbite-svelte-icons";
 	import Message from "./Message.svelte";
 	import Details from "./Details.svelte";
 	import { getTaskComments, newTaskComment } from "$lib/api";
@@ -48,8 +49,8 @@
 	<!-- Chat Container -->
 	<div class="grow h-screen flex flex-col">
 		<!-- Chat Header -->
-		<div class="px-6 py-6 border-b border-gray-300">
-			<h2 class="text-lg font-bold text-center">{task.name}</h2>
+		<div class="flex items-center px-6 py-6 border-b border-gray-300" >
+		<a href="/system/tasks"><ArrowLeftOutline class="text-gray-400 hover:text-gray-500"/></a>	<h2 class="text-lg font-bold grow text-center">{task.name}</h2>
 		</div>
 
 		<!-- Chat Body -->
