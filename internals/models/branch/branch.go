@@ -3,7 +3,7 @@ package branch
 import (
 	"helpdesk/internals/data"
 	"helpdesk/internals/models"
-	"helpdesk/internals/models/v3/company"
+	"helpdesk/internals/models/company"
 
 	"github.com/google/uuid"
 )

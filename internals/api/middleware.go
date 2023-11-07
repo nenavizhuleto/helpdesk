@@ -2,7 +2,7 @@ package api
 
 import (
 	"helpdesk/internals/models"
-	"helpdesk/internals/models/v3/user"
+	"helpdesk/internals/models/user"
 
 	"github.com/gofiber/fiber/v2"
 )

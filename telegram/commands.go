@@ -2,7 +2,7 @@ package telegram
 
 import (
 	"fmt"
-	"helpdesk/internals/models/v3/user"
+	"helpdesk/internals/models/user"
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )

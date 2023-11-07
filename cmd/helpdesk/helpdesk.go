@@ -9,8 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 
-	api "helpdesk/internals/api"
-	apiv3 "helpdesk/internals/api/v3"
+	"helpdesk/internals/api"
 	"helpdesk/internals/data"
 	"helpdesk/internals/megaplan"
 	"helpdesk/internals/util"
@@ -70,7 +69,6 @@ func main() {
 	hd.Get("/tasks/:id/comments", api.GetUserTaskComments)
 	hd.Post("/tasks/:id/comments", api.NewUserTaskComment)
 
-	apiv3.SetTasksRoutes("/v3/tasks", apiRouter)
 
 	log.Fatal(app.Listen(":3000"))
 }

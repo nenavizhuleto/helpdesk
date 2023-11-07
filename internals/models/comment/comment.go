@@ -1,7 +1,7 @@
 package comment
 
 import (
-	"helpdesk/internals/models/v3/user"
+	"helpdesk/internals/models/user"
 	"time"
 
 	"github.com/google/uuid"

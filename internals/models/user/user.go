@@ -6,10 +6,10 @@ import (
 
 	"helpdesk/internals/data"
 	"helpdesk/internals/models"
-	"helpdesk/internals/models/v3/branch"
-	"helpdesk/internals/models/v3/company"
-	"helpdesk/internals/models/v3/device"
-	"helpdesk/internals/models/v3/network"
+	"helpdesk/internals/models/branch"
+	"helpdesk/internals/models/company"
+	"helpdesk/internals/models/device"
+	"helpdesk/internals/models/network"
 	"helpdesk/internals/util"
 )
 

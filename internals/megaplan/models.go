@@ -1,7 +1,7 @@
 package megaplan
 
 import (
-	models "helpdesk/internals/models/v3/comment"
+	models "helpdesk/internals/models/comment"
 	"strings"
 	"time"
 )

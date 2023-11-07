@@ -2,8 +2,8 @@ package telegram
 
 import (
 	"fmt"
-	"helpdesk/internals/models/v3/task"
-	"helpdesk/internals/models/v3/user"
+	"helpdesk/internals/models/task"
+	"helpdesk/internals/models/user"
 )
 
 func (t *TelegramNotificator) NotifyUser(user *user.TelegramUser, tk *task.Task, update task.UpdateEvent) {

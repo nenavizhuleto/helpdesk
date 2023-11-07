@@ -2,9 +2,9 @@ package api
 
 import (
 	"helpdesk/internals/models"
-	"helpdesk/internals/models/v3/comment"
-	"helpdesk/internals/models/v3/task"
-	"helpdesk/internals/models/v3/user"
+	"helpdesk/internals/models/comment"
+	"helpdesk/internals/models/task"
+	"helpdesk/internals/models/user"
 
 	"github.com/gofiber/fiber/v2"
 )

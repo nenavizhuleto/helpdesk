@@ -8,10 +8,10 @@ import (
 
 	"helpdesk/internals/data"
 	"helpdesk/internals/models"
-	"helpdesk/internals/models/v3/branch"
-	"helpdesk/internals/models/v3/comment"
-	"helpdesk/internals/models/v3/company"
-	"helpdesk/internals/models/v3/user"
+	"helpdesk/internals/models/branch"
+	"helpdesk/internals/models/comment"
+	"helpdesk/internals/models/company"
+	"helpdesk/internals/models/user"
 )
 
 type updatable int
