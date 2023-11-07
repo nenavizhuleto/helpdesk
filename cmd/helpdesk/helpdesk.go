@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"helpdesk/internals/api"
+	"helpdesk/internals/api/admin"
 	"helpdesk/internals/data"
 	"helpdesk/internals/megaplan"
 	"helpdesk/internals/util"
@@ -69,6 +70,24 @@ func main() {
 	hd.Get("/tasks/:id/comments", api.GetUserTaskComments)
 	hd.Post("/tasks/:id/comments", api.NewUserTaskComment)
 
+	// --- Admin ---
+	adm := apiRouter.Group("/admin")
+	adm.Use(admin.AdminMiddleware)
+	// --- Company
+	adm.Get("/company", admin.GetCompanies)
+	adm.Get("/company/:id", admin.GetCompany)
+	adm.Post("/company", admin.NewCompany)
+	adm.Delete("/company/:id", admin.DeleteCompany)
+	// --- Branch
+	adm.Get("/branch", admin.GetBranches)
+	adm.Get("/branch/:id", admin.GetBranch)
+	adm.Post("/branch/:company_id", admin.NewBranch)
+	adm.Delete("/branch/:id", admin.DeleteBranch)
+	// --- User
+	adm.Get("/user", admin.GetUsers)
+	adm.Get("/user/:id", admin.GetUser)
+	adm.Post("/user", admin.NewUser)
+	adm.Delete("/user/:id", admin.DeleteUser)
 
 	log.Fatal(app.Listen(":3000"))
 }
