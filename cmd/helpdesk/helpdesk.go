@@ -14,7 +14,6 @@ import (
 	"helpdesk/internals/data"
 	"helpdesk/internals/megaplan"
 	"helpdesk/internals/util"
-	"helpdesk/telegram"
 )
 
 func main() {
@@ -24,11 +23,11 @@ func main() {
 	}
 
 	// --- Telegram Bot ---
-	if err := telegram.InitDefault(util.MustGetEnvVar("TELEGRAM_TOKEN")); err != nil {
-		panic(err)
-	}
+	//if err := telegram.InitDefault(util.MustGetEnvVar("TELEGRAM_TOKEN")); err != nil {
+		//panic(err)
+	//}
 
-	go telegram.Bot.Run()
+	//go telegram.Bot.Run()
 
 	// --- Database ---
 	if db, err := data.NewDB(); err != nil {
