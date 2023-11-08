@@ -1,12 +1,40 @@
 // place files you want to import through the `$lib` alias in this folder.
-export async function getCompanies() {
-	const res = await fetch("http://127.0.0.1:3000/api/v3/company")
-	return res.json()
+
+export const url: string = "http://127.0.0.1:3000/api/admin";
+
+export interface Response {
+	status: boolean,
+	data: any,
+	error: any,
 }
 
+export async function call(method: "GET" | "POST" | "DELETE", path: string, body?: any): Promise<Response> {
+	const res = await fetch(url + path, {
+		method: method,
+		headers: {
+			"token": "password",
+		},
+		body: JSON.stringify(body)
+	})
+
+	return await res.json() as Response
+}
+
+export async function getCompanies() {
+	return await call("GET", "/company")
+}
+
+export async function getCompany(id: string) {
+	return await call("GET", "/company/" + id)
+}
+
+export async function newCompany(itn: string, name: string) {
+	return await call("POST", "/company", { itn, name })
+}
+
+
 export async function getBranches() {
-	const res = await fetch("http://127.0.0.1:3000/api/v3/branch")
-	return res.json()
+	return await call("GET", "/branch")
 }
 
 export async function getNetworks() {
