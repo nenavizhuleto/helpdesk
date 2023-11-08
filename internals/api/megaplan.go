@@ -187,7 +187,7 @@ func PrepareTaskForMegaplan(_task *task.Task) error {
 	}
 
 	if dto.TimeCreated != nil {
-		_task.ID = dto.ID
+		_task.ID = dto.HumanNumber
 		_task.TimeCreated = dto.TimeCreated.Value
 		_task.LastActivity = dto.TimeCreated.Value
 	}
