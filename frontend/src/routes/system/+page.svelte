@@ -36,7 +36,7 @@
 	{/if}
 
 	{#if tasks}
-		<div>
+		<div class="mb-10">
 			<h2 class="text-black text-2xl font-semibold mb-6">Обращения</h2>
 			<!-- Cards List -->
 			<div class="flex gap-4">
@@ -71,6 +71,8 @@
 			</div>
 		</div>
 	{/if}
+
+
 	<div class="mt-4">
 		<TelegramWidget />
 	</div>
