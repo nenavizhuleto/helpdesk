@@ -7,7 +7,6 @@ import (
 	"helpdesk/internals/models"
 	"helpdesk/internals/models/comment"
 	"helpdesk/internals/models/task"
-	tk "helpdesk/internals/models/task"
 	"helpdesk/internals/models/user"
 	"helpdesk/telegram"
 	"log"
@@ -15,10 +14,53 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func ProcessTaskEvent(dto megaplan.TaskDTO) error {
+	_task, err := task.Get(dto.ID)
+	if err != nil {
+		return err
+	}
+
+	needUpdate := false
+	update := make(task.UpdateEvent, 0)
+
+	// --- Did status changed? ---
+	newStatus := dto.GetStatus()
+	if _task.Status != newStatus {
+		_task.Status = newStatus
+		update = append(update, task.StatusUpdate)
+		needUpdate = true
+	}
+
+	// --- Did new comment appeared? ---
+	newComment := dto.GetLastComment()
+	if newComment != nil {
+		_task.Comments = append(_task.Comments, *newComment)
+		update = append(update, task.CommentUpdate)
+		needUpdate = true
+	}
+
+	// --- If need update -> change activity time ---
+	if dto.Activity != nil && needUpdate {
+		_task.LastActivity = dto.Activity.Value
+		update = append(update, task.ActivityUpdate)
+	}
+
+	if needUpdate {
+		if err := _task.Save(); err != nil {
+			return err
+		}
+
+		if tg, _ := _task.User.GetTelegram(); tg != nil {
+			telegram.Bot.NotifyUser(tg, _task, update)
+		}
+	}
+
+	return nil
+}
+
 func HandleMegaplanEvent(c *fiber.Ctx) error {
 	var event megaplan.TaskEvent
 	if err := c.BodyParser(&event); err != nil {
-		log.Println(err)
 		return c.SendStatus(500)
 	}
 
@@ -30,40 +72,8 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 	log.Printf("Event: %s", string(str))
 
 	dto := event.Data
-	task, err := tk.Get(dto.ID)
-	if err != nil {
-		log.Printf("event: %s", err.Error())
-		return c.SendStatus(200)
-	}
-
-	needUpdate := false
-	update := make(tk.UpdateEvent, 0)
-	newStatus := dto.GetStatus()
-	if task.Status != newStatus {
-		task.Status = newStatus
-		update = append(update, tk.StatusUpdate)
-		needUpdate = true
-	}
-	newComment := dto.GetLastComment()
-	if newComment != nil {
-		task.Comments = append(task.Comments, *newComment)
-		update = append(update, tk.CommentUpdate)
-		needUpdate = true
-	}
-	if dto.Activity != nil && needUpdate {
-		task.LastActivity = dto.Activity.Value
-		update = append(update, tk.ActivityUpdate)
-	}
-
-	if needUpdate {
-		if err := task.Save(); err != nil {
-			log.Println(err)
-			return c.SendStatus(500)
-		}
-
-		if tg, _ := task.User.GetTelegram(); tg != nil {
-			telegram.Bot.NotifyUser(tg, task, update)
-		}
+	if err := ProcessTaskEvent(dto); err != nil {
+		return c.SendStatus(500)
 	}
 
 	return c.SendStatus(200)
@@ -71,7 +81,8 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 
 func CommentTaskMegaplan(c *fiber.Ctx) error {
 	var body struct {
-		Content string
+		Content   string
+		Direction string
 	}
 
 	if err := c.BodyParser(&body); err != nil {
@@ -84,20 +95,26 @@ func CommentTaskMegaplan(c *fiber.Ctx) error {
 		return err
 	}
 
-	content := fmt.Sprintf("#[FROMUSER]: %s", body.Content)
-	com, err := megaplan.MP.CommentTask(t.ID, content)
+	var content string
+	switch body.Direction {
+	case comment.DirectionTo:
+		content = fmt.Sprintf("%s %s", megaplan.CommentTagTo, body.Content)
+	case comment.DirectionFrom:
+		content = fmt.Sprintf("%s %s", megaplan.CommentTagFrom, body.Content)
+	}
+	mp_comment, err := megaplan.MP.CommentTask(t.ID, content)
 	if err != nil {
 		return err
 	}
 
-	var comm comment.Comment
-	comm.ID = com.ID
-	comm.Content = com.Content
-	comm.Direction = comment.DirectionFrom
+	var _comment comment.Comment
+	_comment.ID = mp_comment.ID
+	_comment.Content = mp_comment.Content
+	_comment.Direction = comment.DirectionFrom
 
-	t.Comments = append(t.Comments, comm)
+	t.Comments = append(t.Comments, _comment)
 
-	return c.JSON(comm)
+	return c.JSON(Success(_comment))
 }
 
 func CreateUserTaskMegaplan(c *fiber.Ctx) error {
@@ -105,7 +122,7 @@ func CreateUserTaskMegaplan(c *fiber.Ctx) error {
 
 	log.Printf("Body: %s", string(c.BodyRaw()))
 
-	user, err := user.Get(id)
+	_user, err := user.Get(id)
 	if err != nil {
 		return err
 	}
@@ -119,19 +136,28 @@ func CreateUserTaskMegaplan(c *fiber.Ctx) error {
 		return models.NewParseError("task", err)
 	}
 
-	tk, err := task.New()
+	_task, err := task.New()
 	if err != nil {
 		return err
 	}
 
-	tk.Name = body.Name
-	tk.Subject = body.Subject
-	tk.User = user
-	tk.Branch = user.Branch
-	tk.Company = user.Company
+	_task.Name = body.Name
+	_task.Subject = body.Subject
+	_task.User = _user
+	_task.Branch = _user.Branch
+	_task.Company = _user.Company
+	_task.BeforeSaveHook = PrepareTaskForMegaplan
 
-	tk.BeforeCreateHook = func(t *task.Task) error {
-		var TaskSubjectFormat = `
+	if err := _task.Save(); err != nil {
+		return err
+	}
+
+	return c.JSON(Success(_task))
+
+}
+
+func PrepareTaskForMegaplan(_task *task.Task) error {
+	var TaskSubjectFormat = `
 			<h2>от %s:</h2>
 			<h3>Суть обращения:</h3>
 			<p>%s</p>
@@ -143,36 +169,29 @@ func CreateUserTaskMegaplan(c *fiber.Ctx) error {
 			<li>Отдел: <br/>Название: %s <br/>Описание: %s <br/>Адрес: %s <br/>Контакты: %s</li>
 			</ul>
 		`
-		task_name := fmt.Sprintf("%s: %s", t.Company.Name, t.Name)
-		task_subject := fmt.Sprintf(TaskSubjectFormat,
-			t.User.Name,
-			t.Subject,
-			t.User.Phone,
-			t.User.Devices[0],
-			t.Branch.Name,
-			t.Branch.Description,
-			t.Branch.Address,
-			t.Branch.Contacts,
-		)
+	task_name := fmt.Sprintf("%s: %s", _task.Company.Name, _task.Name)
+	task_subject := fmt.Sprintf(TaskSubjectFormat,
+		_task.User.Name,
+		_task.Subject,
+		_task.User.Phone,
+		_task.User.Devices[0],
+		_task.Branch.Name,
+		_task.Branch.Description,
+		_task.Branch.Address,
+		_task.Branch.Contacts,
+	)
 
-		dto, err := megaplan.MP.CreateTask(task_name, task_subject)
-		if err != nil {
-			return fmt.Errorf("before_create_hook: %w", err)
-		}
-
-		if dto.TimeCreated != nil {
-			t.ID = dto.ID
-			t.TimeCreated = dto.TimeCreated.Value
-			t.LastActivity = dto.TimeCreated.Value
-		}
-
-		return nil
+	dto, err := megaplan.MP.CreateTask(task_name, task_subject)
+	if err != nil {
+		return fmt.Errorf("before_create_hook: %w", err)
 	}
 
-	if err := tk.Save(); err != nil {
-		return err
+	if dto.TimeCreated != nil {
+		_task.ID = dto.ID
+		_task.TimeCreated = dto.TimeCreated.Value
+		_task.LastActivity = dto.TimeCreated.Value
 	}
 
-	return c.JSON(tk)
+	return nil
 
 }

@@ -25,17 +25,17 @@ const (
 type UpdateEvent []updatable
 
 type Task struct {
-	ID               string            `json:"id"`
-	Name             string            `json:"name"`
-	Subject          string            `json:"subject"`
-	Status           string            `json:"status"`
-	TimeCreated      time.Time         `json:"created_at"`
-	LastActivity     time.Time         `json:"activity_at"`
-	Company          *company.Company  `json:"company"`
-	Branch           *branch.Branch    `json:"branch"`
-	User             *user.User        `json:"user"`
-	Comments         []comment.Comment `json:"comments"`
-	BeforeCreateHook HookFunc          `json:"-" bson:"-"`
+	ID             string            `json:"id"`
+	Name           string            `json:"name"`
+	Subject        string            `json:"subject"`
+	Status         string            `json:"status"`
+	TimeCreated    time.Time         `json:"created_at"`
+	LastActivity   time.Time         `json:"activity_at"`
+	Company        *company.Company  `json:"company"`
+	Branch         *branch.Branch    `json:"branch"`
+	User           *user.User        `json:"user"`
+	Comments       []comment.Comment `json:"comments"`
+	BeforeSaveHook HookFunc          `json:"-" bson:"-"`
 }
 
 const tasks = "tasks"
@@ -130,8 +130,8 @@ func (t *Task) Save() error {
 
 	if _, err := Get(t.ID); err != nil {
 		// Not exists
-		if t.BeforeCreateHook != nil {
-			if err := t.BeforeCreateHook(t); err != nil {
+		if t.BeforeSaveHook != nil {
+			if err := t.BeforeSaveHook(t); err != nil {
 				return models.NewDatabaseError("task", "before_create", err)
 			}
 		}
