@@ -79,7 +79,7 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 	return c.SendStatus(200)
 }
 
-func CommentTaskMegaplan(c *fiber.Ctx) error {
+func NewUserTaskCommentMegaplan(c *fiber.Ctx) error {
 	var body struct {
 		Content   string
 		Direction string
@@ -117,15 +117,10 @@ func CommentTaskMegaplan(c *fiber.Ctx) error {
 	return c.JSON(Success(_comment))
 }
 
-func CreateUserTaskMegaplan(c *fiber.Ctx) error {
-	id := c.Params("id")
+func NewUserTaskMegaplan(c *fiber.Ctx) error {
+	_user := c.Locals("user").(user.User)
 
 	log.Printf("Body: %s", string(c.BodyRaw()))
-
-	_user, err := user.Get(id)
-	if err != nil {
-		return err
-	}
 
 	var body struct {
 		Name    string
@@ -143,7 +138,7 @@ func CreateUserTaskMegaplan(c *fiber.Ctx) error {
 
 	_task.Name = body.Name
 	_task.Subject = body.Subject
-	_task.User = _user
+	_task.User = &_user
 	_task.Branch = _user.Branch
 	_task.Company = _user.Company
 	_task.BeforeSaveHook = PrepareTaskForMegaplan
@@ -187,7 +182,7 @@ func PrepareTaskForMegaplan(_task *task.Task) error {
 	}
 
 	if dto.TimeCreated != nil {
-		_task.ID = dto.HumanNumber
+		_task.ID = fmt.Sprintf("%d", dto.HumanNumber)
 		_task.TimeCreated = dto.TimeCreated.Value
 		_task.LastActivity = dto.TimeCreated.Value
 	}

@@ -163,6 +163,10 @@ func GetUserTaskComments(c *fiber.Ctx) error {
 
 func NewUserTaskComment(c *fiber.Ctx) error {
 	u := c.Locals("user").(user.User)
+	forward := c.Query("forward", "")
+	if forward == "megaplan" {
+		return NewUserTaskCommentMegaplan(c)
+	}
 	var body struct {
 		Content string
 	}
@@ -188,6 +192,10 @@ func NewUserTaskComment(c *fiber.Ctx) error {
 }
 
 func NewUserTask(c *fiber.Ctx) error {
+	forward := c.Query("forward", "")
+	if forward == "megaplan" {
+		return NewUserTaskMegaplan(c)
+	}
 	u := c.Locals("user").(user.User)
 	var body struct {
 		Name    string

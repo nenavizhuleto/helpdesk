@@ -26,7 +26,7 @@ type Comment struct {
 // Piece of information to create task in Megaplan
 type TaskDTO struct {
 	ID            string       `json:"id,omitempty"`
-	HumanNumber   string       `json:"humanNumber,omitempty"`
+	HumanNumber   int          `json:"humanNumber,omitempty"`
 	Name          string       `json:"name"`
 	Subject       string       `json:"subject"`
 	Responsible   Employee     `json:"responsible"`
