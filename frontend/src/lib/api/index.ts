@@ -1,5 +1,5 @@
 import type { Token, Profile, Task, Comment, Telegram } from "./types";
-const url = "http://192.168.3.36:3000/api";
+const url = "http://172.16.222.31:3000/api";
 
 interface Error {
 	type: string,
@@ -71,7 +71,7 @@ export async function getTask(id: string): Promise<Response<Task>> {
 }
 
 export async function newTask(name: string, subject: string): Promise<Response<string>> {
-	return await POST<string>("/helpdesk/tasks", { name, subject });
+	return await POST<string>("/helpdesk/tasks?forward=megaplan", { name, subject });
 }
 
 export async function getTaskComments(id: string): Promise<Response<Comment[]>> {
@@ -79,5 +79,5 @@ export async function getTaskComments(id: string): Promise<Response<Comment[]>> 
 }
 
 export async function newTaskComment(id: string, content: string): Promise<Response<string>> {
-	return await POST<string>("/helpdesk/tasks/" + id + "/comments", { content });
+	return await POST<string>("/helpdesk/tasks/" + id + "/comments?forward=megaplan", { content });
 }
