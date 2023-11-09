@@ -20,7 +20,23 @@ func ProcessTaskEvent(dto megaplan.TaskDTO) error {
 		return err
 	}
 
-	needUpdate := false
+	updateTask := func(t *task.Task, u task.UpdateEvent) error {
+		if dto.Activity != nil {
+			_task.LastActivity = dto.Activity.Value
+			u = append(u, task.ActivityUpdate)
+		}
+		log.Printf("Updating task %s", t.ID)
+		if err := t.Save(); err != nil {
+			return err
+		}
+
+		if tg, _ := t.User.GetTelegram(); tg != nil {
+			telegram.Bot.NotifyUser(tg, t, u)
+		}
+
+		return nil
+	}
+
 	update := make(task.UpdateEvent, 0)
 
 	// --- Did status changed? ---
@@ -28,31 +44,20 @@ func ProcessTaskEvent(dto megaplan.TaskDTO) error {
 	if _task.Status != newStatus {
 		_task.Status = newStatus
 		update = append(update, task.StatusUpdate)
-		needUpdate = true
+		return updateTask(_task, update)
 	}
 
 	// --- Did new comment appeared? ---
 	newComment := dto.GetLastComment()
-	if newComment != nil {
+	if newComment != nil && newComment.Direction == comment.DirectionTo {
+		for _, c := range _task.Comments {
+			if c.ID == newComment.ID {
+				return nil
+			}
+		}
 		_task.Comments = append(_task.Comments, *newComment)
 		update = append(update, task.CommentUpdate)
-		needUpdate = true
-	}
-
-	// --- If need update -> change activity time ---
-	if dto.Activity != nil && needUpdate {
-		_task.LastActivity = dto.Activity.Value
-		update = append(update, task.ActivityUpdate)
-	}
-
-	if needUpdate {
-		if err := _task.Save(); err != nil {
-			return err
-		}
-
-		if tg, _ := _task.User.GetTelegram(); tg != nil {
-			telegram.Bot.NotifyUser(tg, _task, update)
-		}
+		return updateTask(_task, update)
 	}
 
 	return nil
@@ -73,13 +78,14 @@ func HandleMegaplanEvent(c *fiber.Ctx) error {
 
 	dto := event.Data
 	if err := ProcessTaskEvent(dto); err != nil {
-		return c.SendStatus(500)
+		return c.SendStatus(200)
 	}
 
 	return c.SendStatus(200)
 }
 
 func NewUserTaskCommentMegaplan(c *fiber.Ctx) error {
+	_user := c.Locals("user").(user.User)
 	var body struct {
 		Content   string
 		Direction string
@@ -101,6 +107,8 @@ func NewUserTaskCommentMegaplan(c *fiber.Ctx) error {
 		content = fmt.Sprintf("%s %s", megaplan.CommentTagTo, body.Content)
 	case comment.DirectionFrom:
 		content = fmt.Sprintf("%s %s", megaplan.CommentTagFrom, body.Content)
+	default:
+		content = fmt.Sprintf("%s %s", megaplan.CommentTagFrom, body.Content)
 	}
 	mp_comment, err := megaplan.MP.CommentTask(t.ID, content)
 	if err != nil {
@@ -109,10 +117,15 @@ func NewUserTaskCommentMegaplan(c *fiber.Ctx) error {
 
 	var _comment comment.Comment
 	_comment.ID = mp_comment.ID
-	_comment.Content = mp_comment.Content
+	_comment.Content = body.Content
 	_comment.Direction = comment.DirectionFrom
+	_comment.User = &_user
 
 	t.Comments = append(t.Comments, _comment)
+
+	if err := t.Save(); err != nil {
+		return err
+	}
 
 	return c.JSON(Success(_comment))
 }
@@ -182,7 +195,7 @@ func PrepareTaskForMegaplan(_task *task.Task) error {
 	}
 
 	if dto.TimeCreated != nil {
-		_task.ID = fmt.Sprintf("%d", dto.HumanNumber)
+		_task.ID = dto.ID
 		_task.TimeCreated = dto.TimeCreated.Value
 		_task.LastActivity = dto.TimeCreated.Value
 	}

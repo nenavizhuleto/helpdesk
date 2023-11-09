@@ -2,6 +2,7 @@ package megaplan
 
 import (
 	models "helpdesk/internals/models/comment"
+	"helpdesk/internals/models/user"
 	"strings"
 	"time"
 )
@@ -84,8 +85,18 @@ func filterComment(_comment *Comment) *models.Comment {
 }
 
 func (dto *TaskDTO) GetLastComment() *models.Comment {
-	return filterComment(dto.LastComment)
-
+	if dto.LastComment != nil {
+		_comment := filterComment(dto.LastComment)
+		if _comment != nil {
+			_comment.User = &user.User{
+				ID:    "0",
+				Name:  "HelpDesk",
+				Phone: "999",
+			}
+		}
+		return _comment
+	}
+	return nil
 }
 func (dto *TaskDTO) GetComments() []models.Comment {
 	var comments = make([]models.Comment, 0)

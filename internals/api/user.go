@@ -143,7 +143,7 @@ func GetUserTaskComments(c *fiber.Ctx) error {
 	comments := make([]fiber.Map, 0)
 	for _, com := range t.Comments {
 		direction := comment.DirectionTo
-		if com.User.ID == u.ID {
+		if com.User != nil && com.User.ID == u.ID {
 			direction = comment.DirectionFrom
 		}
 		comments = append(comments, fiber.Map{
