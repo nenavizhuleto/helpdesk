@@ -55,7 +55,7 @@
 				>
 					<div class="text-green-500 text-base font-bold">Решено</div>
 					<div class="text-green-900 text-5xl font-bold leading-10">
-						{tasksByStatus(tasks, "completed").length}
+						{tasksByStatus(tasks, "done").length}
 					</div>
 				</div>
 				<div
