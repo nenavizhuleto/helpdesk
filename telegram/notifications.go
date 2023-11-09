@@ -6,6 +6,14 @@ import (
 	"helpdesk/internals/models/user"
 )
 
+const CommentUpdateMessage = `
+Новый комментарий по обращению: #%s %s 
+Комментарий:
+%s
+От: HelpDesk (Технический специалист)
+Для ответа на комментарий перейдите в приложение helpdesk с вашего рабочего устройства
+`
+
 func (t *TelegramNotificator) NotifyUser(user *user.TelegramUser, tk *task.Task, update task.UpdateEvent) {
 	chat := t.chats.Get(user.ChatID)
 	authorized, ok := chat.Data["authorized"]
@@ -21,7 +29,7 @@ func (t *TelegramNotificator) NotifyUser(user *user.TelegramUser, tk *task.Task,
 			case task.StatusUpdate:
 				msg += fmt.Sprintf("Статус изменен на %s\n", tk.Status)
 			case task.CommentUpdate:
-				msg += fmt.Sprintf("Новый комментарий: \n%s\n", tk.Comments[len(tk.Comments)-1].Content)
+				msg += fmt.Sprintf(CommentUpdateMessage, tk.ID, tk.Name, tk.Comments[len(tk.Comments)-1].Content)
 			}
 		}
 
