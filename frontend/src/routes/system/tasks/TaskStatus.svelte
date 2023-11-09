@@ -8,7 +8,7 @@
 	<Badge large color="blue">Назначена</Badge>
 {:else if status == "accepted"}
 	<Badge large color="yellow">В работе</Badge>
-{:else if status == "completed"}
+{:else if status == "done"}
 	<Badge large color="green">Решено</Badge>
 {:else if status == "cancelled"}
 	<Badge large color="red">Отклонено</Badge>

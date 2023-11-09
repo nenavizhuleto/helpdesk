@@ -14,6 +14,8 @@ export const load = (async ({ params }) => {
 		throw error(404)
 	}
 
+	console.log(comments)
+
 	return {
 		task: task.data,
 		comments: comments.data
