@@ -26,10 +26,10 @@
 				/>
 			</svg>
 		</div>
-		<div>
+		<div class="max-w-full">
 			<div class="text-sm leading-none text-blue-700 pt-2 pb-4 font-semibold">{comment.user.name}</div>
 			<!-- Message Text-->
-			<div class="bg-indigo-200 p-3 rounded-r-lg rounded-bl-lg text-sm">
+			<div class="bg-indigo-200 p-3 rounded-r-lg rounded-bl-lg text-sm break-words">
 				{comment.content}
 			</div>
 			<!-- Message Time-->
@@ -42,12 +42,12 @@
 {:else}
 	<!-- START Message from User -->
 	<div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-		<div>
+		<div class="max-w-full">
 			<!-- Message Text-->
 			<div
-				class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg text-sm"
+				class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg text-sm break-words"
 			>
-				{comment.content}
+			{comment.content}
 			</div>
 			<!-- Message Time -->
 			<span class="text-xs text-gray-500 leading-none"
